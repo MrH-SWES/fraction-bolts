@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{overflow:hidden;background:#111;font-family:'Lexend',sans-serif;color:#ccc;}
+body{overflow:hidden;background:#1a1a20;font-family:'Lexend',sans-serif;color:#ccc;}
 canvas{display:block;}
 
 #hud{position:absolute;top:0;left:0;width:100%;pointer-events:none;display:flex;flex-direction:column;align-items:center;padding:12px;}
@@ -102,6 +102,7 @@ canvas{display:block;}
 </script>
 <script type="module">
 import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 /* ═══════════ AUDIO SYNTHESIS ═══════════ */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -213,10 +214,10 @@ function playClaimFanfare(){
 function createSteelTexture(w,h){
   const c=document.createElement('canvas'); c.width=w; c.height=h;
   const ctx=c.getContext('2d');
-  ctx.fillStyle='#556';
+  ctx.fillStyle='#b0b4b8';
   ctx.fillRect(0,0,w,h);
   for(let i=0;i<120;i++){
-    ctx.strokeStyle=`rgba(${150+Math.random()*60},${150+Math.random()*60},${160+Math.random()*60},${.1+Math.random()*.15})`;
+    ctx.strokeStyle=`rgba(${180+Math.random()*50},${180+Math.random()*50},${185+Math.random()*50},${.08+Math.random()*.12})`;
     ctx.lineWidth=.5+Math.random()*1.5;
     ctx.beginPath();
     const x=Math.random()*w, y=Math.random()*h;
@@ -226,7 +227,7 @@ function createSteelTexture(w,h){
   }
   const img=ctx.getImageData(0,0,w,h);
   for(let i=0;i<img.data.length;i+=4){
-    const n=(Math.random()-.5)*20;
+    const n=(Math.random()-.5)*15;
     img.data[i]+=n; img.data[i+1]+=n; img.data[i+2]+=n;
   }
   ctx.putImageData(img,0,0);
@@ -247,10 +248,10 @@ function createBoltTexture(label, stripped){
       ctx.stroke();
     }
   } else {
-    ctx.fillStyle='#889';
+    ctx.fillStyle='#bbc';
     ctx.fillRect(0,0,s,s);
     for(let i=0;i<20;i++){
-      ctx.strokeStyle=`rgba(120,120,140,${.08+Math.random()*.1})`;
+      ctx.strokeStyle=`rgba(160,160,175,${.08+Math.random()*.1})`;
       ctx.lineWidth=.5;
       ctx.beginPath();
       ctx.moveTo(Math.random()*s,Math.random()*s);
@@ -354,8 +355,8 @@ function generateBoltData(count){
 
 /* ═══════════ THREE.JS SCENE ═══════════ */
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x111115);
-scene.fog = new THREE.Fog(0x111115, 12, 25);
+scene.background = new THREE.Color(0x1a1a20);
+scene.fog = new THREE.Fog(0x1a1a20, 14, 28);
 
 const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 100);
 camera.position.set(0, 8, 6);
@@ -367,13 +368,18 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.2;
+renderer.toneMappingExposure = 1.6;
 document.body.appendChild(renderer.domElement);
 
+// Environment map for metallic reflections (matches bead branding)
+const pmremGenerator = new THREE.PMREMGenerator(renderer);
+scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
+pmremGenerator.dispose();
+
 // Lighting
-const ambientLight = new THREE.AmbientLight(0x2a332a, 0.6);
+const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
 scene.add(ambientLight);
-const dirLight = new THREE.DirectionalLight(0xffeedd, 1.4);
+const dirLight = new THREE.DirectionalLight(0xffeedd, 2.0);
 dirLight.position.set(4, 10, 4);
 dirLight.castShadow = true;
 dirLight.shadow.mapSize.set(1024,1024);
@@ -381,13 +387,16 @@ dirLight.shadow.camera.near=1; dirLight.shadow.camera.far=20;
 dirLight.shadow.camera.left=-6; dirLight.shadow.camera.right=6;
 dirLight.shadow.camera.top=6; dirLight.shadow.camera.bottom=-6;
 scene.add(dirLight);
-const pointLight = new THREE.PointLight(0xFFD070, 0.4, 15);
+const pointLight = new THREE.PointLight(0xFFD070, 0.6, 15);
 pointLight.position.set(-3, 5, -2);
 scene.add(pointLight);
+const fillLight = new THREE.DirectionalLight(0xc8d0e0, 0.8);
+fillLight.position.set(-4, 6, -3);
+scene.add(fillLight);
 
 // Floor
 const floorGeo = new THREE.PlaneGeometry(20,20);
-const floorMat = new THREE.MeshStandardMaterial({color:0x222225, roughness:0.9, metalness:0.1});
+const floorMat = new THREE.MeshStandardMaterial({color:0x2a2a30, roughness:0.85, metalness:0.15});
 const floor = new THREE.Mesh(floorGeo, floorMat);
 floor.rotation.x=-Math.PI/2; floor.position.y=-0.5; floor.receiveShadow=true;
 scene.add(floor);
@@ -396,7 +405,7 @@ scene.add(floor);
 const vaultGeo = new THREE.BoxGeometry(5, 0.15, 5);
 const steelTex = createSteelTexture(512,512);
 const vaultMat = new THREE.MeshStandardMaterial({
-  map: steelTex, metalness: 0.85, roughness: 0.3, color: 0x778899
+  map: steelTex, metalness: 0.7, roughness: 0.28, color: 0xd0d4d8
 });
 const vault = new THREE.Mesh(vaultGeo, vaultMat);
 vault.position.y = 0; vault.castShadow = true; vault.receiveShadow = true;
@@ -445,7 +454,7 @@ boltData.forEach((bd, i)=>{
   const headGeo = createHexBoltGeometry();
   const tex = createBoltTexture(bd.displayLabel, false);
   const headMat = new THREE.MeshStandardMaterial({
-    map: tex, metalness: 0.9, roughness: 0.25, color: 0xaabbcc
+    map: tex, metalness: 0.75, roughness: 0.22, color: 0xdce0e4
   });
   const head = new THREE.Mesh(headGeo, headMat);
   head.rotation.x = -Math.PI/2;
@@ -453,7 +462,7 @@ boltData.forEach((bd, i)=>{
   head.castShadow = true;
   group.add(head);
   const shaftGeo = createBoltShaft();
-  const shaftMat = new THREE.MeshStandardMaterial({metalness:0.8, roughness:0.35, color:0x889});
+  const shaftMat = new THREE.MeshStandardMaterial({metalness:0.7, roughness:0.32, color:0xc0c4c8});
   const shaft = new THREE.Mesh(shaftGeo, shaftMat);
   shaft.position.y = -0.17;
   shaft.castShadow = true;
@@ -472,7 +481,7 @@ scene.add(wrenchGroup);
 
 // Handle
 const handleGeo = new THREE.CylinderGeometry(0.06, 0.07, 1.2, 12);
-const wrenchMat = new THREE.MeshStandardMaterial({color:0x444444, metalness:0.8, roughness:0.3});
+const wrenchMat = new THREE.MeshStandardMaterial({color:0x888890, metalness:0.75, roughness:0.28});
 const handleMesh = new THREE.Mesh(handleGeo, wrenchMat);
 handleMesh.position.y = 0.6;
 handleMesh.castShadow = true;
@@ -480,7 +489,7 @@ wrenchGroup.add(handleMesh);
 
 // Ratchet head
 const ratchetGeo = new THREE.CylinderGeometry(0.14, 0.14, 0.12, 16);
-const ratchetMat = new THREE.MeshStandardMaterial({color:0x555555, metalness:0.85, roughness:0.25});
+const ratchetMat = new THREE.MeshStandardMaterial({color:0x989ca0, metalness:0.75, roughness:0.22});
 const ratchetMesh = new THREE.Mesh(ratchetGeo, ratchetMat);
 ratchetMesh.position.y = 0.06;
 ratchetMesh.castShadow = true;
@@ -510,7 +519,7 @@ function createSocketGeometry(scale){
 }
 
 const socketGeo = createSocketGeometry(1.0);
-const socketMat = new THREE.MeshStandardMaterial({color:0x666666, metalness:0.85, roughness:0.2});
+const socketMat = new THREE.MeshStandardMaterial({color:0xa0a4a8, metalness:0.75, roughness:0.18});
 const socketMesh = new THREE.Mesh(socketGeo, socketMat);
 socketMesh.rotation.x = -Math.PI/2;
 socketMesh.position.y = -0.06;
@@ -662,7 +671,7 @@ function updateWrenchAnimation(){
       bd.cooldownEnd = Date.now() + 45000;
       const strippedTex = createBoltTexture(bd.displayLabel, true);
       group.userData.head.material.map = strippedTex;
-      group.userData.head.material.color.set(0x886655);
+      group.userData.head.material.color.set(0xb09080);
       group.userData.head.material.roughness = 0.6;
       group.userData.head.material.needsUpdate = true;
     }
@@ -1166,8 +1175,8 @@ restartBtn.addEventListener('click', ()=>{
     const bd=boltData[i];
     const tex=createBoltTexture(bd.displayLabel, false);
     g.userData.head.material.map=tex;
-    g.userData.head.material.color.set(0xaabbcc);
-    g.userData.head.material.roughness=0.25;
+    g.userData.head.material.color.set(0xdce0e4);
+    g.userData.head.material.roughness=0.22;
     g.userData.head.material.needsUpdate=true;
     g.userData.originalTex=tex;
   });
@@ -1223,16 +1232,16 @@ function animate(){
         bd.stripped = false;
         const normalTex = createBoltTexture(bd.displayLabel, false);
         boltMeshes[i].userData.head.material.map = normalTex;
-        boltMeshes[i].userData.head.material.color.set(0xaabbcc);
-        boltMeshes[i].userData.head.material.roughness = 0.25;
+        boltMeshes[i].userData.head.material.color.set(0xdce0e4);
+        boltMeshes[i].userData.head.material.roughness = 0.22;
         boltMeshes[i].userData.head.material.needsUpdate = true;
       }
     } else if(bd.stripped && bd.cooldownEnd <= now && bd.active){
       bd.stripped = false;
       const normalTex = createBoltTexture(bd.displayLabel, false);
       boltMeshes[i].userData.head.material.map = normalTex;
-      boltMeshes[i].userData.head.material.color.set(0xaabbcc);
-      boltMeshes[i].userData.head.material.roughness = 0.25;
+      boltMeshes[i].userData.head.material.color.set(0xdce0e4);
+      boltMeshes[i].userData.head.material.roughness = 0.22;
       boltMeshes[i].userData.head.material.needsUpdate = true;
       if(selectedBolt === i && currentState === State.INPUT){
         showSocketUI(i);
