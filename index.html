@@ -656,6 +656,9 @@ if(!isStudentMode){
   // Teacher mode — don't init the 3D scene
 } else {
 
+// Hide teacher landing in student mode
+teacherLanding.style.display = 'none';
+
 /* ═══════════ PRIZE PREVIEW SCREEN ═══════════ */
 function showPrizePreview(){
   prizePreview.style.display = 'flex';
@@ -1539,6 +1542,11 @@ function startGameWithSlamDown(){
   gameContainer.style.display = 'block';
   currentState = State.SLAM_DOWN;
 
+  // Ensure renderer matches window size after showing container
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
   // Hide vault and bolts initially — they will animate in
   vault.visible = false;
   vault.position.y = 12; // start high above
@@ -1608,7 +1616,9 @@ function startBoltIn(){
 
 function updateBoltIn(){
   if(!boltInState) return;
-  const elapsed = (performance.now() - boltInState.startTime) / 1000;
+  const now = performance.now();
+  if(now < boltInState.startTime) return; // delay between bolts
+  const elapsed = (now - boltInState.startTime) / 1000;
   const idx = boltInState.currentBolt;
 
   if(idx >= BOLT_COUNT){
@@ -1623,7 +1633,7 @@ function updateBoltIn(){
 
   const g = boltMeshes[idx];
   const boltDuration = 0.4; // Time per bolt
-  const delayBetween = 0.1;
+  const delayBetween = 0.12;
 
   if(boltInState.phase === 'waiting'){
     g.visible = true;
