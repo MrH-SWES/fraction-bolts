@@ -243,10 +243,11 @@ const boltSizes = [
 function generateBoltData(count){
   const bolts=[];
   const usedIndices = new Set();
-  for(let i=0;i<count;i++){
+  const effectiveCount = Math.min(count, boltSizes.length);
+  for(let i=0;i<effectiveCount;i++){
     let idx;
     do { idx = Math.floor(Math.random()*boltSizes.length); }
-    while(usedIndices.has(idx) && usedIndices.size < boltSizes.length);
+    while(usedIndices.has(idx));
     usedIndices.add(idx);
     const target = boltSizes[idx];
     const displaySet = denominations.filter(d => d > target.d && d % target.d === 0);
@@ -348,7 +349,7 @@ prize.position.y = -0.09;
 scene.add(prize);
 
 /* ======== BOLT MESHES ======== */
-const BOLT_COUNT = 8;
+const BOLT_COUNT = 7;
 let boltData = generateBoltData(BOLT_COUNT);
 
 function createHexBoltGeometry(){
@@ -768,7 +769,7 @@ renderer.domElement.addEventListener('click', (e)=>{
   if(hits.length>0){
     // Find parent group
     let obj = hits[0].object;
-    while(obj.parent && !obj.userData.index && obj.userData.index !== 0) obj = obj.parent;
+    while(obj.parent && obj.userData.index === undefined) obj = obj.parent;
     const idx = obj.userData.index;
     if(idx !== undefined && boltData[idx].active){
       zoomToBolt(idx);
@@ -887,8 +888,9 @@ function animate(){
       boltMeshes[i].userData.head.material.map = tex;
       boltMeshes[i].userData.head.material.needsUpdate = true;
 
-      // If zoomed on this bolt and cooldown ends during zoom
-      if(selectedBolt === i && bd.cooldownEnd <= now + 100){
+      // If zoomed on this bolt and cooldown is about to end (within grace period)
+      const COOLDOWN_GRACE_MS = 100;
+      if(selectedBolt === i && bd.cooldownEnd <= now + COOLDOWN_GRACE_MS){
         bd.stripped = false;
         const normalTex = createBoltTexture(bd.displayLabel, false);
         boltMeshes[i].userData.head.material.map = normalTex;
