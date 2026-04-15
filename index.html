@@ -8,20 +8,43 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Lexend:wght@300;400;600;800;900&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{overflow:hidden;background:#1a1a20;font-family:'Lexend',sans-serif;color:#ccc;}
-canvas{display:block;}
+/* ═══════════ BRAND VARIABLES & BASE ═══════════ */
+:root {
+  --bg: #F5F5F7;
+  --glass: rgba(245,245,247,0.85);
+  --surface: #FFFFFF;
+  --text-main: #1D1D1F;
+  --text-gray: #86868B;
+  --text-light: #AEAEB2;
+  --border: rgba(0,0,0,0.05);
+  --shadow-soft: 0 2px 20px rgba(0,0,0,0.04), 0 1px 4px rgba(0,0,0,0.03);
+  --green: #4CBB17;
+  --red: #DC143C;
+}
 
-/* ═══════════ BRANDING CSS ═══════════ */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body {
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text-main);
+  font-family: 'Lexend', sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+canvas { display:block; outline: none; }
+
+/* ═══════════ BRANDING CLASSES ═══════════ */
 .logo {
   display: inline-flex;
   align-items: baseline;
   font-weight: 900;
   letter-spacing: -0.05em;
-  color: #dde;
+  color: var(--text-main);
   user-select: none;
   cursor: default;
-  z-index: 10;
 }
 
 .logo-bead {
@@ -53,107 +76,173 @@ canvas{display:block;}
   vertical-align: baseline;
 }
 
-#brand-mark {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  pointer-events: none;
-  font-size: 16px;
-  text-shadow: 0 0 12px rgba(76, 187, 23, 0.25);
+/* ═══════════ HEADER & FOOTER ═══════════ */
+header {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 100;
+  background: var(--glass);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 70px;
+  display: none; /* Toggled in JS */
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-side {
+  width: 140px; /* Balances the center content */
+}
+
+.header-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
 
 #tool-title {
-  position:absolute;
-  top:12px;
-  left:50%;
-  transform:translateX(-50%);
-  pointer-events:none;
-  font-size:18px;
-  font-weight:800;
-  letter-spacing:-0.03em;
-  color:#dde;
-  text-shadow:0 0 12px rgba(76,187,23,.25);
-  z-index:10;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-main);
 }
 
-#motto {
-  position: absolute;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  pointer-events: none;
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#progress-text {
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.15em;
+  color: var(--text-gray);
   text-transform: uppercase;
-  color: rgba(200, 200, 210, 0.6);
-  z-index: 10;
+  letter-spacing: 0.05em;
+}
+
+#progress-bar-container {
+  width: 160px;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+#progress-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--green);
+  transition: width 0.4s ease;
+}
+
+#total-time {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-gray);
+  text-align: right;
+}
+
+footer {
+  flex-shrink: 0;
+  height: 50px;
+  display: none; /* Toggled in JS */
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-light);
+  border-top: 1px solid var(--border);
+  background: var(--bg);
 }
 
 /* ═══════════ TEACHER LANDING PAGE ═══════════ */
-#teacher-landing{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#1a1a20;z-index:200;overflow-y:auto;}
-#teacher-landing .landing-title{font-size:36px;font-weight:900;letter-spacing:-0.04em;color:#dde;text-shadow:0 0 20px rgba(76,187,23,.3);margin-bottom:6px;}
-#teacher-landing .landing-subtitle{font-size:13px;font-weight:300;letter-spacing:0.12em;text-transform:uppercase;color:rgba(200,200,210,.5);margin-bottom:32px;}
-#teacher-landing .landing-card{background:rgba(10,10,18,.94);border:2px solid rgba(255,159,10,.35);border-radius:12px;padding:28px 32px;max-width:440px;width:90%;backdrop-filter:blur(6px);box-shadow:0 0 24px rgba(255,159,10,.08);}
-#teacher-landing .landing-card h2{font-size:16px;font-weight:800;color:#FF9F0A;margin-bottom:4px;letter-spacing:-0.02em;}
-#teacher-landing .landing-card .card-sub{font-size:12px;font-weight:400;color:#888;margin-bottom:16px;}
-#teacher-landing .landing-card label{display:block;font-size:11px;font-weight:600;color:#aaa;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:6px;}
-#landing-prize-input{width:100%;padding:10px 12px;font-size:14px;font-weight:400;font-family:'Lexend',sans-serif;background:#1a1a22;color:#eee;border:1px solid rgba(255,159,10,.3);border-radius:6px;outline:none;transition:border-color .15s;margin-bottom:12px;}
-#landing-prize-input:focus{border-color:rgba(255,159,10,.7);}
-#landing-prize-input::placeholder{color:#555;}
-#landing-file-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
-#landing-file-btn{padding:8px 16px;font-size:12px;font-weight:700;font-family:'Lexend',sans-serif;background:rgba(30,22,10,.9);color:#FF9F0A;border:1px solid rgba(255,159,10,.4);border-radius:6px;cursor:pointer;transition:all .15s;white-space:nowrap;}
-#landing-file-btn:hover{background:rgba(50,38,15,.95);border-color:rgba(255,159,10,.7);box-shadow:0 0 8px rgba(255,159,10,.2);}
-#landing-file-name{font-size:11px;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px;}
+#teacher-landing{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);z-index:200;overflow-y:auto;}
+#teacher-landing .landing-title{font-size:36px;font-weight:900;letter-spacing:-0.04em;color:var(--text-main);margin-bottom:6px;}
+#teacher-landing .landing-subtitle{font-size:13px;font-weight:300;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-gray);margin-bottom:32px;}
+#teacher-landing .landing-card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:36px 40px;max-width:460px;width:90%;box-shadow:var(--shadow-soft);}
+#teacher-landing .landing-card h2{font-size:16px;font-weight:800;color:var(--text-main);margin-bottom:4px;letter-spacing:-0.02em;}
+#teacher-landing .landing-card .card-sub{font-size:12px;font-weight:400;color:var(--text-gray);margin-bottom:20px;line-height:1.5;}
+#teacher-landing .landing-card label{display:block;font-size:11px;font-weight:600;color:var(--text-gray);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:8px;}
+#landing-prize-input{width:100%;padding:12px 14px;font-size:14px;font-weight:400;font-family:'Lexend',sans-serif;background:#F5F5F7;color:var(--text-main);border:1px solid rgba(0,0,0,0.1);border-radius:8px;outline:none;transition:border-color .15s;margin-bottom:12px;}
+#landing-prize-input:focus{border-color:var(--green);background:#fff;}
+#landing-prize-input::placeholder{color:#aaa;}
+#landing-file-row{display:flex;align-items:center;gap:10px;margin-bottom:24px;}
+#landing-file-btn{padding:8px 16px;font-size:12px;font-weight:600;font-family:'Lexend',sans-serif;background:#eee;color:var(--text-main);border:none;border-radius:6px;cursor:pointer;transition:background .15s;white-space:nowrap;}
+#landing-file-btn:hover{background:#e0e0e0;}
+#landing-file-name{font-size:11px;color:var(--text-gray);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px;}
 #landing-file-input{display:none;}
-#generate-link-btn{width:100%;padding:12px;font-size:15px;font-weight:800;font-family:'Lexend',sans-serif;background:rgba(40,30,8,.9);color:#FFD700;border:2px solid rgba(255,215,0,.4);border-radius:8px;cursor:pointer;transition:all .15s;letter-spacing:-0.01em;}
-#generate-link-btn:hover{background:rgba(60,45,10,.95);border-color:rgba(255,215,0,.7);box-shadow:0 0 12px rgba(255,215,0,.2);}
-#generate-link-btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;}
-#landing-status{font-size:11px;font-weight:400;min-height:16px;margin-top:8px;text-align:center;}
-#link-output{display:none;margin-top:16px;background:#12121a;border:1px solid rgba(76,187,23,.3);border-radius:8px;padding:12px;}
-#link-output .link-label{font-size:11px;font-weight:600;color:#4CBB17;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:6px;}
-#link-output .link-url{font-size:12px;font-weight:400;color:#adf;word-break:break-all;background:#0e0e16;padding:8px;border-radius:4px;border:1px solid rgba(76,187,23,.15);margin-bottom:8px;user-select:all;cursor:text;}
-#copy-link-btn{width:100%;padding:8px;font-size:13px;font-weight:700;font-family:'Lexend',sans-serif;background:rgba(20,40,15,.9);color:#4CBB17;border:1px solid rgba(76,187,23,.4);border-radius:6px;cursor:pointer;transition:all .15s;}
-#copy-link-btn:hover{background:rgba(30,55,20,.95);border-color:#4CBB17;box-shadow:0 0 8px rgba(76,187,23,.25);}
-#teacher-landing .landing-motto{margin-top:24px;}
+#generate-link-btn{width:100%;padding:14px;font-size:15px;font-weight:700;font-family:'Lexend',sans-serif;background:var(--text-main);color:#fff;border:none;border-radius:10px;cursor:pointer;transition:transform .15s;letter-spacing:-0.01em;}
+#generate-link-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+#generate-link-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+#landing-status{font-size:12px;font-weight:400;min-height:16px;margin-top:12px;text-align:center;}
+#link-output{display:none;margin-top:20px;background:#F9F9FB;border:1px solid rgba(76,187,23,.3);border-radius:12px;padding:16px;}
+#link-output .link-label{font-size:11px;font-weight:600;color:var(--green);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:8px;}
+#link-output .link-url{font-size:12px;font-weight:400;color:#333;word-break:break-all;background:#fff;padding:10px;border-radius:6px;border:1px solid rgba(0,0,0,0.05);margin-bottom:12px;user-select:all;cursor:text;}
+#copy-link-btn{width:100%;padding:10px;font-size:13px;font-weight:600;font-family:'Lexend',sans-serif;background:#ebf7e8;color:var(--green);border:none;border-radius:8px;cursor:pointer;transition:background .15s;}
+#copy-link-btn:hover{background:#dcedd9;}
+#teacher-landing .landing-motto{margin-top:32px;font-size: 0.65rem;font-weight: 700;letter-spacing: 1.5px;text-transform: uppercase;color: var(--text-light);}
 
 /* ═══════════ STUDENT PRIZE PREVIEW ═══════════ */
-#prize-preview{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.92);z-index:190;cursor:pointer;backdrop-filter:blur(4px);}
-#prize-preview .preview-box{max-width:360px;width:85%;text-align:center;}
-#prize-preview .preview-prize-img{max-width:100%;max-height:260px;border-radius:10px;border:3px solid rgba(255,215,0,.4);box-shadow:0 0 30px rgba(255,215,0,.15);margin-bottom:16px;}
-#prize-preview .preview-prize-text{font-size:30px;font-weight:900;font-family:'Cinzel','Times New Roman',serif;color:#FFD700;text-shadow:0 2px 8px rgba(0,0,0,.8),0 0 20px rgba(255,215,0,.45);margin-bottom:16px;letter-spacing:0.01em;line-height:1.35;}
-#prize-preview .preview-label{font-size:12px;font-weight:300;color:#aaa;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;}
-#prize-preview .preview-claim-btn{padding:14px 36px;font-size:17px;font-weight:800;font-family:'Lexend',sans-serif;background:rgba(40,30,8,.9);color:#FFD700;border:2px solid rgba(255,215,0,.5);border-radius:10px;cursor:pointer;transition:all .15s;animation:pulse-glow 2s ease-in-out infinite;letter-spacing:-0.02em;}
-#prize-preview .preview-claim-btn:hover{background:rgba(60,45,10,.95);border-color:#FFD700;box-shadow:0 0 16px rgba(255,215,0,.35);transform:translateY(-2px);}
+#prize-preview{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);z-index:190;cursor:pointer;}
+#prize-preview .preview-box{max-width:400px;width:85%;text-align:center;background:var(--surface);padding:40px;border-radius:24px;box-shadow:var(--shadow-soft);border:1px solid var(--border);}
+#prize-preview .preview-prize-img{max-width:100%;max-height:260px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);margin-bottom:24px;}
+#prize-preview .preview-prize-text{font-size:32px;font-weight:900;font-family:'Cinzel','Times New Roman',serif;color:#D4AF37;text-shadow:0 2px 8px rgba(0,0,0,.1);margin-bottom:24px;letter-spacing:0.01em;line-height:1.2;}
+#prize-preview .preview-label{font-size:12px;font-weight:700;color:var(--text-gray);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:16px;}
+#prize-preview .preview-claim-btn{padding:14px 36px;font-size:16px;font-weight:700;font-family:'Lexend',sans-serif;background:var(--text-main);color:#fff;border:none;border-radius:10px;cursor:pointer;transition:transform .15s;animation:pulse-glow 2s ease-in-out infinite;}
+#prize-preview .preview-claim-btn:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(0,0,0,0.15);}
 
-/* ═══════════ GAME HUD ═══════════ */
-#game-container{display:none;}
+/* ═══════════ GAME HUD & WRAPPER ═══════════ */
+#game-wrapper {
+  flex-grow: 1;
+  position: relative;
+  display: none;
+}
 
-#hud{position:absolute;top:36px;left:0;width:100%;pointer-events:none;display:flex;flex-direction:column;align-items:center;padding:12px;}
-#progress-bar-container{width:300px;height:24px;border:2px solid #2a6a0e;border-radius:6px;background:#1a1a1e;overflow:hidden;margin-bottom:8px;}
-#progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#4CBB17,#2a8a0e);transition:width .4s;}
-#progress-text{font-size:13px;font-weight:600;color:#aaa;margin-bottom:4px;letter-spacing:0.02em;}
-#message{font-size:15px;font-weight:600;color:#FFD700;text-align:center;min-height:24px;text-shadow:0 0 8px rgba(255,215,0,.4);}
-#timer-display{font-size:13px;font-weight:400;color:#FF9F0A;margin-top:4px;}
+#game-container{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0; left: 0;
+}
+
+#hud{
+  position:absolute;
+  top: 16px;
+  left:0;
+  width:100%;
+  pointer-events:none;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  z-index: 10;
+}
+
+#message{font-size:15px;font-weight:600;color:var(--text-main);text-align:center;min-height:24px;background:rgba(255,255,255,0.9);padding:6px 16px;border-radius:20px;box-shadow:var(--shadow-soft);border:1px solid var(--border);backdrop-filter:blur(4px);display:none;}
 
 /* Floating Cooldown Timers */
 .floating-timer {
   position: absolute;
-  color: #DC143C; /* Brand Red (Ones place color) */
+  color: var(--red);
   font-size: 16px;
   font-weight: 800;
   font-family: 'Lexend', sans-serif;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 12px rgba(220, 20, 60, 0.5);
+  text-shadow: 0 2px 4px rgba(255,255,255,0.9), 0 0 8px rgba(255, 255, 255, 0.8); /* Changed to light shadow for light BG */
   pointer-events: none;
   display: none;
   z-index: 100;
-  transform: translate(25px, -50%); /* Appears slightly to the right of the bolt */
+  transform: translate(25px, -50%);
 }
 
 /* ═══════════ SOCKET UI ═══════════ */
 #socket-ui {
   position: absolute;
-  bottom: 60px;
+  bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
   display: none;
@@ -161,86 +250,92 @@ canvas{display:block;}
   align-items: center;
   gap: 10px;
   pointer-events: auto;
-  background: rgba(10, 10, 18, 0.94);
-  border: 2px solid rgba(76, 187, 23, 0.35);
-  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
   padding: 24px;
   min-width: 480px;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 0 16px rgba(76, 187, 23, 0.15);
+  box-shadow: var(--shadow-soft);
 }
 
-#socket-ui h3{color:#4CBB17;font-size:15px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px;}
-#socket-ui .subtitle{color:#aaa;font-size:13px;font-weight:400;margin-bottom:10px;}
+#socket-ui h3{color:var(--text-main);font-size:16px;font-weight:800;letter-spacing:-0.02em;margin-bottom:2px;}
+#socket-ui .subtitle{color:var(--text-gray);font-size:12px;font-weight:400;margin-bottom:12px;}
 
 .socket-layout {
   display: flex;
   align-items: center;
   gap: 24px;
   width: 100%;
-  margin-top: 8px;
 }
 
 #socket-set-image {
   width: 180px;
   height: auto;
-  border-radius: 8px;
-  background: #fff;
+  border-radius: 12px;
+  background: #f0f0f0;
   padding: 4px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
 }
 
 #socket-options {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   flex-grow: 1;
 }
 
-.socket-btn{padding:12px 24px;font-size:17px;font-weight:600;font-family:'Lexend',sans-serif;background:#1a2218;color:#eee;border:2px solid #3a5a2a;border-radius:8px;cursor:pointer;transition:all .15s;width:100%;letter-spacing:-0.01em;}
-.socket-btn:hover{background:#253020;border-color:#4CBB17;transform:translateY(-1px);box-shadow:0 0 8px rgba(76,187,23,.25);}
-.socket-btn:active{background:#2a3828;transform:translateY(0);}
+.socket-btn{padding:12px 24px;font-size:16px;font-weight:600;font-family:'Lexend',sans-serif;background:var(--bg);color:var(--text-main);border:1px solid rgba(0,0,0,0.1);border-radius:10px;cursor:pointer;transition:all .15s;width:100%;letter-spacing:-0.01em;}
+.socket-btn:hover{background:#fff;border-color:var(--green);box-shadow:0 4px 12px rgba(76,187,23,0.15);transform:translateY(-1px);}
+.socket-btn:active{transform:translateY(0);}
 .socket-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
 
-#back-btn{position:absolute;top:12px;left:12px;padding:8px 16px;font-size:13px;font-weight:600;font-family:'Lexend',sans-serif;background:rgba(30,22,10,.9);color:#FF9F0A;border:1px solid rgba(255,159,10,.35);border-radius:6px;cursor:pointer;display:none;pointer-events:auto;transition:all .15s;}
-#back-btn:hover{background:rgba(45,32,12,.95);border-color:rgba(255,159,10,.6);}
+#back-btn{position:absolute;top:16px;left:16px;padding:8px 16px;font-size:13px;font-weight:600;font-family:'Lexend',sans-serif;background:var(--surface);color:var(--text-main);border:1px solid var(--border);border-radius:8px;cursor:pointer;display:none;pointer-events:auto;transition:all .15s;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+#back-btn:hover{background:#f0f0f0;}
 
-#manual-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:none;background:rgba(10,10,20,.95);border:2px solid rgba(255,215,0,.3);border-radius:12px;padding:24px;pointer-events:auto;max-width:400px;text-align:center;backdrop-filter:blur(6px);box-shadow:0 0 16px rgba(255,215,0,.08);}
-#manual-overlay h3{color:#FFD700;margin-bottom:12px;font-size:16px;font-weight:800;}
-#manual-overlay canvas{border:1px solid rgba(255,215,0,.25);border-radius:6px;margin:8px auto;display:block;}
-#manual-overlay .close-btn{margin-top:12px;padding:6px 20px;font-size:13px;font-weight:600;font-family:'Lexend',sans-serif;background:rgba(40,35,10,.8);color:#FFD700;border:1px solid rgba(255,215,0,.3);border-radius:6px;cursor:pointer;transition:all .15s;}
-#manual-overlay .close-btn:hover{background:rgba(60,50,15,.9);border-color:rgba(255,215,0,.5);}
-#manual-icon{position:absolute;bottom:12px;right:12px;display:none;pointer-events:auto;cursor:pointer;padding:8px 14px;font-size:12px;font-weight:600;background:rgba(40,35,10,.92);border:1px solid rgba(255,215,0,.4);border-radius:6px;color:#FFD700;transition:all .15s;}
-#manual-icon:hover{background:rgba(60,50,10,.95);border-color:rgba(255,215,0,.7);box-shadow:0 0 8px rgba(255,215,0,.15);}
-
-#total-time{position:absolute;top:44px;right:12px;font-size:12px;font-weight:300;color:rgba(255,159,10,.5);pointer-events:none;letter-spacing:1px;text-transform:uppercase;}
+#manual-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:none;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:32px;pointer-events:auto;max-width:420px;text-align:center;box-shadow:var(--shadow-soft);}
+#manual-overlay h3{color:var(--text-main);margin-bottom:16px;font-size:18px;font-weight:800;letter-spacing:-0.02em;}
+#manual-overlay canvas{border:1px solid rgba(0,0,0,0.05);border-radius:12px;margin:8px auto 16px;display:block;}
+#manual-overlay .close-btn{padding:10px 24px;font-size:14px;font-weight:600;font-family:'Lexend',sans-serif;background:var(--bg);color:var(--text-main);border:1px solid rgba(0,0,0,0.1);border-radius:8px;cursor:pointer;transition:all .15s;}
+#manual-overlay .close-btn:hover{background:#e0e0e0;}
+#manual-icon{position:absolute;bottom:16px;right:16px;display:none;pointer-events:auto;cursor:pointer;padding:10px 16px;font-size:13px;font-weight:600;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text-main);transition:all .15s;box-shadow:0 4px 12px rgba(0,0,0,0.05);}
+#manual-icon:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,0.1);}
 
 /* Prize claim overlay */
 #prize-claim{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;pointer-events:auto;z-index:90;cursor:pointer;}
-#prize-claim .claim-text{font-size:22px;font-weight:800;color:#FFD700;text-shadow:0 0 20px rgba(255,215,0,.6);letter-spacing:-0.03em;}
-#prize-claim .claim-sub{font-size:13px;font-weight:300;color:#aaa;margin-top:8px;letter-spacing:1px;text-transform:uppercase;}
+#prize-claim .claim-text{font-size:28px;font-weight:800;color:#D4AF37;text-shadow:0 2px 12px rgba(255,255,255,0.8);letter-spacing:-0.03em;background:rgba(255,255,255,0.8);padding:12px 32px;border-radius:24px;}
+#prize-claim .claim-sub{font-size:13px;font-weight:600;color:var(--text-gray);margin-top:12px;letter-spacing:1px;text-transform:uppercase;}
 
 /* Celebration halo */
-#celebration-halo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:320px;height:320px;border-radius:50%;pointer-events:none;display:none;z-index:85;background:radial-gradient(circle,rgba(255,215,0,.25) 0%,rgba(255,215,0,.08) 40%,transparent 70%);animation:halo-pulse 1.8s ease-in-out infinite;}
+#celebration-halo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;border-radius:50%;pointer-events:none;display:none;z-index:85;background:radial-gradient(circle,rgba(255,215,0,.3) 0%,rgba(255,215,0,.1) 40%,transparent 70%);animation:halo-pulse 1.8s ease-in-out infinite;}
 @keyframes halo-pulse{0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1);}50%{opacity:1;transform:translate(-50%,-50%) scale(1.15);}}
 @keyframes pulse-glow{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.7;transform:scale(1.04);}}
-@keyframes prize-bounce{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
 
 /* Win/stats screen */
-#win-screen{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.85);pointer-events:auto;z-index:100;backdrop-filter:blur(4px);}
-#win-screen h1{font-weight:900;font-size:32px;letter-spacing:-0.05em;color:#4CBB17;text-shadow:0 0 30px rgba(76,187,23,.4);margin-bottom:20px;}
-#win-screen .stat-row{font-size:16px;font-weight:400;color:#ccc;margin-bottom:8px;}
-#win-screen .stat-value{font-weight:800;color:#FFD700;}
-#win-screen .finish-btn{margin-top:24px;padding:12px 32px;font-size:16px;font-weight:800;font-family:'Lexend',sans-serif;background:#1a1a1e;color:#4CBB17;border:2px solid #4CBB17;border-radius:8px;cursor:pointer;letter-spacing:-0.02em;transition:all .15s;}
-#win-screen .finish-btn:hover{background:#1a2a18;transform:translateY(-1px);box-shadow:0 0 16px rgba(76,187,23,.35);}
+#win-screen{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(245,245,247,0.9);pointer-events:auto;z-index:100;backdrop-filter:blur(8px);}
+#win-screen h1{font-weight:900;font-size:36px;letter-spacing:-0.05em;color:var(--green);margin-bottom:24px;}
+#win-screen .stat-row{font-size:16px;font-weight:400;color:var(--text-gray);margin-bottom:12px;}
+#win-screen .stat-value{font-weight:800;color:var(--text-main);}
+#win-screen .finish-btn{margin-top:32px;padding:14px 40px;font-size:16px;font-weight:700;font-family:'Lexend',sans-serif;background:var(--text-main);color:#fff;border:none;border-radius:12px;cursor:pointer;letter-spacing:-0.01em;transition:transform .15s;}
+#win-screen .finish-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,0.15);}
 </style>
 </head>
 <body>
 
+<header id="app-header">
+  <div class="header-side logo">Math Things<span class="logo-bead"></span></div>
+  <div class="header-center">
+    <div id="tool-title">Fraction Bolts</div>
+    <div class="progress-row">
+      <span id="progress-text">Bolts Removed: 0 / 7</span>
+      <div id="progress-bar-container"><div id="progress-bar"></div></div>
+    </div>
+  </div>
+  <div class="header-side" id="total-time">Total Time: 0s</div>
+</header>
+
 <div id="teacher-landing">
-  <div class="landing-brand logo" style="color: #4CBB17;">Math Things<span class="logo-bead"></span></div>
-  <div class="landing-title">Fraction Bolts</div>
-  <div class="landing-subtitle">Making math make sense</div>
+  <div class="landing-title logo">Math Things<span class="logo-bead"></span></div>
+  <div class="landing-subtitle">Fraction Bolts · Setup</div>
   <div class="landing-card">
     <h2>🎁 Set Up a Prize</h2>
     <div class="card-sub">Enter a prize for your students. They'll need to solve fraction problems to unlock it!</div>
@@ -270,10 +365,10 @@ canvas{display:block;}
   </div>
 </div>
 
-<div id="game-container">
+<div id="game-wrapper">
+  <div id="game-container"></div>
+  
   <div id="hud">
-    <div id="progress-text">Bolts Removed: 0 / 0</div>
-    <div id="progress-bar-container"><div id="progress-bar"></div></div>
     <div id="message"></div>
     <div id="timer-display"></div>
   </div>
@@ -289,23 +384,20 @@ canvas{display:block;}
   
   <button id="back-btn">&#8592; Back</button>
   <div id="manual-icon">&#128214; Consult Manual</div>
+  
   <div id="manual-overlay">
     <h3>Fraction Equivalence Manual</h3>
     <canvas id="manual-canvas" width="360" height="180"></canvas>
-    <p id="manual-text" style="font-size:12px;font-weight:400;color:#bbb;margin-top:6px;"></p>
+    <p id="manual-text" style="font-size:12px;font-weight:400;color:var(--text-gray);margin-top:6px;"></p>
     <button class="close-btn" id="manual-close">Close Manual</button>
   </div>
-  <div id="total-time">Total Time: 0s</div>
-  
-  <div id="brand-mark" class="logo" style="color: #4CBB17;">Math Things<span class="logo-bead"></span></div>
-  <div id="tool-title">Fraction Bolts</div>
-  <div id="motto">Math Things<span class="footer-bead"></span> &nbsp;|&nbsp; Math, in your hands<span class="footer-bead"></span></div>
   
   <div id="celebration-halo"></div>
   <div id="prize-claim">
     <div class="claim-text">&#127942; Your Prize!</div>
     <div class="claim-sub">Tap anywhere to claim</div>
   </div>
+  
   <div id="win-screen">
     <h1>Vault Cracked!</h1>
     <p class="stat-row">Time: <span class="stat-value" id="win-time"></span></p>
@@ -314,6 +406,10 @@ canvas{display:block;}
     <button class="finish-btn" id="finish-btn">Finish</button>
   </div>
 </div>
+
+<footer id="app-footer">
+  Math Things<span class="footer-bead"></span> &nbsp;|&nbsp; Math, in your hands<span class="footer-bead"></span>
+</footer>
 
 <script type="importmap">
 {
@@ -335,12 +431,15 @@ const isStudentMode = !!prizeParam;
 
 const teacherLanding = document.getElementById('teacher-landing');
 const prizePreview = document.getElementById('prize-preview');
+const gameWrapper = document.getElementById('game-wrapper');
 const gameContainer = document.getElementById('game-container');
+const appHeader = document.getElementById('app-header');
+const appFooter = document.getElementById('app-footer');
 
 /* ═══════════ TEACHER LANDING PAGE LOGIC ═══════════ */
 if(!isStudentMode){
   teacherLanding.style.display = 'flex';
-  gameContainer.style.display = 'none';
+  gameWrapper.style.display = 'none';
 
   const landingInput = document.getElementById('landing-prize-input');
   const landingFileBtn = document.getElementById('landing-file-btn');
@@ -364,7 +463,7 @@ if(!isStudentMode){
     const ext = dotIndex !== -1 ? file.name.toLowerCase().slice(dotIndex) : '';
     if(!file.type.startsWith('image/') || !validExts.includes(ext)){
       landingStatus.textContent = '✗ Please select a valid image file.';
-      landingStatus.style.color = '#ff4444';
+      landingStatus.style.color = '#DC143C';
       return;
     }
     const reader = new FileReader();
@@ -391,7 +490,7 @@ if(!isStudentMode){
     const text = landingInput.value.trim();
     if(!text && !uploadedDataUrl){
       landingStatus.textContent = '✗ Enter prize text, paste an image URL, or upload an image.';
-      landingStatus.style.color = '#ff4444';
+      landingStatus.style.color = '#DC143C';
       return;
     }
     const base = window.location.origin + window.location.pathname;
@@ -407,11 +506,6 @@ if(!isStudentMode){
     linkOutput.style.display = 'block';
     landingStatus.textContent = '✓ Link generated!';
     landingStatus.style.color = '#4CBB17';
-
-    if(link.length > 8000){
-      landingStatus.textContent = '⚠ Link is very long — consider using text or an image URL instead of an uploaded image.';
-      landingStatus.style.color = '#FF9F0A';
-    }
   });
 
   copyBtn.addEventListener('click', ()=>{
@@ -420,7 +514,6 @@ if(!isStudentMode){
       copyBtn.textContent = '✓ Copied!';
       setTimeout(()=>{ copyBtn.textContent = 'Copy Link'; }, 2000);
     }).catch(()=>{
-      // Fallback: select text
       const range = document.createRange();
       range.selectNodeContents(linkUrl);
       const sel = window.getSelection();
@@ -593,6 +686,7 @@ function playCelebration(){
   src.start(now); src.stop(now+.8);
 }
 
+/* ═══════════ TEXTURES ═══════════ */
 function createSteelTexture(w,h){
   const c=document.createElement('canvas'); c.width=w; c.height=h;
   const ctx=c.getContext('2d');
@@ -643,6 +737,31 @@ function createSteelTexture(w,h){
   }
   ctx.putImageData(img,0,0);
   return new THREE.CanvasTexture(c);
+}
+
+function createWoodTexture(){
+  const c=document.createElement('canvas'); c.width=512; c.height=512;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#c2956e'; // Light base wood
+  ctx.fillRect(0,0,512,512);
+  
+  // Grain lines
+  ctx.fillStyle='rgba(100, 60, 20, 0.05)';
+  for(let i=0; i<800; i++){
+    ctx.fillRect(Math.random()*512, Math.random()*512, Math.random()*80+20, Math.random()*2+1);
+  }
+  
+  // Subtle lighting gradient
+  const grad = ctx.createLinearGradient(0,0, 512,512);
+  grad.addColorStop(0, 'rgba(255,255,255,0.15)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.15)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,512,512);
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.RepeatWrapping;
+  return tex;
 }
 
 function createBoltTexture(label, stripped){
@@ -767,10 +886,9 @@ function generateBoltData(count){
 
 /* ═══════════ STUDENT MODE: 3D GAME ═══════════ */
 if(!isStudentMode){
-  // Teacher mode — don't init the 3D scene
+  // Teacher mode — handled above
 } else {
 
-// Hide teacher landing in student mode
 teacherLanding.style.display = 'none';
 
 /* ═══════════ PRIZE PREVIEW SCREEN ═══════════ */
@@ -810,15 +928,15 @@ document.getElementById('preview-claim-btn').addEventListener('click', (e)=>{
 
 /* ═══════════ THREE.JS SCENE ═══════════ */
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x1a1a20);
-scene.fog = new THREE.Fog(0x1a1a20, 14, 28);
+scene.background = new THREE.Color(0xF5F5F7); // Brand background color
+// No fog, so the workbench looks isolated against the clean background
 
-const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 100);
+// We will set sizes in the start function once the wrapper is visible
+const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
 camera.position.set(0, 8, 6);
 camera.lookAt(0,0,0);
 
-const renderer = new THREE.WebGLRenderer({antialias:true});
-renderer.setSize(window.innerWidth, window.innerHeight);
+const renderer = new THREE.WebGLRenderer({antialias:true, alpha: false});
 renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -826,7 +944,6 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.6;
 gameContainer.appendChild(renderer.domElement);
 
-// Environment map for metallic reflections
 const pmremGenerator = new THREE.PMREMGenerator(renderer);
 scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
 pmremGenerator.dispose();
@@ -849,11 +966,12 @@ const fillLight = new THREE.DirectionalLight(0xc8d0e0, 0.8);
 fillLight.position.set(-4, 6, -3);
 scene.add(fillLight);
 
-// Floor
-const floorGeo = new THREE.PlaneGeometry(20,20);
-const floorMat = new THREE.MeshStandardMaterial({color:0x2a2a30, roughness:0.85, metalness:0.15});
+// WOODEN WORKBENCH
+const floorGeo = new THREE.BoxGeometry(9, 0.6, 7);
+const floorMat = new THREE.MeshStandardMaterial({ map: createWoodTexture(), roughness: 0.9, color: 0xffffff });
 const floor = new THREE.Mesh(floorGeo, floorMat);
-floor.rotation.x=-Math.PI/2; floor.position.y=-0.5; floor.receiveShadow=true;
+floor.position.y = -0.3; // Top face sits at Y=0
+floor.receiveShadow = true;
 scene.add(floor);
 
 // Vault plate
@@ -949,7 +1067,7 @@ const floatingTimers = [];
 for(let i = 0; i < BOLT_COUNT; i++) {
   const el = document.createElement('div');
   el.className = 'floating-timer';
-  document.getElementById('game-container').appendChild(el);
+  gameWrapper.appendChild(el);
   floatingTimers.push(el);
 }
 
@@ -958,7 +1076,6 @@ const wrenchGroup = new THREE.Group();
 wrenchGroup.visible = false;
 scene.add(wrenchGroup);
 
-// Handle
 const handleGeo = new THREE.CylinderGeometry(0.06, 0.07, 1.2, 12);
 const wrenchMat = new THREE.MeshStandardMaterial({color:0x888890, metalness:0.75, roughness:0.28});
 const handleMesh = new THREE.Mesh(handleGeo, wrenchMat);
@@ -966,7 +1083,6 @@ handleMesh.position.y = 0.6;
 handleMesh.castShadow = true;
 wrenchGroup.add(handleMesh);
 
-// Ratchet head
 const ratchetGeo = new THREE.CylinderGeometry(0.14, 0.14, 0.12, 16);
 const ratchetMat = new THREE.MeshStandardMaterial({color:0x989ca0, metalness:0.75, roughness:0.22});
 const ratchetMesh = new THREE.Mesh(ratchetGeo, ratchetMat);
@@ -974,7 +1090,6 @@ ratchetMesh.position.y = 0.06;
 ratchetMesh.castShadow = true;
 wrenchGroup.add(ratchetMesh);
 
-// Socket
 function createSocketGeometry(scale){
   const shape = new THREE.Shape();
   const sides = 6, radius = 0.24 * scale;
@@ -984,7 +1099,6 @@ function createSocketGeometry(scale){
     if(i===0) shape.moveTo(x,y); else shape.lineTo(x,y);
   }
   shape.closePath();
-  // Inner hole
   const hole = new THREE.Path();
   const innerR = 0.18 * scale;
   for(let i=0; i<sides; i++){
@@ -1006,26 +1120,24 @@ socketMesh.castShadow = true;
 wrenchGroup.add(socketMesh);
 
 /* ═══════════ WRENCH ANIMATION SYSTEM ═══════════ */
-let wrenchAnim = null; // {type, bolt, startTime, duration, phase}
+let wrenchAnim = null;
 
 function startWrenchAnimation(boltIdx, type){
   const group = boltMeshes[boltIdx];
   const boltPos = group.position.clone();
 
-  // Position wrench above bolt
   wrenchGroup.position.set(boltPos.x, boltPos.y + 2.5, boltPos.z);
   wrenchGroup.rotation.set(0, 0, 0);
   wrenchGroup.visible = true;
 
-  // Update socket visual based on fit type
   wrenchGroup.remove(socketMesh);
   let newSocketGeo;
   if(type === 'correct'){
     newSocketGeo = createSocketGeometry(1.0);
   } else if(type === 'tooSmall'){
-    newSocketGeo = createSocketGeometry(0.75); // visibly smaller
+    newSocketGeo = createSocketGeometry(0.75); 
   } else {
-    newSocketGeo = createSocketGeometry(1.35); // visibly larger
+    newSocketGeo = createSocketGeometry(1.35); 
   }
   socketMesh.geometry.dispose();
   socketMesh.geometry = newSocketGeo;
@@ -1171,14 +1283,12 @@ function onWrenchAnimComplete(boltIdx, type){
     bd.wasLocked = true; 
     rattleTarget = boltIdx;
     rattleTimer = 0;
-    showMessage('\u26A0 Socket too small \u2014 doesn\u2019t fit the bolt head.', 4000);
+    showMessage('\u26A0 Socket too small.', 4000);
     
-    // Immediately zoom out for short cooldown
     returnToOverview(); 
   } else if(type === 'tooLarge'){
     showMessage('\u2716 Socket too large \u2014 bolt head stripped! Try another bolt.', 5000);
     
-    // Immediately zoom out for long cooldown
     returnToOverview();
   }
 }
@@ -1460,7 +1570,9 @@ updateHUD();
 
 function showMessage(msg, duration){
   messageEl.textContent = msg;
-  if(duration) setTimeout(()=>{ if(messageEl.textContent===msg) messageEl.textContent=''; }, duration);
+  if(msg) messageEl.style.display = 'block';
+  else messageEl.style.display = 'none';
+  if(duration) setTimeout(()=>{ if(messageEl.textContent===msg) { messageEl.textContent=''; messageEl.style.display='none'; } }, duration);
 }
 
 function showSocketUI(boltIdx){
@@ -1552,7 +1664,9 @@ function showManual(boltIdx){
   const targetD = bd.targetFraction.d;
   const sockD = bd.socketDenominator;
   const correctN = bd.correctNumerator;
-  ctx.fillStyle='#335';
+  
+  // Light theme matching
+  ctx.fillStyle='#F5F5F7';
   ctx.fillRect(20,20,w-40,50);
   const segW1 = (w-40)/targetD;
   for(let i=0;i<targetN;i++){
@@ -1560,12 +1674,13 @@ function showManual(boltIdx){
     ctx.fillRect(20+i*segW1+1, 22, segW1-2, 46);
   }
   for(let i=0;i<=targetD;i++){
-    ctx.strokeStyle='#fff'; ctx.lineWidth=1;
+    ctx.strokeStyle='#1D1D1F'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(20+i*segW1,20); ctx.lineTo(20+i*segW1,70); ctx.stroke();
   }
-  ctx.fillStyle='#fff'; ctx.font='600 14px Lexend, sans-serif'; ctx.textAlign='center';
+  ctx.fillStyle='#1D1D1F'; ctx.font='600 14px Lexend, sans-serif'; ctx.textAlign='center';
   ctx.fillText(`${targetN}/${targetD}`, w/2, 15);
-  ctx.fillStyle='#335';
+  
+  ctx.fillStyle='#F5F5F7';
   ctx.fillRect(20, 100, w-40, 50);
   const segW2 = (w-40)/sockD;
   for(let i=0;i<correctN;i++){
@@ -1573,18 +1688,18 @@ function showManual(boltIdx){
     ctx.fillRect(20+i*segW2+1, 102, segW2-2, 46);
   }
   for(let i=0;i<=sockD;i++){
-    ctx.strokeStyle='#888'; ctx.lineWidth=.5;
+    ctx.strokeStyle='#86868B'; ctx.lineWidth=.5;
     ctx.beginPath(); ctx.moveTo(20+i*segW2,100); ctx.lineTo(20+i*segW2,150); ctx.stroke();
   }
   const mult = sockD/targetD;
   for(let i=0;i<=targetD;i++){
-    ctx.strokeStyle='#fff'; ctx.lineWidth=1.5;
+    ctx.strokeStyle='#1D1D1F'; ctx.lineWidth=1.5;
     ctx.beginPath(); ctx.moveTo(20+i*mult*segW2,100); ctx.lineTo(20+i*mult*segW2,150); ctx.stroke();
   }
-  ctx.fillStyle='#fff';
+  ctx.fillStyle='#1D1D1F';
   ctx.fillText(`${correctN}/${sockD}`, w/2, 95);
-  ctx.fillStyle='#FFD700'; ctx.font='800 16px Lexend, sans-serif';
-  ctx.fillText('=', w/2, 82);
+  ctx.fillStyle='#AEAEB2'; ctx.font='800 16px Lexend, sans-serif';
+  ctx.fillText('=', w/2, 85);
   manualText.textContent = `${targetN}/${targetD} = ${correctN}/${sockD} because ${targetD}\u00D7${sockD/targetD} = ${sockD} and ${targetN}\u00D7${sockD/targetD} = ${correctN}`;
 }
 
@@ -1601,8 +1716,12 @@ const mouse = new THREE.Vector2();
 
 renderer.domElement.addEventListener('click', (e)=>{
   if(currentState!==State.OVERVIEW || tweening) return;
-  mouse.x = (e.clientX/window.innerWidth)*2-1;
-  mouse.y = -(e.clientY/window.innerHeight)*2+1;
+  
+  // Use container bounds for correct mouse mapping
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+  
   raycaster.setFromCamera(mouse, camera);
   const meshes = [];
   boltMeshes.forEach(g => g.traverse(c => { if(c.isMesh) meshes.push(c); }));
@@ -1627,13 +1746,14 @@ backBtn.addEventListener('click', ()=>{
 
 /* ═══════════ STEEL PLATE SLAM DOWN (Opening) ═══════════ */
 function startGameWithSlamDown(){
-  teacherLanding.style.display = 'none';
-  gameContainer.style.display = 'block';
+  appHeader.style.display = 'flex';
+  appFooter.style.display = 'flex';
+  gameWrapper.style.display = 'block';
   currentState = State.SLAM_DOWN;
 
-  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.aspect = gameContainer.clientWidth / gameContainer.clientHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(gameContainer.clientWidth, gameContainer.clientHeight);
 
   vault.visible = false;
   vault.position.y = 12; 
@@ -1837,6 +1957,9 @@ const clock = new THREE.Clock();
 
 function animate(){
   requestAnimationFrame(animate);
+  
+  if(!isStudentMode) return; // Don't run game loop on teacher setup
+
   const dt = clock.getDelta();
   const now = Date.now();
 
@@ -1865,7 +1988,6 @@ function animate(){
     }
   }
 
-  // Temporary vector for projection calculations
   const tempV = new THREE.Vector3();
 
   // Update cooldown textures and 2D Floating Timers
@@ -1874,7 +1996,6 @@ function animate(){
     let isLocked = false;
     let timeRemaining = 0;
 
-    // Check Cooldown / Lock states
     if(bd.cooldownEnd > now && bd.active){
       isLocked = true;
       timeRemaining = Math.ceil((bd.cooldownEnd - now)/1000);
@@ -1921,18 +2042,17 @@ function animate(){
       boltMeshes[i].userData.head.material.needsUpdate = true;
     }
 
-    // 2D Projection for the Red Floating Timers
     if(isLocked) {
       tempV.copy(boltMeshes[i].position);
-      tempV.y += 0.2; // Hover slightly above the bolt
+      tempV.y += 0.2; 
       tempV.project(camera);
 
-      // Only show if the bolt is in front of the camera
       if(tempV.z > 1) {
         timerEl.style.display = 'none';
       } else {
-        const x = (tempV.x * 0.5 + 0.5) * window.innerWidth;
-        const y = (-(tempV.y * 0.5) + 0.5) * window.innerHeight;
+        // Map 3D projection correctly to container dimensions
+        const x = (tempV.x * 0.5 + 0.5) * gameContainer.clientWidth;
+        const y = (-(tempV.y * 0.5) + 0.5) * gameContainer.clientHeight;
         
         timerEl.textContent = `${timeRemaining}s`;
         timerEl.style.left = `${x}px`;
@@ -1944,7 +2064,6 @@ function animate(){
     }
   });
 
-  // Timer display (legacy text fallback at the top)
   if(selectedBolt >= 0){
     const bd = boltData[selectedBolt];
     if(bd.cooldownEnd > now){
@@ -1958,8 +2077,7 @@ function animate(){
     timerDisplay.textContent = '';
   }
 
-  // Manual icon
-  if(selectedBolt >= 0 && boltData[selectedBolt].cooldownEnd > now && boltData[selectedBolt].active){
+  if(selectedBolt >= 0 && (boltData[selectedBolt].cooldownEnd > now || boltData[selectedBolt].lockEnd > now) && boltData[selectedBolt].active){
     manualIcon.style.display='block';
   } else if(currentState !== State.INPUT || selectedBolt < 0){
     manualIcon.style.display='none';
@@ -1967,7 +2085,7 @@ function animate(){
 
   if(currentState !== State.WIN && currentState !== State.CELEBRATION && currentState !== State.SLAM_DOWN && currentState !== State.BOLT_IN){
     const elapsed = ((now - startTime)/1000).toFixed(0);
-    totalTimeEl.textContent = `Total Time: ${elapsed}s`;
+    document.getElementById('total-time').textContent = `Total Time: ${elapsed}s`;
   }
 
   if(currentState === State.OVERVIEW){
@@ -1986,9 +2104,10 @@ animate();
 
 /* ═══════════ RESIZE ═══════════ */
 window.addEventListener('resize', ()=>{
-  camera.aspect = window.innerWidth/window.innerHeight;
+  if(!isStudentMode) return;
+  camera.aspect = gameContainer.clientWidth/gameContainer.clientHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(gameContainer.clientWidth, gameContainer.clientHeight);
 });
 
 } // end isStudentMode
