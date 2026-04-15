@@ -1165,19 +1165,18 @@ function onWrenchAnimComplete(boltIdx, type){
     }
   } else if(type === 'tooSmall'){
     bd.lockEnd = Date.now() + 5000;
-    bd.wasLocked = true; // Add this flag to track the lock state
+    bd.wasLocked = true; 
     rattleTarget = boltIdx;
     rattleTimer = 0;
     showMessage('\u26A0 Socket too small \u2014 doesn\u2019t fit the bolt head.', 4000);
     
-    // Immediately zoom out so they can work on another bolt
+    // Immediately zoom out for short cooldown
     returnToOverview(); 
   } else if(type === 'tooLarge'){
     showMessage('\u2716 Socket too large \u2014 bolt head stripped! Try another bolt.', 5000);
-    manualIcon.style.display='block';
-    backBtn.style.display='block'; // CRITICAL: Un-hides the Back button to let them escape
-    currentState = State.INPUT;    // CRITICAL: Restores input state so the Back button works
-    hideSocketUI();
+    
+    // Immediately zoom out for long cooldown
+    returnToOverview();
   }
 }
 
