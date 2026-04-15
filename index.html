@@ -3,37 +3,58 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>The Precision Vault</title>
+<title>Fraction Bolts · Math Things.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{overflow:hidden;background:#111;font-family:'Courier New',monospace;color:#ccc;}
+body{overflow:hidden;background:#111;font-family:'Lexend',sans-serif;color:#ccc;}
 canvas{display:block;}
+
 #hud{position:absolute;top:0;left:0;width:100%;pointer-events:none;display:flex;flex-direction:column;align-items:center;padding:12px;}
-#progress-bar-container{width:300px;height:24px;border:2px solid #555;border-radius:4px;background:#222;overflow:hidden;margin-bottom:8px;}
-#progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#0f0,#0a0);transition:width .4s;}
-#progress-text{font-size:13px;color:#aaa;margin-bottom:4px;}
-#message{font-size:16px;color:#ff4;text-align:center;min-height:24px;text-shadow:0 0 6px rgba(255,255,0,.5);}
-#timer-display{font-size:14px;color:#f80;margin-top:4px;}
-#socket-ui{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);display:none;flex-direction:column;align-items:center;gap:10px;pointer-events:auto;background:rgba(0,0,0,.85);border:2px solid #666;border-radius:8px;padding:20px;min-width:320px;}
-#socket-ui h3{color:#ddd;font-size:15px;margin-bottom:4px;}
-#socket-ui .subtitle{color:#aaa;font-size:13px;margin-bottom:10px;}
-.socket-btn{padding:12px 24px;font-size:18px;font-family:'Courier New',monospace;background:#333;color:#eee;border:2px solid #666;border-radius:6px;cursor:pointer;transition:all .15s;min-width:200px;}
-.socket-btn:hover{background:#555;border-color:#999;}
-.socket-btn:active{background:#777;}
-.socket-btn:disabled{opacity:.4;cursor:not-allowed;}
-#back-btn{position:absolute;top:12px;left:12px;padding:8px 16px;font-size:14px;font-family:'Courier New',monospace;background:#333;color:#ccc;border:1px solid #666;border-radius:4px;cursor:pointer;display:none;pointer-events:auto;}
-#back-btn:hover{background:#555;}
-#manual-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:none;background:rgba(10,10,20,.95);border:2px solid #888;border-radius:10px;padding:24px;pointer-events:auto;max-width:400px;text-align:center;}
-#manual-overlay h3{color:#ff0;margin-bottom:12px;font-size:16px;}
-#manual-overlay canvas{border:1px solid #555;border-radius:4px;margin:8px auto;display:block;}
-#manual-overlay .close-btn{margin-top:12px;padding:6px 20px;font-size:14px;font-family:'Courier New',monospace;background:#444;color:#ddd;border:1px solid #777;border-radius:4px;cursor:pointer;}
-#manual-icon{position:absolute;bottom:12px;right:12px;display:none;pointer-events:auto;cursor:pointer;padding:8px 14px;font-size:13px;background:rgba(60,60,0,.9);border:1px solid #aa0;border-radius:4px;color:#ff0;}
-#manual-icon:hover{background:rgba(80,80,0,.95);}
-#total-time{position:absolute;top:12px;right:12px;font-size:13px;color:#888;pointer-events:none;}
-#win-screen{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.8);pointer-events:auto;z-index:100;}
-#win-screen h1{color:#0f0;font-size:36px;text-shadow:0 0 20px #0f0;margin-bottom:16px;}
-#win-screen p{color:#ccc;font-size:18px;margin-bottom:8px;}
-#win-screen .restart-btn{margin-top:20px;padding:12px 32px;font-size:18px;font-family:'Courier New',monospace;background:#333;color:#0f0;border:2px solid #0f0;border-radius:6px;cursor:pointer;}
+#progress-bar-container{width:300px;height:24px;border:2px solid #444;border-radius:6px;background:#1a1a1e;overflow:hidden;margin-bottom:8px;}
+#progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#4CBB17,#2a8a0e);transition:width .4s;}
+#progress-text{font-size:13px;font-weight:600;color:#aaa;margin-bottom:4px;letter-spacing:0.02em;}
+#message{font-size:15px;font-weight:600;color:#FFD700;text-align:center;min-height:24px;text-shadow:0 0 8px rgba(255,215,0,.4);}
+#timer-display{font-size:13px;font-weight:400;color:#FF9F0A;margin-top:4px;}
+
+#socket-ui{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);display:none;flex-direction:column;align-items:center;gap:10px;pointer-events:auto;background:rgba(10,10,18,.92);border:2px solid #555;border-radius:10px;padding:20px;min-width:320px;backdrop-filter:blur(6px);}
+#socket-ui h3{color:#ddd;font-size:15px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px;}
+#socket-ui .subtitle{color:#aaa;font-size:13px;font-weight:400;margin-bottom:10px;}
+.socket-btn{padding:12px 24px;font-size:17px;font-weight:600;font-family:'Lexend',sans-serif;background:#222;color:#eee;border:2px solid #555;border-radius:8px;cursor:pointer;transition:all .15s;min-width:200px;letter-spacing:-0.01em;}
+.socket-btn:hover{background:#333;border-color:#888;transform:translateY(-1px);}
+.socket-btn:active{background:#444;transform:translateY(0);}
+.socket-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+#back-btn{position:absolute;top:12px;left:12px;padding:8px 16px;font-size:13px;font-weight:600;font-family:'Lexend',sans-serif;background:#222;color:#ccc;border:1px solid #555;border-radius:6px;cursor:pointer;display:none;pointer-events:auto;}
+#back-btn:hover{background:#333;}
+
+#manual-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:none;background:rgba(10,10,20,.95);border:2px solid #666;border-radius:12px;padding:24px;pointer-events:auto;max-width:400px;text-align:center;backdrop-filter:blur(6px);}
+#manual-overlay h3{color:#FFD700;margin-bottom:12px;font-size:16px;font-weight:800;}
+#manual-overlay canvas{border:1px solid #444;border-radius:6px;margin:8px auto;display:block;}
+#manual-overlay .close-btn{margin-top:12px;padding:6px 20px;font-size:13px;font-weight:600;font-family:'Lexend',sans-serif;background:#333;color:#ddd;border:1px solid #666;border-radius:6px;cursor:pointer;}
+#manual-icon{position:absolute;bottom:12px;right:12px;display:none;pointer-events:auto;cursor:pointer;padding:8px 14px;font-size:12px;font-weight:600;background:rgba(40,35,10,.92);border:1px solid #aa0;border-radius:6px;color:#FFD700;}
+#manual-icon:hover{background:rgba(60,50,10,.95);}
+
+#total-time{position:absolute;top:12px;right:12px;font-size:12px;font-weight:300;color:#666;pointer-events:none;letter-spacing:1px;text-transform:uppercase;}
+
+#brand-mark{position:absolute;bottom:12px;left:12px;pointer-events:none;font-size:14px;font-weight:900;letter-spacing:-0.05em;color:#888;display:inline-flex;align-items:baseline;}
+#brand-mark .dot{width:0.22em;height:0.22em;margin-left:0.04em;margin-bottom:0.08em;border-radius:50%;display:inline-block;background:linear-gradient(135deg,#efefef,#a8a8a8,#e0e0e0);box-shadow:inset 1px 1px 2px rgba(255,255,255,0.8),0 2px 5px rgba(0,0,0,0.22);}
+
+/* Prize claim overlay */
+#prize-claim{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;pointer-events:auto;z-index:90;cursor:pointer;}
+#prize-claim .claim-text{font-size:22px;font-weight:800;color:#FFD700;text-shadow:0 0 20px rgba(255,215,0,.6);animation:pulse-glow 1.5s ease-in-out infinite;letter-spacing:-0.03em;}
+#prize-claim .claim-sub{font-size:13px;font-weight:300;color:#aaa;margin-top:8px;letter-spacing:1px;text-transform:uppercase;}
+@keyframes pulse-glow{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.7;transform:scale(1.04);}}
+
+/* Win/stats screen */
+#win-screen{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.85);pointer-events:auto;z-index:100;backdrop-filter:blur(4px);}
+#win-screen h1{font-weight:900;font-size:32px;letter-spacing:-0.05em;color:#4CBB17;text-shadow:0 0 30px rgba(76,187,23,.4);margin-bottom:20px;}
+#win-screen .stat-row{font-size:16px;font-weight:400;color:#ccc;margin-bottom:8px;}
+#win-screen .stat-value{font-weight:800;color:#FFD700;}
+#win-screen .restart-btn{margin-top:24px;padding:12px 32px;font-size:16px;font-weight:800;font-family:'Lexend',sans-serif;background:#1a1a1e;color:#4CBB17;border:2px solid #4CBB17;border-radius:8px;cursor:pointer;letter-spacing:-0.02em;transition:all .15s;}
+#win-screen .restart-btn:hover{background:#222;transform:translateY(-1px);}
 </style>
 </head>
 <body>
@@ -48,20 +69,26 @@ canvas{display:block;}
   <div class="subtitle" id="socket-subtitle"></div>
   <div id="socket-options"></div>
 </div>
-<button id="back-btn">← Back</button>
-<div id="manual-icon">📖 Consult Manual</div>
+<button id="back-btn">&#8592; Back</button>
+<div id="manual-icon">&#128214; Consult Manual</div>
 <div id="manual-overlay">
   <h3>Fraction Equivalence Manual</h3>
   <canvas id="manual-canvas" width="360" height="180"></canvas>
-  <p id="manual-text" style="font-size:13px;color:#bbb;margin-top:6px;"></p>
+  <p id="manual-text" style="font-size:12px;font-weight:400;color:#bbb;margin-top:6px;"></p>
   <button class="close-btn" id="manual-close">Close Manual</button>
 </div>
 <div id="total-time">Total Time: 0s</div>
+<div id="brand-mark">Math Things<span class="dot"></span></div>
+<div id="prize-claim">
+  <div class="claim-text">&#127942; Click to Claim Your Prize</div>
+  <div class="claim-sub">Tap anywhere</div>
+</div>
 <div id="win-screen">
-  <h1>🔓 VAULT OPENED</h1>
-  <p id="win-time"></p>
-  <p id="win-accuracy"></p>
-  <button class="restart-btn" id="restart-btn">🔄 New Vault</button>
+  <h1>Vault Cracked</h1>
+  <p class="stat-row">Time: <span class="stat-value" id="win-time"></span></p>
+  <p class="stat-row">Accuracy: <span class="stat-value" id="win-accuracy"></span></p>
+  <p class="stat-row">Bolts: <span class="stat-value" id="win-bolts"></span></p>
+  <button class="restart-btn" id="restart-btn">New Vault</button>
 </div>
 
 <script type="importmap">
@@ -74,9 +101,8 @@ canvas{display:block;}
 </script>
 <script type="module">
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-/* ======== AUDIO SYNTHESIS ======== */
+/* ═══════════ AUDIO SYNTHESIS ═══════════ */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx;
 function ensureAudio(){ if(!audioCtx) audioCtx = new AudioCtx(); }
@@ -93,7 +119,6 @@ function playSuccess(){
     o.connect(g); g.connect(ctx.destination);
     o.start(now+i*.04); o.stop(now+i*.04+.08);
   }
-  // low thud
   const o2=ctx.createOscillator(),g2=ctx.createGain();
   o2.type='sine'; o2.frequency.value=55;
   g2.gain.setValueAtTime(.3,now+.25); g2.gain.exponentialRampToValueAtTime(.001,now+.6);
@@ -104,13 +129,19 @@ function playSuccess(){
 function playSmallFail(){
   ensureAudio();
   const ctx=audioCtx, now=ctx.currentTime;
-  // metallic tink
+  // metallic clank - sharp impact
   const o=ctx.createOscillator(),g=ctx.createGain();
-  o.type='triangle'; o.frequency.value=2200;
-  o.frequency.exponentialRampToValueAtTime(800,now+.15);
-  g.gain.setValueAtTime(.2,now); g.gain.exponentialRampToValueAtTime(.001,now+.2);
+  o.type='triangle'; o.frequency.value=2800;
+  o.frequency.exponentialRampToValueAtTime(600,now+.08);
+  g.gain.setValueAtTime(.25,now); g.gain.exponentialRampToValueAtTime(.001,now+.15);
   o.connect(g); g.connect(ctx.destination);
-  o.start(now); o.stop(now+.25);
+  o.start(now); o.stop(now+.2);
+  // secondary ring
+  const o2=ctx.createOscillator(),g3=ctx.createGain();
+  o2.type='sine'; o2.frequency.value=1200;
+  g3.gain.setValueAtTime(.12,now+.02); g3.gain.exponentialRampToValueAtTime(.001,now+.25);
+  o2.connect(g3); g3.connect(ctx.destination);
+  o2.start(now+.02); o2.stop(now+.3);
 }
 
 function playLargeFail(){
@@ -124,7 +155,7 @@ function playLargeFail(){
   const flt=ctx.createBiquadFilter(); flt.type='bandpass'; flt.frequency.value=600; flt.Q.value=2;
   src.connect(flt); flt.connect(ctx.destination);
   src.start(now); src.stop(now+.6);
-  // power-down hum
+  // power-down
   const o=ctx.createOscillator(),g=ctx.createGain();
   o.type='sawtooth'; o.frequency.setValueAtTime(200,now+.5);
   o.frequency.exponentialRampToValueAtTime(30,now+1.5);
@@ -133,14 +164,56 @@ function playLargeFail(){
   o.start(now+.5); o.stop(now+1.6);
 }
 
-/* ======== TEXTURE GENERATORS ======== */
+function playEngageClick(){
+  ensureAudio();
+  const ctx=audioCtx, now=ctx.currentTime;
+  const o=ctx.createOscillator(),g=ctx.createGain();
+  o.type='square'; o.frequency.value=1800;
+  g.gain.setValueAtTime(.15,now); g.gain.exponentialRampToValueAtTime(.001,now+.04);
+  o.connect(g); g.connect(ctx.destination);
+  o.start(now); o.stop(now+.05);
+}
+
+function playHeavyImpact(){
+  ensureAudio();
+  const ctx=audioCtx, now=ctx.currentTime;
+  // deep boom
+  const o=ctx.createOscillator(),g=ctx.createGain();
+  o.type='sine'; o.frequency.setValueAtTime(80,now);
+  o.frequency.exponentialRampToValueAtTime(20,now+.8);
+  g.gain.setValueAtTime(.5,now); g.gain.exponentialRampToValueAtTime(.001,now+1);
+  o.connect(g); g.connect(ctx.destination);
+  o.start(now); o.stop(now+1.1);
+  // noise burst
+  const buf=ctx.createBuffer(1,ctx.sampleRate*.3,ctx.sampleRate);
+  const data=buf.getChannelData(0);
+  for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*.4*Math.max(0,1-i/data.length);
+  const src=ctx.createBufferSource(); src.buffer=buf;
+  const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=300;
+  src.connect(lp); lp.connect(ctx.destination);
+  src.start(now); src.stop(now+.4);
+}
+
+function playClaimFanfare(){
+  ensureAudio();
+  const ctx=audioCtx, now=ctx.currentTime;
+  const notes=[523.25,659.25,783.99,1046.5];
+  notes.forEach((f,i)=>{
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type='sine'; o.frequency.value=f;
+    g.gain.setValueAtTime(.12,now+i*.12);
+    g.gain.exponentialRampToValueAtTime(.001,now+i*.12+.4);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(now+i*.12); o.stop(now+i*.12+.5);
+  });
+}
+
+/* ═══════════ TEXTURE GENERATORS ═══════════ */
 function createSteelTexture(w,h){
   const c=document.createElement('canvas'); c.width=w; c.height=h;
   const ctx=c.getContext('2d');
-  // base
   ctx.fillStyle='#556';
   ctx.fillRect(0,0,w,h);
-  // scratches
   for(let i=0;i<120;i++){
     ctx.strokeStyle=`rgba(${150+Math.random()*60},${150+Math.random()*60},${160+Math.random()*60},${.1+Math.random()*.15})`;
     ctx.lineWidth=.5+Math.random()*1.5;
@@ -150,7 +223,6 @@ function createSteelTexture(w,h){
     ctx.lineTo(x+Math.random()*80-40, y+Math.random()*80-40);
     ctx.stroke();
   }
-  // grain noise
   const img=ctx.getImageData(0,0,w,h);
   for(let i=0;i<img.data.length;i+=4){
     const n=(Math.random()-.5)*20;
@@ -176,7 +248,6 @@ function createBoltTexture(label, stripped){
   } else {
     ctx.fillStyle='#889';
     ctx.fillRect(0,0,s,s);
-    // hex pattern subtle
     for(let i=0;i<20;i++){
       ctx.strokeStyle=`rgba(120,120,140,${.08+Math.random()*.1})`;
       ctx.lineWidth=.5;
@@ -186,9 +257,8 @@ function createBoltTexture(label, stripped){
       ctx.stroke();
     }
   }
-  // label
   ctx.fillStyle=stripped?'#a66':'#dde';
-  ctx.font='bold 22px Courier New';
+  ctx.font='bold 22px Lexend, sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='middle';
   ctx.fillText(label, s/2, s/2);
   return new THREE.CanvasTexture(c);
@@ -199,17 +269,15 @@ function createCooldownTexture(progress, label){
   const ctx=c.getContext('2d');
   ctx.fillStyle='#222';
   ctx.fillRect(0,0,s,s);
-  // circular progress
   const cx=s/2, cy=s/2, r=50;
   ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
   ctx.strokeStyle='#333'; ctx.lineWidth=8; ctx.stroke();
   if(progress>0){
     ctx.beginPath();
     ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+progress*Math.PI*2);
-    ctx.strokeStyle='#f80'; ctx.lineWidth=8; ctx.stroke();
+    ctx.strokeStyle='#FF9F0A'; ctx.lineWidth=8; ctx.stroke();
   }
-  // time text
-  ctx.fillStyle='#f80'; ctx.font='bold 18px Courier New';
+  ctx.fillStyle='#FF9F0A'; ctx.font='bold 18px Lexend, sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='middle';
   ctx.fillText(label,cx,cy);
   return new THREE.CanvasTexture(c);
@@ -219,21 +287,21 @@ function createPrizeTexture(){
   const c=document.createElement('canvas'); c.width=512; c.height=512;
   const ctx=c.getContext('2d');
   const grad=ctx.createRadialGradient(256,256,40,256,256,250);
-  grad.addColorStop(0,'#ff0'); grad.addColorStop(.5,'#f80'); grad.addColorStop(1,'#620');
+  grad.addColorStop(0,'#FFD700'); grad.addColorStop(.5,'#FF9F0A'); grad.addColorStop(1,'#4a2800');
   ctx.fillStyle=grad; ctx.fillRect(0,0,512,512);
-  ctx.fillStyle='#fff'; ctx.font='bold 48px Courier New';
+  ctx.fillStyle='#fff'; ctx.font='900 44px Lexend, sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText('🏆 PRIZE 🏆',256,200);
-  ctx.font='32px Courier New';
+  ctx.fillText('\u{1F3C6} PRIZE \u{1F3C6}',256,200);
+  ctx.font='800 30px Lexend, sans-serif';
   ctx.fillText('VAULT',256,270);
   ctx.fillText('UNLOCKED!',256,310);
-  ctx.font='24px Courier New';
+  ctx.font='600 22px Lexend, sans-serif';
   ctx.fillStyle='#ffa';
   ctx.fillText('Master of Fractions',256,380);
   return new THREE.CanvasTexture(c);
 }
 
-/* ======== MATH ENGINE ======== */
+/* ═══════════ MATH ENGINE ═══════════ */
 const denominations = [8, 16, 32, 64];
 const boltSizes = [
   {n:1,d:2},{n:1,d:4},{n:3,d:4},
@@ -254,8 +322,6 @@ function generateBoltData(count){
     if(displaySet.length===0) { i--; usedIndices.delete(idx); continue; }
     const sessionDenominator = displaySet[Math.floor(Math.random()*displaySet.length)];
     const correctNumerator = target.n * (sessionDenominator / target.d);
-
-    // Generate options
     const optSet = new Set();
     optSet.add(correctNumerator);
     const offsets = [-2,-1,1,2];
@@ -264,14 +330,12 @@ function generateBoltData(count){
       const v = correctNumerator + off;
       if(v > 0 && v < sessionDenominator) optSet.add(v);
     }
-    // If still not enough, add more
     let fallback = 1;
     while(optSet.size < 3){
       if(fallback !== correctNumerator && fallback > 0 && fallback < sessionDenominator) optSet.add(fallback);
       fallback++;
     }
     const options = Array.from(optSet).sort((a,b)=>a-b);
-
     bolts.push({
       targetFraction: {n: target.n, d: target.d},
       displayLabel: `${target.n}/${target.d} in`,
@@ -287,7 +351,7 @@ function generateBoltData(count){
   return bolts;
 }
 
-/* ======== THREE.JS SCENE ======== */
+/* ═══════════ THREE.JS SCENE ═══════════ */
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x111115);
 scene.fog = new THREE.Fog(0x111115, 12, 25);
@@ -308,7 +372,6 @@ document.body.appendChild(renderer.domElement);
 // Lighting
 const ambientLight = new THREE.AmbientLight(0x334455, 0.6);
 scene.add(ambientLight);
-
 const dirLight = new THREE.DirectionalLight(0xffeedd, 1.4);
 dirLight.position.set(4, 10, 4);
 dirLight.castShadow = true;
@@ -317,7 +380,6 @@ dirLight.shadow.camera.near=1; dirLight.shadow.camera.far=20;
 dirLight.shadow.camera.left=-6; dirLight.shadow.camera.right=6;
 dirLight.shadow.camera.top=6; dirLight.shadow.camera.bottom=-6;
 scene.add(dirLight);
-
 const pointLight = new THREE.PointLight(0x88aaff, 0.4, 15);
 pointLight.position.set(-3, 5, -2);
 scene.add(pointLight);
@@ -339,7 +401,7 @@ const vault = new THREE.Mesh(vaultGeo, vaultMat);
 vault.position.y = 0; vault.castShadow = true; vault.receiveShadow = true;
 scene.add(vault);
 
-// Prize image behind vault
+// Prize behind vault
 const prizeTex = createPrizeTexture();
 const prizeGeo = new THREE.PlaneGeometry(4, 4);
 const prizeMat = new THREE.MeshBasicMaterial({map: prizeTex, transparent:true, opacity:0.95});
@@ -348,7 +410,7 @@ prize.rotation.x = -Math.PI/2;
 prize.position.y = -0.09;
 scene.add(prize);
 
-/* ======== BOLT MESHES ======== */
+/* ═══════════ BOLT MESHES ═══════════ */
 const BOLT_COUNT = 7;
 let boltData = generateBoltData(BOLT_COUNT);
 
@@ -361,8 +423,7 @@ function createHexBoltGeometry(){
     if(i===0) shape.moveTo(x,y); else shape.lineTo(x,y);
   }
   shape.closePath();
-  const extrudeSettings = {depth: 0.18, bevelEnabled: true, bevelThickness:0.02, bevelSize:0.02, bevelSegments:2};
-  return new THREE.ExtrudeGeometry(shape, extrudeSettings);
+  return new THREE.ExtrudeGeometry(shape, {depth:0.18, bevelEnabled:true, bevelThickness:0.02, bevelSize:0.02, bevelSegments:2});
 }
 
 function createBoltShaft(){
@@ -371,7 +432,6 @@ function createBoltShaft(){
 
 const boltMeshes = [];
 const boltGroup = new THREE.Group();
-
 const boltPositions = [];
 const plateRadius = 2.1;
 for(let i=0;i<BOLT_COUNT;i++){
@@ -381,7 +441,6 @@ for(let i=0;i<BOLT_COUNT;i++){
 
 boltData.forEach((bd, i)=>{
   const group = new THREE.Group();
-  // Head
   const headGeo = createHexBoltGeometry();
   const tex = createBoltTexture(bd.displayLabel, false);
   const headMat = new THREE.MeshStandardMaterial({
@@ -392,15 +451,12 @@ boltData.forEach((bd, i)=>{
   head.position.y = 0.08;
   head.castShadow = true;
   group.add(head);
-
-  // Shaft
   const shaftGeo = createBoltShaft();
   const shaftMat = new THREE.MeshStandardMaterial({metalness:0.8, roughness:0.35, color:0x889});
   const shaft = new THREE.Mesh(shaftGeo, shaftMat);
   shaft.position.y = -0.17;
   shaft.castShadow = true;
   group.add(shaft);
-
   group.position.set(boltPositions[i].x, 0.08, boltPositions[i].z);
   group.userData = {index: i, head, headMat, originalTex: tex};
   boltMeshes.push(group);
@@ -408,7 +464,262 @@ boltData.forEach((bd, i)=>{
 });
 scene.add(boltGroup);
 
-/* ======== PARTICLE SYSTEM ======== */
+/* ═══════════ SOCKET WRENCH 3D MODEL ═══════════ */
+const wrenchGroup = new THREE.Group();
+wrenchGroup.visible = false;
+scene.add(wrenchGroup);
+
+// Handle
+const handleGeo = new THREE.CylinderGeometry(0.06, 0.07, 1.2, 12);
+const wrenchMat = new THREE.MeshStandardMaterial({color:0x444444, metalness:0.8, roughness:0.3});
+const handleMesh = new THREE.Mesh(handleGeo, wrenchMat);
+handleMesh.position.y = 0.6;
+handleMesh.castShadow = true;
+wrenchGroup.add(handleMesh);
+
+// Ratchet head
+const ratchetGeo = new THREE.CylinderGeometry(0.14, 0.14, 0.12, 16);
+const ratchetMat = new THREE.MeshStandardMaterial({color:0x555555, metalness:0.85, roughness:0.25});
+const ratchetMesh = new THREE.Mesh(ratchetGeo, ratchetMat);
+ratchetMesh.position.y = 0.06;
+ratchetMesh.castShadow = true;
+wrenchGroup.add(ratchetMesh);
+
+// Socket (hexagonal, will be scaled for different fits)
+function createSocketGeometry(scale){
+  const shape = new THREE.Shape();
+  const sides = 6, radius = 0.24 * scale;
+  for(let i=0; i<sides; i++){
+    const angle = (i/sides)*Math.PI*2 - Math.PI/6;
+    const x = Math.cos(angle)*radius, y = Math.sin(angle)*radius;
+    if(i===0) shape.moveTo(x,y); else shape.lineTo(x,y);
+  }
+  shape.closePath();
+  // Inner hole
+  const hole = new THREE.Path();
+  const innerR = 0.18 * scale;
+  for(let i=0; i<sides; i++){
+    const angle = (i/sides)*Math.PI*2 - Math.PI/6;
+    const x = Math.cos(angle)*innerR, y = Math.sin(angle)*innerR;
+    if(i===0) hole.moveTo(x,y); else hole.lineTo(x,y);
+  }
+  hole.closePath();
+  shape.holes.push(hole);
+  return new THREE.ExtrudeGeometry(shape, {depth:0.12, bevelEnabled:false});
+}
+
+const socketGeo = createSocketGeometry(1.0);
+const socketMat = new THREE.MeshStandardMaterial({color:0x666666, metalness:0.85, roughness:0.2});
+const socketMesh = new THREE.Mesh(socketGeo, socketMat);
+socketMesh.rotation.x = -Math.PI/2;
+socketMesh.position.y = -0.06;
+socketMesh.castShadow = true;
+wrenchGroup.add(socketMesh);
+
+/* ═══════════ WRENCH ANIMATION SYSTEM ═══════════ */
+let wrenchAnim = null; // {type, bolt, startTime, duration, phase}
+
+function startWrenchAnimation(boltIdx, type){
+  const group = boltMeshes[boltIdx];
+  const boltPos = group.position.clone();
+
+  // Position wrench above bolt
+  wrenchGroup.position.set(boltPos.x, boltPos.y + 2.5, boltPos.z);
+  wrenchGroup.rotation.set(0, 0, 0);
+  wrenchGroup.visible = true;
+
+  // Update socket visual based on fit type
+  wrenchGroup.remove(socketMesh);
+  let newSocketGeo;
+  if(type === 'correct'){
+    newSocketGeo = createSocketGeometry(1.0);
+  } else if(type === 'tooSmall'){
+    newSocketGeo = createSocketGeometry(0.75); // visibly smaller
+  } else {
+    newSocketGeo = createSocketGeometry(1.35); // visibly larger
+  }
+  socketMesh.geometry.dispose();
+  socketMesh.geometry = newSocketGeo;
+  wrenchGroup.add(socketMesh);
+
+  wrenchAnim = {
+    type,
+    boltIdx,
+    startTime: performance.now(),
+    phase: 'descend',
+    boltPos: boltPos.clone(),
+    boltStartY: group.position.y,
+    boltStartRot: group.rotation.y,
+  };
+}
+
+function updateWrenchAnimation(){
+  if(!wrenchAnim) return false;
+  const elapsed = (performance.now() - wrenchAnim.startTime) / 1000;
+  const {type, boltIdx, boltPos, boltStartY, boltStartRot} = wrenchAnim;
+  const group = boltMeshes[boltIdx];
+
+  if(type === 'correct'){
+    // Phase 1: Descend (0-0.5s)
+    if(elapsed < 0.5){
+      const t = elapsed / 0.5;
+      const et = t * t * (3 - 2 * t); // smoothstep
+      wrenchGroup.position.y = boltPos.y + 2.5 - et * 2.3;
+      return true;
+    }
+    // Phase 2: Engage click (0.5s)
+    if(wrenchAnim.phase === 'descend'){
+      wrenchAnim.phase = 'engage';
+      playEngageClick();
+    }
+    // Phase 3: Spin and unscrew (0.5-2.5s)
+    if(elapsed < 2.5){
+      const t = (elapsed - 0.5) / 2.0;
+      wrenchGroup.rotation.y = t * Math.PI * 10;
+      wrenchGroup.position.y = boltPos.y + 0.2 + t * 1.8;
+      // Move bolt with wrench
+      group.position.y = boltStartY + t * 1.8;
+      group.rotation.y = boltStartRot + t * Math.PI * 10;
+      return true;
+    }
+    // Phase 4: Done
+    wrenchGroup.visible = false;
+    group.visible = false;
+    wrenchAnim = null;
+    onWrenchAnimComplete(boltIdx, 'correct');
+    return false;
+
+  } else if(type === 'tooSmall'){
+    // Phase 1: Descend (0-0.4s)
+    if(elapsed < 0.4){
+      const t = elapsed / 0.4;
+      const et = t * t * (3 - 2 * t);
+      wrenchGroup.position.y = boltPos.y + 2.5 - et * 2.25;
+      return true;
+    }
+    // Phase 2: Clank and bounce (0.4-0.6s)
+    if(wrenchAnim.phase === 'descend'){
+      wrenchAnim.phase = 'clank';
+      playSmallFail();
+    }
+    if(elapsed < 1.0){
+      const t = (elapsed - 0.4) / 0.6;
+      // Bounce back with wobble
+      const bounce = Math.sin(t * Math.PI) * 0.3;
+      wrenchGroup.position.y = boltPos.y + 0.25 + bounce + t * 0.8;
+      // Wobble rotation
+      wrenchGroup.rotation.z = Math.sin(t * Math.PI * 6) * 0.15 * (1 - t);
+      wrenchGroup.rotation.x = Math.sin(t * Math.PI * 4) * 0.1 * (1 - t);
+      return true;
+    }
+    // Phase 3: Retreat (1.0-1.5s)
+    if(elapsed < 1.5){
+      const t = (elapsed - 1.0) / 0.5;
+      wrenchGroup.position.y = boltPos.y + 1.05 + t * 1.5;
+      wrenchGroup.rotation.z *= (1 - t);
+      wrenchGroup.rotation.x *= (1 - t);
+      return true;
+    }
+    // Done
+    wrenchGroup.visible = false;
+    wrenchGroup.rotation.set(0,0,0);
+    wrenchAnim = null;
+    onWrenchAnimComplete(boltIdx, 'tooSmall');
+    return false;
+
+  } else if(type === 'tooLarge'){
+    // Phase 1: Descend (0-0.5s)
+    if(elapsed < 0.5){
+      const t = elapsed / 0.5;
+      const et = t * t * (3 - 2 * t);
+      wrenchGroup.position.y = boltPos.y + 2.5 - et * 2.35;
+      return true;
+    }
+    // Phase 2: Loose engagement, wobble (0.5-0.7s)
+    if(wrenchAnim.phase === 'descend'){
+      wrenchAnim.phase = 'engage';
+      playEngageClick();
+    }
+    if(elapsed < 1.2){
+      const t = (elapsed - 0.5) / 0.7;
+      // Try to turn but wobbles loosely
+      wrenchGroup.rotation.y = t * Math.PI * 3;
+      // Visible wobble showing loose fit
+      wrenchGroup.position.x = boltPos.x + Math.sin(t * Math.PI * 8) * 0.04;
+      wrenchGroup.position.z = boltPos.z + Math.cos(t * Math.PI * 8) * 0.04;
+      wrenchGroup.position.y = boltPos.y + 0.15 + Math.sin(t * Math.PI * 6) * 0.02;
+      return true;
+    }
+    // Phase 3: Strip! Sparks + grinding (1.2s)
+    if(wrenchAnim.phase === 'engage'){
+      wrenchAnim.phase = 'strip';
+      playLargeFail();
+      triggerSparks(group.position.clone().add(new THREE.Vector3(0,0.2,0)));
+      // Apply stripped texture
+      const bd = boltData[boltIdx];
+      bd.stripped = true;
+      bd.cooldownEnd = Date.now() + 45000;
+      const strippedTex = createBoltTexture(bd.displayLabel, true);
+      group.userData.head.material.map = strippedTex;
+      group.userData.head.material.color.set(0x886655);
+      group.userData.head.material.roughness = 0.6;
+      group.userData.head.material.needsUpdate = true;
+    }
+    // Phase 4: Wrench slips off with grind (1.2-2.2s)
+    if(elapsed < 2.2){
+      const t = (elapsed - 1.2) / 1.0;
+      wrenchGroup.rotation.y = Math.PI * 3 + t * Math.PI * 2;
+      wrenchGroup.position.y = boltPos.y + 0.15 + t * 2;
+      // Tumble slightly
+      wrenchGroup.rotation.z = t * 0.3;
+      wrenchGroup.position.x = boltPos.x + t * 0.2;
+      return true;
+    }
+    // Done
+    wrenchGroup.visible = false;
+    wrenchGroup.rotation.set(0,0,0);
+    wrenchAnim = null;
+    onWrenchAnimComplete(boltIdx, 'tooLarge');
+    return false;
+  }
+  return false;
+}
+
+function onWrenchAnimComplete(boltIdx, type){
+  const bd = boltData[boltIdx];
+  if(type === 'correct'){
+    bd.active = false;
+    totalRemoved++;
+    updateHUD();
+    playSuccess();
+    if(totalRemoved >= BOLT_COUNT){
+      winGame();
+    } else {
+      returnToOverview();
+    }
+  } else if(type === 'tooSmall'){
+    bd.lockEnd = Date.now() + 5000;
+    rattleTarget = boltIdx;
+    rattleTimer = 0;
+    showMessage('\u26A0 Socket too small \u2014 doesn\u2019t fit the bolt head.', 4000);
+    const btns = socketOptions.querySelectorAll('.socket-btn');
+    btns.forEach(b=>b.disabled=true);
+    setTimeout(()=>{
+      rattleTarget=-1;
+      if(selectedBolt===boltIdx && bd.active){
+        btns.forEach(b=>b.disabled=false);
+      }
+    }, 5000);
+    socketUI.style.display='flex';
+    backBtn.style.display='block';
+  } else if(type === 'tooLarge'){
+    showMessage('\u2716 Socket too large \u2014 bolt head stripped! Recalibrating...', 5000);
+    manualIcon.style.display='block';
+    hideSocketUI();
+  }
+}
+
+/* ═══════════ PARTICLE SYSTEM ═══════════ */
 const SPARK_COUNT = 60;
 const sparkGeo = new THREE.BufferGeometry();
 const sparkPositions = new Float32Array(SPARK_COUNT*3);
@@ -459,7 +770,7 @@ function updateSparks(dt){
   if(!alive){ sparkActive=false; sparks.visible=false; }
 }
 
-/* ======== CAMERA TWEEN ======== */
+/* ═══════════ CAMERA TWEEN ═══════════ */
 const overviewPos = new THREE.Vector3(0, 8, 6);
 const overviewLook = new THREE.Vector3(0, 0, 0);
 let tweening = false;
@@ -474,11 +785,9 @@ function tweenCamera(targetPos, targetLook, duration, cb){
     pos: camera.position.clone(),
     look: new THREE.Vector3()
   };
-  // Get current lookAt from camera direction
   const dir = new THREE.Vector3();
   camera.getWorldDirection(dir);
   tweenStart.look.copy(camera.position).add(dir.multiplyScalar(5));
-
   tweenEnd = {pos: targetPos.clone(), look: targetLook.clone()};
   tweenDuration = duration;
   tweenElapsed = 0;
@@ -490,11 +799,9 @@ function updateTween(dt){
   tweenElapsed += dt;
   let t = Math.min(tweenElapsed / tweenDuration, 1);
   t = easeInOut(t);
-
   camera.position.lerpVectors(tweenStart.pos, tweenEnd.pos, t);
   const look = new THREE.Vector3().lerpVectors(tweenStart.look, tweenEnd.look, t);
   camera.lookAt(look);
-
   if(tweenElapsed >= tweenDuration){
     tweening = false;
     camera.position.copy(tweenEnd.pos);
@@ -503,8 +810,34 @@ function updateTween(dt){
   }
 }
 
-/* ======== STATE MACHINE ======== */
-const State = {OVERVIEW:'overview', ZOOMING:'zooming', INPUT:'input', EVALUATING:'evaluating', COOLDOWN:'cooldown', WIN:'win'};
+/* ═══════════ CAMERA SHAKE ═══════════ */
+let shakeIntensity = 0;
+let shakeDuration = 0;
+let shakeTimer = 0;
+const shakeOffset = new THREE.Vector3();
+
+function triggerCameraShake(intensity, duration){
+  shakeIntensity = intensity;
+  shakeDuration = duration;
+  shakeTimer = 0;
+}
+
+function updateCameraShake(dt){
+  if(shakeTimer >= shakeDuration){
+    shakeOffset.set(0,0,0);
+    return;
+  }
+  shakeTimer += dt;
+  const decay = 1 - (shakeTimer / shakeDuration);
+  shakeOffset.set(
+    (Math.random() - 0.5) * shakeIntensity * decay * 2,
+    (Math.random() - 0.5) * shakeIntensity * decay * 2,
+    (Math.random() - 0.5) * shakeIntensity * decay * 2
+  );
+}
+
+/* ═══════════ STATE MACHINE ═══════════ */
+const State = {OVERVIEW:'overview', ZOOMING:'zooming', INPUT:'input', EVALUATING:'evaluating', COOLDOWN:'cooldown', WRENCH:'wrench', PLATE_DROP:'plateDrop', PRIZE_REVEAL:'prizeReveal', WIN:'win'};
 let currentState = State.OVERVIEW;
 let selectedBolt = -1;
 let totalRemoved = 0;
@@ -512,8 +845,10 @@ let startTime = Date.now();
 let totalAttempts = 0;
 let correctAttempts = 0;
 
-// Rattle animation
 let rattleTarget = -1, rattleTimer = 0;
+
+// Plate drop state
+let plateDropState = null;
 
 // DOM refs
 const progressBar = document.getElementById('progress-bar');
@@ -531,9 +866,11 @@ const manualCanvas = document.getElementById('manual-canvas');
 const manualText = document.getElementById('manual-text');
 const manualClose = document.getElementById('manual-close');
 const totalTimeEl = document.getElementById('total-time');
+const prizeClaim = document.getElementById('prize-claim');
 const winScreen = document.getElementById('win-screen');
 const winTime = document.getElementById('win-time');
 const winAccuracy = document.getElementById('win-accuracy');
+const winBolts = document.getElementById('win-bolts');
 const restartBtn = document.getElementById('restart-btn');
 
 function updateHUD(){
@@ -571,78 +908,21 @@ function evaluate(boltIdx, chosen){
   const correct = bd.correctNumerator;
   totalAttempts++;
 
+  hideSocketUI();
+  backBtn.style.display='none';
+  manualIcon.style.display='none';
+  currentState = State.WRENCH;
+
   if(chosen === correct){
-    // SUCCESS
     correctAttempts++;
-    currentState = State.EVALUATING;
-    hideSocketUI();
-    backBtn.style.display='none';
-    manualIcon.style.display='none';
-    showMessage('✓ CORRECT – Removing bolt...', 2000);
-    playSuccess();
-
-    // Unscrew animation
-    const group = boltMeshes[boltIdx];
-    const startY = group.position.y;
-    const startRot = group.rotation.y;
-    let unscrewT = 0;
-    const unscrewInterval = setInterval(()=>{
-      unscrewT += 0.02;
-      group.position.y = startY + unscrewT * 2;
-      group.rotation.y = startRot + unscrewT * Math.PI * 8;
-      if(unscrewT >= 1){
-        clearInterval(unscrewInterval);
-        group.visible = false;
-        bd.active = false;
-        totalRemoved++;
-        updateHUD();
-        if(totalRemoved >= BOLT_COUNT){
-          winGame();
-        } else {
-          returnToOverview();
-        }
-      }
-    }, 16);
-
+    showMessage('\u2713 Correct \u2014 removing bolt...', 2500);
+    startWrenchAnimation(boltIdx, 'correct');
   } else if(chosen < correct){
-    // TOO SMALL – rattle
-    playSmallFail();
-    showMessage('⚠ RATCHET SLIP: Socket too small for head.', 4000);
-    bd.lockEnd = Date.now() + 5000;
-    rattleTarget = boltIdx;
-    rattleTimer = 0;
-    // Disable buttons temporarily
-    const btns = socketOptions.querySelectorAll('.socket-btn');
-    btns.forEach(b=>b.disabled=true);
-    setTimeout(()=>{
-      rattleTarget=-1;
-      if(selectedBolt===boltIdx && bd.active){
-        btns.forEach(b=>b.disabled=false);
-      }
-    }, 5000);
-
+    showMessage('', 0);
+    startWrenchAnimation(boltIdx, 'tooSmall');
   } else {
-    // TOO LARGE – stripped!
-    playLargeFail();
-    showMessage('✖ CRITICAL FAILURE: Bolt head stripped. Recalibrating tool...', 5000);
-    bd.stripped = true;
-    bd.cooldownEnd = Date.now() + 45000;
-    hideSocketUI();
-
-    // Change texture to stripped
-    const group = boltMeshes[boltIdx];
-    const head = group.userData.head;
-    const strippedTex = createBoltTexture(bd.displayLabel, true);
-    head.material.map = strippedTex;
-    head.material.color.set(0x886655);
-    head.material.roughness = 0.6;
-    head.material.needsUpdate = true;
-
-    // Spark effect
-    triggerSparks(group.position.clone().add(new THREE.Vector3(0,0.2,0)));
-
-    // Show manual icon
-    manualIcon.style.display='block';
+    showMessage('', 0);
+    startWrenchAnimation(boltIdx, 'tooLarge');
   }
 }
 
@@ -661,25 +941,19 @@ function zoomToBolt(idx){
   if(tweening) return;
   const bd = boltData[idx];
   if(!bd.active) return;
-
   selectedBolt = idx;
   currentState = State.ZOOMING;
-
   const group = boltMeshes[idx];
   const boltPos = group.position.clone();
   const targetPos = new THREE.Vector3(boltPos.x, 3.5, boltPos.z + 0.3);
   const targetLook = boltPos.clone();
-
   tweenCamera(targetPos, targetLook, 0.5, ()=>{
     currentState = State.INPUT;
-    // Check cooldown
     const now = Date.now();
     if(bd.cooldownEnd > now){
-      // Still in cooldown
       manualIcon.style.display='block';
     } else if(bd.lockEnd > now){
-      // Still locked from small fail
-      showMessage('⚠ Bolt temporarily locked – wait...', 2000);
+      showMessage('\u26A0 Bolt temporarily locked \u2014 wait...', 2000);
     }
     if(!bd.stripped || bd.cooldownEnd <= now){
       showSocketUI(idx);
@@ -688,47 +962,41 @@ function zoomToBolt(idx){
   });
 }
 
-/* ======== MANUAL (Pedagogical Overlay) ======== */
+/* ═══════════ MANUAL (Pedagogical Overlay) ═══════════ */
 function showManual(boltIdx){
   const bd = boltData[boltIdx];
   manualOverlay.style.display='block';
   const ctx = manualCanvas.getContext('2d');
   const w = manualCanvas.width, h = manualCanvas.height;
   ctx.clearRect(0,0,w,h);
-
   const targetN = bd.targetFraction.n;
   const targetD = bd.targetFraction.d;
   const sockD = bd.socketDenominator;
   const correctN = bd.correctNumerator;
-
-  // Draw top bar: bolt fraction
   ctx.fillStyle='#335';
   ctx.fillRect(20,20,w-40,50);
   const segW1 = (w-40)/targetD;
   for(let i=0;i<targetN;i++){
-    ctx.fillStyle='#4a4';
+    ctx.fillStyle='#4CBB17';
     ctx.fillRect(20+i*segW1+1, 22, segW1-2, 46);
   }
   for(let i=0;i<=targetD;i++){
     ctx.strokeStyle='#fff'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(20+i*segW1,20); ctx.lineTo(20+i*segW1,70); ctx.stroke();
   }
-  ctx.fillStyle='#fff'; ctx.font='14px Courier New'; ctx.textAlign='center';
+  ctx.fillStyle='#fff'; ctx.font='600 14px Lexend, sans-serif'; ctx.textAlign='center';
   ctx.fillText(`${targetN}/${targetD}`, w/2, 15);
-
-  // Draw bottom bar: socket denominator
   ctx.fillStyle='#335';
   ctx.fillRect(20, 100, w-40, 50);
   const segW2 = (w-40)/sockD;
   for(let i=0;i<correctN;i++){
-    ctx.fillStyle='#4a4';
+    ctx.fillStyle='#4CBB17';
     ctx.fillRect(20+i*segW2+1, 102, segW2-2, 46);
   }
   for(let i=0;i<=sockD;i++){
     ctx.strokeStyle='#888'; ctx.lineWidth=.5;
     ctx.beginPath(); ctx.moveTo(20+i*segW2,100); ctx.lineTo(20+i*segW2,150); ctx.stroke();
   }
-  // Mark major dividers
   const mult = sockD/targetD;
   for(let i=0;i<=targetD;i++){
     ctx.strokeStyle='#fff'; ctx.lineWidth=1.5;
@@ -736,12 +1004,9 @@ function showManual(boltIdx){
   }
   ctx.fillStyle='#fff';
   ctx.fillText(`${correctN}/${sockD}`, w/2, 95);
-
-  // Equivalence arrow
-  ctx.fillStyle='#ff0'; ctx.font='bold 16px Courier New';
+  ctx.fillStyle='#FFD700'; ctx.font='800 16px Lexend, sans-serif';
   ctx.fillText('=', w/2, 82);
-
-  manualText.textContent = `${targetN}/${targetD} = ${correctN}/${sockD} because ${targetD}×${sockD/targetD} = ${sockD} and ${targetN}×${sockD/targetD} = ${correctN}`;
+  manualText.textContent = `${targetN}/${targetD} = ${correctN}/${sockD} because ${targetD}\u00D7${sockD/targetD} = ${sockD} and ${targetN}\u00D7${sockD/targetD} = ${correctN}`;
 }
 
 manualIcon.addEventListener('click',()=>{
@@ -751,7 +1016,7 @@ manualClose.addEventListener('click',()=>{
   manualOverlay.style.display='none';
 });
 
-/* ======== INPUT HANDLING ======== */
+/* ═══════════ INPUT HANDLING ═══════════ */
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
@@ -760,14 +1025,10 @@ renderer.domElement.addEventListener('click', (e)=>{
   mouse.x = (e.clientX/window.innerWidth)*2-1;
   mouse.y = -(e.clientY/window.innerHeight)*2+1;
   raycaster.setFromCamera(mouse, camera);
-
-  // Collect all bolt children for raycasting
   const meshes = [];
   boltMeshes.forEach(g => g.traverse(c => { if(c.isMesh) meshes.push(c); }));
   const hits = raycaster.intersectObjects(meshes);
-
   if(hits.length>0){
-    // Find parent group
     let obj = hits[0].object;
     while(obj.parent && obj.userData.index === undefined) obj = obj.parent;
     const idx = obj.userData.index;
@@ -785,45 +1046,106 @@ backBtn.addEventListener('click', ()=>{
   }
 });
 
-/* ======== WIN CONDITION ======== */
-function winGame(){
-  currentState = State.WIN;
+/* ═══════════ DRAMATIC PLATE DROP ═══════════ */
+function startPlateDrop(){
+  currentState = State.PLATE_DROP;
   hideSocketUI();
   backBtn.style.display='none';
   manualIcon.style.display='none';
   manualOverlay.style.display='none';
 
-  const elapsed = ((Date.now()-startTime)/1000).toFixed(1);
-  const accuracy = totalAttempts > 0 ? ((correctAttempts/totalAttempts)*100).toFixed(0) : 100;
-
-  // Animate vault away
-  let vaultT = 0;
-  const vaultAnim = setInterval(()=>{
-    vaultT += 0.02;
-    vault.position.y = -vaultT * 3;
-    vault.material.opacity = 1 - vaultT;
-    vault.material.transparent = true;
-    if(vaultT >= 1){
-      clearInterval(vaultAnim);
-      vault.visible = false;
-    }
-  }, 16);
-
-  // Return camera
-  tweenCamera(new THREE.Vector3(0,6,4), new THREE.Vector3(0,-0.5,0), 1, ()=>{
+  // Return camera first
+  tweenCamera(new THREE.Vector3(0, 7, 5), new THREE.Vector3(0, -0.5, 0), 0.8, ()=>{
+    // Brief dramatic pause
     setTimeout(()=>{
-      winScreen.style.display='flex';
-      winTime.textContent=`Total Time: ${elapsed}s`;
-      winAccuracy.textContent=`Accuracy: ${accuracy}% (${correctAttempts}/${totalAttempts})`;
-    }, 500);
+      plateDropState = {
+        startTime: performance.now(),
+        phase: 'tilt',
+        vy: 0,
+        rotX: 0,
+        rotZ: 0,
+      };
+    }, 400);
   });
 }
 
+function updatePlateDrop(){
+  if(!plateDropState) return;
+  const elapsed = (performance.now() - plateDropState.startTime) / 1000;
+
+  if(plateDropState.phase === 'tilt'){
+    // Tilt phase: plate starts to lean (0-0.6s)
+    if(elapsed < 0.6){
+      const t = elapsed / 0.6;
+      const et = t * t; // accelerating
+      vault.rotation.x = et * 0.15;
+      vault.rotation.z = et * 0.08;
+      // Small creaking movement
+      vault.position.y = -t * 0.05;
+      return;
+    }
+    plateDropState.phase = 'fall';
+    plateDropState.fallStart = performance.now();
+    plateDropState.vy = 0;
+  }
+
+  if(plateDropState.phase === 'fall'){
+    const fallElapsed = (performance.now() - plateDropState.fallStart) / 1000;
+    // Accelerating fall with rotation
+    const gravity = 18;
+    plateDropState.vy += gravity * (1/60);
+    vault.position.y -= plateDropState.vy * (1/60);
+    // Increasing rotation as it falls
+    vault.rotation.x += 0.04;
+    vault.rotation.z += 0.02;
+
+    if(vault.position.y < -8){
+      // Impact!
+      plateDropState.phase = 'impact';
+      playHeavyImpact();
+      triggerCameraShake(0.15, 0.6);
+      vault.visible = false;
+
+      // Show prize reveal
+      setTimeout(()=>{
+        currentState = State.PRIZE_REVEAL;
+        prizeClaim.style.display='flex';
+        plateDropState = null;
+      }, 300);
+    }
+  }
+}
+
+/* ═══════════ WIN / PRIZE CLAIM ═══════════ */
+function winGame(){
+  startPlateDrop();
+}
+
+// Prize claim click handler
+prizeClaim.addEventListener('click', ()=>{
+  if(currentState !== State.PRIZE_REVEAL) return;
+  currentState = State.WIN;
+  prizeClaim.style.display='none';
+  playClaimFanfare();
+
+  const elapsed = ((Date.now()-startTime)/1000).toFixed(1);
+  const accuracy = totalAttempts > 0 ? ((correctAttempts/totalAttempts)*100).toFixed(0) : 100;
+
+  // Brief delay then show stats
+  setTimeout(()=>{
+    winScreen.style.display='flex';
+    winTime.textContent=`${elapsed}s`;
+    winAccuracy.textContent=`${accuracy}% (${correctAttempts}/${totalAttempts})`;
+    winBolts.textContent=`${BOLT_COUNT} / ${BOLT_COUNT}`;
+  }, 400);
+});
+
 restartBtn.addEventListener('click', ()=>{
-  // Reset everything
   winScreen.style.display='none';
+  prizeClaim.style.display='none';
   vault.visible=true;
   vault.position.y=0;
+  vault.rotation.set(0,0,0);
   vault.material.opacity=1;
   vault.material.transparent=false;
   totalRemoved=0;
@@ -832,6 +1154,9 @@ restartBtn.addEventListener('click', ()=>{
   startTime=Date.now();
   selectedBolt=-1;
   currentState=State.OVERVIEW;
+  plateDropState=null;
+  wrenchAnim=null;
+  wrenchGroup.visible=false;
   boltData = generateBoltData(BOLT_COUNT);
   boltMeshes.forEach((g,i)=>{
     g.visible=true;
@@ -851,7 +1176,7 @@ restartBtn.addEventListener('click', ()=>{
   camera.lookAt(overviewLook);
 });
 
-/* ======== ANIMATION LOOP ======== */
+/* ═══════════ ANIMATION LOOP ═══════════ */
 const clock = new THREE.Clock();
 
 function animate(){
@@ -859,11 +1184,16 @@ function animate(){
   const dt = clock.getDelta();
   const now = Date.now();
 
-  // Update tween
   updateTween(dt);
-
-  // Update sparks
   updateSparks(dt);
+  updateWrenchAnimation();
+  updatePlateDrop();
+  updateCameraShake(dt);
+
+  // Apply camera shake
+  if(shakeTimer < shakeDuration){
+    camera.position.add(shakeOffset);
+  }
 
   // Rattle animation
   if(rattleTarget >= 0){
@@ -887,8 +1217,6 @@ function animate(){
       const tex = createCooldownTexture(progress, `${Math.ceil(remaining)}s`);
       boltMeshes[i].userData.head.material.map = tex;
       boltMeshes[i].userData.head.material.needsUpdate = true;
-
-      // If zoomed on this bolt and cooldown is about to end (within grace period)
       const COOLDOWN_GRACE_MS = 100;
       if(selectedBolt === i && bd.cooldownEnd <= now + COOLDOWN_GRACE_MS){
         bd.stripped = false;
@@ -899,7 +1227,6 @@ function animate(){
         boltMeshes[i].userData.head.material.needsUpdate = true;
       }
     } else if(bd.stripped && bd.cooldownEnd <= now && bd.active){
-      // Cooldown ended, restore bolt
       bd.stripped = false;
       const normalTex = createBoltTexture(bd.displayLabel, false);
       boltMeshes[i].userData.head.material.map = normalTex;
@@ -913,13 +1240,13 @@ function animate(){
     }
   });
 
-  // Update timer display for selected bolt
+  // Timer display
   if(selectedBolt >= 0){
     const bd = boltData[selectedBolt];
     if(bd.cooldownEnd > now){
-      timerDisplay.textContent = `⏱ Cooldown: ${Math.ceil((bd.cooldownEnd-now)/1000)}s`;
+      timerDisplay.textContent = `\u23F1 Cooldown: ${Math.ceil((bd.cooldownEnd-now)/1000)}s`;
     } else if(bd.lockEnd > now){
-      timerDisplay.textContent = `🔒 Locked: ${Math.ceil((bd.lockEnd-now)/1000)}s`;
+      timerDisplay.textContent = `\u{1F512} Locked: ${Math.ceil((bd.lockEnd-now)/1000)}s`;
     } else {
       timerDisplay.textContent = '';
     }
@@ -927,7 +1254,7 @@ function animate(){
     timerDisplay.textContent = '';
   }
 
-  // Show/hide manual icon
+  // Manual icon
   if(selectedBolt >= 0 && boltData[selectedBolt].cooldownEnd > now && boltData[selectedBolt].active){
     manualIcon.style.display='block';
   } else if(currentState !== State.INPUT || selectedBolt < 0){
@@ -935,12 +1262,12 @@ function animate(){
   }
 
   // Total time
-  if(currentState !== State.WIN){
+  if(currentState !== State.WIN && currentState !== State.PRIZE_REVEAL){
     const elapsed = ((now - startTime)/1000).toFixed(0);
     totalTimeEl.textContent = `Total Time: ${elapsed}s`;
   }
 
-  // Subtle bolt hover glow in overview
+  // Bolt hover glow
   if(currentState === State.OVERVIEW){
     boltMeshes.forEach((g,i)=>{
       if(boltData[i].active && !boltData[i].stripped){
@@ -955,7 +1282,7 @@ function animate(){
 
 animate();
 
-/* ======== RESIZE ======== */
+/* ═══════════ RESIZE ═══════════ */
 window.addEventListener('resize', ()=>{
   camera.aspect = window.innerWidth/window.innerHeight;
   camera.updateProjectionMatrix();
