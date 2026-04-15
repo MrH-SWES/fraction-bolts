@@ -157,8 +157,6 @@ canvas{display:block;}
 <div id="teacher-landing">
   <div class="landing-brand">Math Things<span class="dot"></span></div>
   <div class="landing-title">Fraction Bolts</div>
-  <div class="landing-subtitle">Making math make sense</div>
-  <div class="landing-card">
     <h2>🎁 Set Up a Prize</h2>
     <div class="card-sub">Enter a prize for your students. They'll need to solve fraction problems to unlock it!</div>
     <label for="landing-prize-input">Prize text or image URL</label>
@@ -176,7 +174,7 @@ canvas{display:block;}
       <button id="copy-link-btn">Copy Link</button>
     </div>
   </div>
-  <div class="landing-motto">Making math make sense</div>
+  <div class="landing-motto">MATH, IN YOUR HANDS</div>
 </div>
 
 <div id="prize-preview">
@@ -1125,9 +1123,12 @@ function onWrenchAnimComplete(boltIdx, type){
     }, 5000);
     socketUI.style.display='flex';
     backBtn.style.display='block';
+    currentState = State.INPUT; // CRITICAL: Restores input state so the Back button works
   } else if(type === 'tooLarge'){
-    showMessage('\u2716 Socket too large \u2014 bolt head stripped! Recalibrating...', 5000);
+    showMessage('\u2716 Socket too large \u2014 bolt head stripped! Try another bolt.', 5000);
     manualIcon.style.display='block';
+    backBtn.style.display='block'; // CRITICAL: Un-hides the Back button to let them escape
+    currentState = State.INPUT;    // CRITICAL: Restores input state so the Back button works
     hideSocketUI();
   }
 }
