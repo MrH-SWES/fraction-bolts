@@ -38,7 +38,22 @@ canvas{display:block;}
 #manual-icon{position:absolute;bottom:12px;right:12px;display:none;pointer-events:auto;cursor:pointer;padding:8px 14px;font-size:12px;font-weight:600;background:rgba(40,35,10,.92);border:1px solid rgba(255,215,0,.4);border-radius:6px;color:#FFD700;transition:all .15s;}
 #manual-icon:hover{background:rgba(60,50,10,.95);border-color:rgba(255,215,0,.7);box-shadow:0 0 8px rgba(255,215,0,.15);}
 
-#total-time{position:absolute;top:12px;right:12px;font-size:12px;font-weight:300;color:rgba(255,159,10,.5);pointer-events:none;letter-spacing:1px;text-transform:uppercase;}
+#total-time{position:absolute;top:44px;right:12px;font-size:12px;font-weight:300;color:rgba(255,159,10,.5);pointer-events:none;letter-spacing:1px;text-transform:uppercase;}
+
+/* Teacher Panel */
+#teacher-panel{position:absolute;top:10px;right:10px;z-index:80;pointer-events:auto;}
+#teacher-toggle{padding:6px 14px;font-size:12px;font-weight:700;font-family:'Lexend',sans-serif;background:rgba(30,22,10,.92);color:#FF9F0A;border:1px solid rgba(255,159,10,.4);border-radius:6px;cursor:pointer;transition:all .15s;letter-spacing:0.02em;}
+#teacher-toggle:hover{background:rgba(50,38,15,.95);border-color:rgba(255,159,10,.7);box-shadow:0 0 8px rgba(255,159,10,.2);}
+#teacher-toggle.open{border-color:rgba(255,159,10,.7);background:rgba(50,38,15,.95);}
+#teacher-form{display:none;margin-top:8px;background:rgba(10,10,18,.94);border:1px solid rgba(255,159,10,.35);border-radius:8px;padding:12px;backdrop-filter:blur(6px);box-shadow:0 0 12px rgba(255,159,10,.08);min-width:240px;}
+#teacher-form.open{display:flex;flex-direction:column;gap:8px;}
+#teacher-form label{font-size:11px;font-weight:600;color:#aaa;letter-spacing:0.04em;text-transform:uppercase;}
+#prize-input{padding:8px 10px;font-size:13px;font-weight:400;font-family:'Lexend',sans-serif;background:#1a1a22;color:#eee;border:1px solid rgba(255,159,10,.3);border-radius:5px;outline:none;transition:border-color .15s;}
+#prize-input:focus{border-color:rgba(255,159,10,.7);}
+#prize-input::placeholder{color:#666;}
+#set-prize-btn{padding:8px 16px;font-size:13px;font-weight:700;font-family:'Lexend',sans-serif;background:rgba(40,30,8,.9);color:#FFD700;border:1px solid rgba(255,215,0,.4);border-radius:5px;cursor:pointer;transition:all .15s;}
+#set-prize-btn:hover{background:rgba(60,45,10,.95);border-color:rgba(255,215,0,.7);box-shadow:0 0 8px rgba(255,215,0,.15);}
+#prize-status{font-size:11px;font-weight:400;color:#4CBB17;min-height:16px;}
 
 #brand-mark{position:absolute;bottom:12px;left:12px;pointer-events:none;font-size:14px;font-weight:900;letter-spacing:-0.05em;color:#4CBB17;display:inline-flex;align-items:baseline;}
 #brand-mark .dot{width:0.22em;height:0.22em;margin-left:0.04em;margin-bottom:0.08em;border-radius:50%;display:inline-block;background:linear-gradient(135deg,#efefef,#a8a8a8,#e0e0e0);box-shadow:inset 1px 1px 2px rgba(255,255,255,0.8),0 2px 5px rgba(0,0,0,0.22);}
@@ -77,6 +92,15 @@ canvas{display:block;}
   <canvas id="manual-canvas" width="360" height="180"></canvas>
   <p id="manual-text" style="font-size:12px;font-weight:400;color:#bbb;margin-top:6px;"></p>
   <button class="close-btn" id="manual-close">Close Manual</button>
+</div>
+<div id="teacher-panel">
+  <button id="teacher-toggle">&#9881; Teacher Panel</button>
+  <div id="teacher-form">
+    <label for="prize-input">Image URL or Prize Text</label>
+    <input type="text" id="prize-input" placeholder="Paste URL or type prize text…" />
+    <button id="set-prize-btn">Set Prize</button>
+    <div id="prize-status"></div>
+  </div>
 </div>
 <div id="total-time">Total Time: 0s</div>
 <div id="brand-mark">Math Things<span class="dot"></span></div>
@@ -882,6 +906,149 @@ const winTime = document.getElementById('win-time');
 const winAccuracy = document.getElementById('win-accuracy');
 const winBolts = document.getElementById('win-bolts');
 const restartBtn = document.getElementById('restart-btn');
+const teacherToggle = document.getElementById('teacher-toggle');
+const teacherForm = document.getElementById('teacher-form');
+const prizeInput = document.getElementById('prize-input');
+const setPrizeBtn = document.getElementById('set-prize-btn');
+const prizeStatus = document.getElementById('prize-status');
+
+/* ═══════════ TEACHER PANEL ═══════════ */
+teacherToggle.addEventListener('click', ()=>{
+  const open = teacherForm.classList.toggle('open');
+  teacherToggle.classList.toggle('open', open);
+});
+
+function isURL(str){ return /^https?:\/\//i.test(str.trim()); }
+
+function generatePrizeTextCanvas(text){
+  const c = document.createElement('canvas');
+  c.width = 512; c.height = 512;
+  const ctx = c.getContext('2d');
+
+  // Background radial gradient (Gold → Orange → dark)
+  const grad = ctx.createRadialGradient(256, 256, 40, 256, 256, 280);
+  grad.addColorStop(0, '#FFD700');
+  grad.addColorStop(0.45, '#FF9F0A');
+  grad.addColorStop(1, '#3a1a00');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 512, 512);
+
+  // Auto-fit text: split into lines, scale font to fit
+  const padding = 40;
+  const maxW = 512 - padding * 2;
+  const maxH = 512 - padding * 2;
+  const words = text.split(/\s+/);
+
+  function layoutText(fontSize){
+    ctx.font = `900 ${fontSize}px Lexend, sans-serif`;
+    const lines = [];
+    let line = '';
+    for(const w of words){
+      const test = line ? line + ' ' + w : w;
+      if(ctx.measureText(test).width > maxW && line){
+        lines.push(line);
+        line = w;
+      } else {
+        line = test;
+      }
+    }
+    if(line) lines.push(line);
+    const lineH = fontSize * 1.2;
+    const totalH = lines.length * lineH;
+    return { lines, lineH, totalH, fontSize };
+  }
+
+  let fontSize = 72;
+  let layout = layoutText(fontSize);
+  while((layout.totalH > maxH || layout.lines.some(l => ctx.measureText(l).width > maxW)) && fontSize > 12){
+    fontSize -= 2;
+    layout = layoutText(fontSize);
+  }
+
+  // Draw text with neon glow + drop shadow
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = `900 ${layout.fontSize}px Lexend, sans-serif`;
+
+  const startY = 256 - (layout.totalH / 2) + (layout.lineH / 2);
+
+  // Drop shadow
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.8)';
+  ctx.shadowBlur = 16;
+  ctx.shadowOffsetX = 4;
+  ctx.shadowOffsetY = 4;
+  ctx.fillStyle = '#000';
+  layout.lines.forEach((l, i) => {
+    ctx.fillText(l, 256, startY + i * layout.lineH);
+  });
+  ctx.restore();
+
+  // Neon outer glow
+  ctx.save();
+  ctx.shadowColor = '#FFD700';
+  ctx.shadowBlur = 24;
+  ctx.fillStyle = '#FFD700';
+  layout.lines.forEach((l, i) => {
+    ctx.fillText(l, 256, startY + i * layout.lineH);
+  });
+  ctx.restore();
+
+  // Inner bright text
+  ctx.save();
+  ctx.shadowColor = '#fff';
+  ctx.shadowBlur = 8;
+  const textGrad = ctx.createLinearGradient(0, startY - layout.lineH, 0, startY + layout.totalH);
+  textGrad.addColorStop(0, '#fffbe6');
+  textGrad.addColorStop(0.5, '#FFD700');
+  textGrad.addColorStop(1, '#FF9F0A');
+  ctx.fillStyle = textGrad;
+  layout.lines.forEach((l, i) => {
+    ctx.fillText(l, 256, startY + i * layout.lineH);
+  });
+  ctx.restore();
+
+  return c;
+}
+
+function setPrize(value){
+  if(!value || !value.trim()){
+    prizeStatus.textContent = '';
+    return;
+  }
+  value = value.trim();
+
+  if(isURL(value)){
+    prizeStatus.textContent = 'Loading image…';
+    prizeStatus.style.color = '#FF9F0A';
+    const loader = new THREE.TextureLoader();
+    loader.setCrossOrigin('anonymous');
+    loader.load(
+      value,
+      (tex) => {
+        prizeMat.map = tex;
+        prizeMat.needsUpdate = true;
+        prizeStatus.textContent = '✓ Image loaded!';
+        prizeStatus.style.color = '#4CBB17';
+      },
+      undefined,
+      () => {
+        prizeStatus.textContent = '✗ Failed to load image.';
+        prizeStatus.style.color = '#ff4444';
+      }
+    );
+  } else {
+    const canvas = generatePrizeTextCanvas(value);
+    const tex = new THREE.CanvasTexture(canvas);
+    prizeMat.map = tex;
+    prizeMat.needsUpdate = true;
+    prizeStatus.textContent = '✓ Prize text set!';
+    prizeStatus.style.color = '#4CBB17';
+  }
+}
+
+setPrizeBtn.addEventListener('click', ()=>{ setPrize(prizeInput.value); });
+prizeInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') setPrize(prizeInput.value); });
 
 function updateHUD(){
   progressText.textContent = `Bolts Removed: ${totalRemoved} / ${BOLT_COUNT}`;
