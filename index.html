@@ -1,1 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Precision Vault</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{overflow:hidden;background:#111;font-family:'Courier New',monospace;color:#ccc;}
+canvas{display:block;}
+#hud{position:absolute;top:0;left:0;width:100%;pointer-events:none;display:flex;flex-direction:column;align-items:center;padding:12px;}
+#progress-bar-container{width:300px;height:24px;border:2px solid #555;border-radius:4px;background:#222;overflow:hidden;margin-bottom:8px;}
+#progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#0f0,#0a0);transition:width .4s;}
+#progress-text{font-size:13px;color:#aaa;margin-bottom:4px;}
+#message{font-size:16px;color:#ff4;text-align:center;min-height:24px;text-shadow:0 0 6px rgba(255,255,0,.5);}
+#timer-display{font-size:14px;color:#f80;margin-top:4px;}
+#socket-ui{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);display:none;flex-direction:column;align-items:center;gap:10px;pointer-events:auto;background:rgba(0,0,0,.85);border:2px solid #666;border-radius:8px;padding:20px;min-width:320px;}
+#socket-ui h3{color:#ddd;font-size:15px;margin-bottom:4px;}
+#socket-ui .subtitle{color:#aaa;font-size:13px;margin-bottom:10px;}
+.socket-btn{padding:12px 24px;font-size:18px;font-family:'Courier New',monospace;background:#333;color:#eee;border:2px solid #666;border-radius:6px;cursor:pointer;transition:all .15s;min-width:200px;}
+.socket-btn:hover{background:#555;border-color:#999;}
+.socket-btn:active{background:#777;}
+.socket-btn:disabled{opacity:.4;cursor:not-allowed;}
+#back-btn{position:absolute;top:12px;left:12px;padding:8px 16px;font-size:14px;font-family:'Courier New',monospace;background:#333;color:#ccc;border:1px solid #666;border-radius:4px;cursor:pointer;display:none;pointer-events:auto;}
+#back-btn:hover{background:#555;}
+#manual-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:none;background:rgba(10,10,20,.95);border:2px solid #888;border-radius:10px;padding:24px;pointer-events:auto;max-width:400px;text-align:center;}
+#manual-overlay h3{color:#ff0;margin-bottom:12px;font-size:16px;}
+#manual-overlay canvas{border:1px solid #555;border-radius:4px;margin:8px auto;display:block;}
+#manual-overlay .close-btn{margin-top:12px;padding:6px 20px;font-size:14px;font-family:'Courier New',monospace;background:#444;color:#ddd;border:1px solid #777;border-radius:4px;cursor:pointer;}
+#manual-icon{position:absolute;bottom:12px;right:12px;display:none;pointer-events:auto;cursor:pointer;padding:8px 14px;font-size:13px;background:rgba(60,60,0,.9);border:1px solid #aa0;border-radius:4px;color:#ff0;}
+#manual-icon:hover{background:rgba(80,80,0,.95);}
+#total-time{position:absolute;top:12px;right:12px;font-size:13px;color:#888;pointer-events:none;}
+#win-screen{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.8);pointer-events:auto;z-index:100;}
+#win-screen h1{color:#0f0;font-size:36px;text-shadow:0 0 20px #0f0;margin-bottom:16px;}
+#win-screen p{color:#ccc;font-size:18px;margin-bottom:8px;}
+#win-screen .restart-btn{margin-top:20px;padding:12px 32px;font-size:18px;font-family:'Courier New',monospace;background:#333;color:#0f0;border:2px solid #0f0;border-radius:6px;cursor:pointer;}
+</style>
+</head>
+<body>
+<div id="hud">
+  <div id="progress-text">Bolts Removed: 0 / 0</div>
+  <div id="progress-bar-container"><div id="progress-bar"></div></div>
+  <div id="message"></div>
+  <div id="timer-display"></div>
+</div>
+<div id="socket-ui">
+  <h3 id="socket-title">Select Socket Size</h3>
+  <div class="subtitle" id="socket-subtitle"></div>
+  <div id="socket-options"></div>
+</div>
+<button id="back-btn">← Back</button>
+<div id="manual-icon">📖 Consult Manual</div>
+<div id="manual-overlay">
+  <h3>Fraction Equivalence Manual</h3>
+  <canvas id="manual-canvas" width="360" height="180"></canvas>
+  <p id="manual-text" style="font-size:13px;color:#bbb;margin-top:6px;"></p>
+  <button class="close-btn" id="manual-close">Close Manual</button>
+</div>
+<div id="total-time">Total Time: 0s</div>
+<div id="win-screen">
+  <h1>🔓 VAULT OPENED</h1>
+  <p id="win-time"></p>
+  <p id="win-accuracy"></p>
+  <button class="restart-btn" id="restart-btn">🔄 New Vault</button>
+</div>
 
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* ======== AUDIO SYNTHESIS ======== */
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+function ensureAudio(){ if(!audioCtx) audioCtx = new AudioCtx(); }
+
+function playSuccess(){
+  ensureAudio();
+  const d=.35, ctx=audioCtx, now=ctx.currentTime;
+  // impact wrench burst
+  for(let i=0;i<6;i++){
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.type='square'; o.frequency.value=80+Math.random()*120;
+    g.gain.setValueAtTime(.18,now+i*.04);
+    g.gain.exponentialRampToValueAtTime(.001,now+i*.04+.06);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(now+i*.04); o.stop(now+i*.04+.08);
+  }
+  // low thud
+  const o2=ctx.createOscillator(),g2=ctx.createGain();
+  o2.type='sine'; o2.frequency.value=55;
+  g2.gain.setValueAtTime(.3,now+.25); g2.gain.exponentialRampToValueAtTime(.001,now+.6);
+  o2.connect(g2); g2.connect(ctx.destination);
+  o2.start(now+.25); o2.stop(now+.7);
+}
+
+function playSmallFail(){
+  ensureAudio();
+  const ctx=audioCtx, now=ctx.currentTime;
+  // metallic tink
+  const o=ctx.createOscillator(),g=ctx.createGain();
+  o.type='triangle'; o.frequency.value=2200;
+  o.frequency.exponentialRampToValueAtTime(800,now+.15);
+  g.gain.setValueAtTime(.2,now); g.gain.exponentialRampToValueAtTime(.001,now+.2);
+  o.connect(g); g.connect(ctx.destination);
+  o.start(now); o.stop(now+.25);
+}
+
+function playLargeFail(){
+  ensureAudio();
+  const ctx=audioCtx, now=ctx.currentTime;
+  // grinding
+  const buf=ctx.createBuffer(1,ctx.sampleRate*.6,ctx.sampleRate);
+  const data=buf.getChannelData(0);
+  for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*.3*Math.max(0,1-i/data.length);
+  const src=ctx.createBufferSource(); src.buffer=buf;
+  const flt=ctx.createBiquadFilter(); flt.type='bandpass'; flt.frequency.value=600; flt.Q.value=2;
+  src.connect(flt); flt.connect(ctx.destination);
+  src.start(now); src.stop(now+.6);
+  // power-down hum
+  const o=ctx.createOscillator(),g=ctx.createGain();
+  o.type='sawtooth'; o.frequency.setValueAtTime(200,now+.5);
+  o.frequency.exponentialRampToValueAtTime(30,now+1.5);
+  g.gain.setValueAtTime(.15,now+.5); g.gain.exponentialRampToValueAtTime(.001,now+1.5);
+  o.connect(g); g.connect(ctx.destination);
+  o.start(now+.5); o.stop(now+1.6);
+}
+
+/* ======== TEXTURE GENERATORS ======== */
+function createSteelTexture(w,h){
+  const c=document.createElement('canvas'); c.width=w; c.height=h;
+  const ctx=c.getContext('2d');
+  // base
+  ctx.fillStyle='#556';
+  ctx.fillRect(0,0,w,h);
+  // scratches
+  for(let i=0;i<120;i++){
+    ctx.strokeStyle=`rgba(${150+Math.random()*60},${150+Math.random()*60},${160+Math.random()*60},${.1+Math.random()*.15})`;
+    ctx.lineWidth=.5+Math.random()*1.5;
+    ctx.beginPath();
+    const x=Math.random()*w, y=Math.random()*h;
+    ctx.moveTo(x,y);
+    ctx.lineTo(x+Math.random()*80-40, y+Math.random()*80-40);
+    ctx.stroke();
+  }
+  // grain noise
+  const img=ctx.getImageData(0,0,w,h);
+  for(let i=0;i<img.data.length;i+=4){
+    const n=(Math.random()-.5)*20;
+    img.data[i]+=n; img.data[i+1]+=n; img.data[i+2]+=n;
+  }
+  ctx.putImageData(img,0,0);
+  return new THREE.CanvasTexture(c);
+}
+
+function createBoltTexture(label, stripped){
+  const s=128, c=document.createElement('canvas'); c.width=s; c.height=s;
+  const ctx=c.getContext('2d');
+  if(stripped){
+    ctx.fillStyle='#654';
+    ctx.fillRect(0,0,s,s);
+    for(let i=0;i<40;i++){
+      ctx.strokeStyle=`rgba(200,120,60,${.15+Math.random()*.2})`;
+      ctx.lineWidth=1+Math.random()*3;
+      ctx.beginPath();
+      ctx.arc(s/2,s/2,10+Math.random()*40,Math.random()*Math.PI*2,Math.random()*Math.PI*2);
+      ctx.stroke();
+    }
+  } else {
+    ctx.fillStyle='#889';
+    ctx.fillRect(0,0,s,s);
+    // hex pattern subtle
+    for(let i=0;i<20;i++){
+      ctx.strokeStyle=`rgba(120,120,140,${.08+Math.random()*.1})`;
+      ctx.lineWidth=.5;
+      ctx.beginPath();
+      ctx.moveTo(Math.random()*s,Math.random()*s);
+      ctx.lineTo(Math.random()*s,Math.random()*s);
+      ctx.stroke();
+    }
+  }
+  // label
+  ctx.fillStyle=stripped?'#a66':'#dde';
+  ctx.font='bold 22px Courier New';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(label, s/2, s/2);
+  return new THREE.CanvasTexture(c);
+}
+
+function createCooldownTexture(progress, label){
+  const s=128, c=document.createElement('canvas'); c.width=s; c.height=s;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#222';
+  ctx.fillRect(0,0,s,s);
+  // circular progress
+  const cx=s/2, cy=s/2, r=50;
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.strokeStyle='#333'; ctx.lineWidth=8; ctx.stroke();
+  if(progress>0){
+    ctx.beginPath();
+    ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+progress*Math.PI*2);
+    ctx.strokeStyle='#f80'; ctx.lineWidth=8; ctx.stroke();
+  }
+  // time text
+  ctx.fillStyle='#f80'; ctx.font='bold 18px Courier New';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(label,cx,cy);
+  return new THREE.CanvasTexture(c);
+}
+
+function createPrizeTexture(){
+  const c=document.createElement('canvas'); c.width=512; c.height=512;
+  const ctx=c.getContext('2d');
+  const grad=ctx.createRadialGradient(256,256,40,256,256,250);
+  grad.addColorStop(0,'#ff0'); grad.addColorStop(.5,'#f80'); grad.addColorStop(1,'#620');
+  ctx.fillStyle=grad; ctx.fillRect(0,0,512,512);
+  ctx.fillStyle='#fff'; ctx.font='bold 48px Courier New';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('🏆 PRIZE 🏆',256,200);
+  ctx.font='32px Courier New';
+  ctx.fillText('VAULT',256,270);
+  ctx.fillText('UNLOCKED!',256,310);
+  ctx.font='24px Courier New';
+  ctx.fillStyle='#ffa';
+  ctx.fillText('Master of Fractions',256,380);
+  return new THREE.CanvasTexture(c);
+}
+
+/* ======== MATH ENGINE ======== */
+const denominations = [8, 16, 32, 64];
+const boltSizes = [
+  {n:1,d:2},{n:1,d:4},{n:3,d:4},
+  {n:1,d:8},{n:3,d:8},{n:5,d:8},{n:7,d:8}
+];
+
+function generateBoltData(count){
+  const bolts=[];
+  const usedIndices = new Set();
+  for(let i=0;i<count;i++){
+    let idx;
+    do { idx = Math.floor(Math.random()*boltSizes.length); }
+    while(usedIndices.has(idx) && usedIndices.size < boltSizes.length);
+    usedIndices.add(idx);
+    const target = boltSizes[idx];
+    const displaySet = denominations.filter(d => d > target.d && d % target.d === 0);
+    if(displaySet.length===0) { i--; usedIndices.delete(idx); continue; }
+    const sessionDenominator = displaySet[Math.floor(Math.random()*displaySet.length)];
+    const correctNumerator = target.n * (sessionDenominator / target.d);
+
+    // Generate options
+    const optSet = new Set();
+    optSet.add(correctNumerator);
+    const offsets = [-2,-1,1,2];
+    while(optSet.size < 4){
+      const off = offsets[Math.floor(Math.random()*offsets.length)];
+      const v = correctNumerator + off;
+      if(v > 0 && v < sessionDenominator) optSet.add(v);
+    }
+    // If still not enough, add more
+    let fallback = 1;
+    while(optSet.size < 3){
+      if(fallback !== correctNumerator && fallback > 0 && fallback < sessionDenominator) optSet.add(fallback);
+      fallback++;
+    }
+    const options = Array.from(optSet).sort((a,b)=>a-b);
+
+    bolts.push({
+      targetFraction: {n: target.n, d: target.d},
+      displayLabel: `${target.n}/${target.d} in`,
+      socketDenominator: sessionDenominator,
+      correctNumerator,
+      options,
+      active: true,
+      stripped: false,
+      cooldownEnd: 0,
+      lockEnd: 0,
+    });
+  }
+  return bolts;
+}
+
+/* ======== THREE.JS SCENE ======== */
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x111115);
+scene.fog = new THREE.Fog(0x111115, 12, 25);
+
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 100);
+camera.position.set(0, 8, 6);
+camera.lookAt(0,0,0);
+
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+document.body.appendChild(renderer.domElement);
+
+// Lighting
+const ambientLight = new THREE.AmbientLight(0x334455, 0.6);
+scene.add(ambientLight);
+
+const dirLight = new THREE.DirectionalLight(0xffeedd, 1.4);
+dirLight.position.set(4, 10, 4);
+dirLight.castShadow = true;
+dirLight.shadow.mapSize.set(1024,1024);
+dirLight.shadow.camera.near=1; dirLight.shadow.camera.far=20;
+dirLight.shadow.camera.left=-6; dirLight.shadow.camera.right=6;
+dirLight.shadow.camera.top=6; dirLight.shadow.camera.bottom=-6;
+scene.add(dirLight);
+
+const pointLight = new THREE.PointLight(0x88aaff, 0.4, 15);
+pointLight.position.set(-3, 5, -2);
+scene.add(pointLight);
+
+// Floor
+const floorGeo = new THREE.PlaneGeometry(20,20);
+const floorMat = new THREE.MeshStandardMaterial({color:0x222225, roughness:0.9, metalness:0.1});
+const floor = new THREE.Mesh(floorGeo, floorMat);
+floor.rotation.x=-Math.PI/2; floor.position.y=-0.5; floor.receiveShadow=true;
+scene.add(floor);
+
+// Vault plate
+const vaultGeo = new THREE.BoxGeometry(5, 0.15, 5);
+const steelTex = createSteelTexture(512,512);
+const vaultMat = new THREE.MeshStandardMaterial({
+  map: steelTex, metalness: 0.85, roughness: 0.3, color: 0x778899
+});
+const vault = new THREE.Mesh(vaultGeo, vaultMat);
+vault.position.y = 0; vault.castShadow = true; vault.receiveShadow = true;
+scene.add(vault);
+
+// Prize image behind vault
+const prizeTex = createPrizeTexture();
+const prizeGeo = new THREE.PlaneGeometry(4, 4);
+const prizeMat = new THREE.MeshBasicMaterial({map: prizeTex, transparent:true, opacity:0.95});
+const prize = new THREE.Mesh(prizeGeo, prizeMat);
+prize.rotation.x = -Math.PI/2;
+prize.position.y = -0.09;
+scene.add(prize);
+
+/* ======== BOLT MESHES ======== */
+const BOLT_COUNT = 8;
+let boltData = generateBoltData(BOLT_COUNT);
+
+function createHexBoltGeometry(){
+  const shape = new THREE.Shape();
+  const sides = 6, radius = 0.22;
+  for(let i=0; i<sides; i++){
+    const angle = (i/sides)*Math.PI*2 - Math.PI/6;
+    const x = Math.cos(angle)*radius, y = Math.sin(angle)*radius;
+    if(i===0) shape.moveTo(x,y); else shape.lineTo(x,y);
+  }
+  shape.closePath();
+  const extrudeSettings = {depth: 0.18, bevelEnabled: true, bevelThickness:0.02, bevelSize:0.02, bevelSegments:2};
+  return new THREE.ExtrudeGeometry(shape, extrudeSettings);
+}
+
+function createBoltShaft(){
+  return new THREE.CylinderGeometry(0.08, 0.08, 0.5, 12);
+}
+
+const boltMeshes = [];
+const boltGroup = new THREE.Group();
+
+const boltPositions = [];
+const plateRadius = 2.1;
+for(let i=0;i<BOLT_COUNT;i++){
+  const angle = (i/BOLT_COUNT)*Math.PI*2;
+  boltPositions.push({x: Math.cos(angle)*plateRadius, z: Math.sin(angle)*plateRadius});
+}
+
+boltData.forEach((bd, i)=>{
+  const group = new THREE.Group();
+  // Head
+  const headGeo = createHexBoltGeometry();
+  const tex = createBoltTexture(bd.displayLabel, false);
+  const headMat = new THREE.MeshStandardMaterial({
+    map: tex, metalness: 0.9, roughness: 0.25, color: 0xaabbcc
+  });
+  const head = new THREE.Mesh(headGeo, headMat);
+  head.rotation.x = -Math.PI/2;
+  head.position.y = 0.08;
+  head.castShadow = true;
+  group.add(head);
+
+  // Shaft
+  const shaftGeo = createBoltShaft();
+  const shaftMat = new THREE.MeshStandardMaterial({metalness:0.8, roughness:0.35, color:0x889});
+  const shaft = new THREE.Mesh(shaftGeo, shaftMat);
+  shaft.position.y = -0.17;
+  shaft.castShadow = true;
+  group.add(shaft);
+
+  group.position.set(boltPositions[i].x, 0.08, boltPositions[i].z);
+  group.userData = {index: i, head, headMat, originalTex: tex};
+  boltMeshes.push(group);
+  boltGroup.add(group);
+});
+scene.add(boltGroup);
+
+/* ======== PARTICLE SYSTEM ======== */
+const SPARK_COUNT = 60;
+const sparkGeo = new THREE.BufferGeometry();
+const sparkPositions = new Float32Array(SPARK_COUNT*3);
+const sparkVelocities = [];
+const sparkLifetimes = new Float32Array(SPARK_COUNT);
+sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPositions, 3));
+const sparkMat = new THREE.PointsMaterial({color:0xff8800, size:0.06, transparent:true, opacity:0.9, blending:THREE.AdditiveBlending, depthWrite:false});
+const sparks = new THREE.Points(sparkGeo, sparkMat);
+sparks.visible = false;
+scene.add(sparks);
+let sparkActive = false;
+let sparkTimer = 0;
+
+function triggerSparks(pos){
+  sparkActive = true;
+  sparkTimer = 0;
+  sparks.visible = true;
+  sparks.position.copy(pos);
+  for(let i=0;i<SPARK_COUNT;i++){
+    sparkPositions[i*3]=0; sparkPositions[i*3+1]=0; sparkPositions[i*3+2]=0;
+    sparkVelocities[i] = new THREE.Vector3(
+      (Math.random()-.5)*.15,
+      Math.random()*.1+.05,
+      (Math.random()-.5)*.15
+    );
+    sparkLifetimes[i]=Math.random()*.5+.3;
+  }
+  sparkGeo.attributes.position.needsUpdate=true;
+}
+
+function updateSparks(dt){
+  if(!sparkActive) return;
+  sparkTimer+=dt;
+  let alive=false;
+  for(let i=0;i<SPARK_COUNT;i++){
+    sparkLifetimes[i]-=dt;
+    if(sparkLifetimes[i]>0){
+      alive=true;
+      sparkPositions[i*3]+=sparkVelocities[i].x*dt*4;
+      sparkPositions[i*3+1]+=sparkVelocities[i].y*dt*4;
+      sparkPositions[i*3+2]+=sparkVelocities[i].z*dt*4;
+      sparkVelocities[i].y-=dt*0.3;
+    } else {
+      sparkPositions[i*3+1]=-999;
+    }
+  }
+  sparkGeo.attributes.position.needsUpdate=true;
+  if(!alive){ sparkActive=false; sparks.visible=false; }
+}
+
+/* ======== CAMERA TWEEN ======== */
+const overviewPos = new THREE.Vector3(0, 8, 6);
+const overviewLook = new THREE.Vector3(0, 0, 0);
+let tweening = false;
+let tweenStart = {}, tweenEnd = {}, tweenDuration = 0, tweenElapsed = 0;
+let tweenCallback = null;
+
+function easeInOut(t){ return t<.5 ? 2*t*t : -1+(4-2*t)*t; }
+
+function tweenCamera(targetPos, targetLook, duration, cb){
+  tweening = true;
+  tweenStart = {
+    pos: camera.position.clone(),
+    look: new THREE.Vector3()
+  };
+  // Get current lookAt from camera direction
+  const dir = new THREE.Vector3();
+  camera.getWorldDirection(dir);
+  tweenStart.look.copy(camera.position).add(dir.multiplyScalar(5));
+
+  tweenEnd = {pos: targetPos.clone(), look: targetLook.clone()};
+  tweenDuration = duration;
+  tweenElapsed = 0;
+  tweenCallback = cb || null;
+}
+
+function updateTween(dt){
+  if(!tweening) return;
+  tweenElapsed += dt;
+  let t = Math.min(tweenElapsed / tweenDuration, 1);
+  t = easeInOut(t);
+
+  camera.position.lerpVectors(tweenStart.pos, tweenEnd.pos, t);
+  const look = new THREE.Vector3().lerpVectors(tweenStart.look, tweenEnd.look, t);
+  camera.lookAt(look);
+
+  if(tweenElapsed >= tweenDuration){
+    tweening = false;
+    camera.position.copy(tweenEnd.pos);
+    camera.lookAt(tweenEnd.look);
+    if(tweenCallback) tweenCallback();
+  }
+}
+
+/* ======== STATE MACHINE ======== */
+const State = {OVERVIEW:'overview', ZOOMING:'zooming', INPUT:'input', EVALUATING:'evaluating', COOLDOWN:'cooldown', WIN:'win'};
+let currentState = State.OVERVIEW;
+let selectedBolt = -1;
+let totalRemoved = 0;
+let startTime = Date.now();
+let totalAttempts = 0;
+let correctAttempts = 0;
+
+// Rattle animation
+let rattleTarget = -1, rattleTimer = 0;
+
+// DOM refs
+const progressBar = document.getElementById('progress-bar');
+const progressText = document.getElementById('progress-text');
+const messageEl = document.getElementById('message');
+const timerDisplay = document.getElementById('timer-display');
+const socketUI = document.getElementById('socket-ui');
+const socketTitle = document.getElementById('socket-title');
+const socketSubtitle = document.getElementById('socket-subtitle');
+const socketOptions = document.getElementById('socket-options');
+const backBtn = document.getElementById('back-btn');
+const manualIcon = document.getElementById('manual-icon');
+const manualOverlay = document.getElementById('manual-overlay');
+const manualCanvas = document.getElementById('manual-canvas');
+const manualText = document.getElementById('manual-text');
+const manualClose = document.getElementById('manual-close');
+const totalTimeEl = document.getElementById('total-time');
+const winScreen = document.getElementById('win-screen');
+const winTime = document.getElementById('win-time');
+const winAccuracy = document.getElementById('win-accuracy');
+const restartBtn = document.getElementById('restart-btn');
+
+function updateHUD(){
+  progressText.textContent = `Bolts Removed: ${totalRemoved} / ${BOLT_COUNT}`;
+  progressBar.style.width = `${(totalRemoved/BOLT_COUNT)*100}%`;
+}
+updateHUD();
+
+function showMessage(msg, duration){
+  messageEl.textContent = msg;
+  if(duration) setTimeout(()=>{ if(messageEl.textContent===msg) messageEl.textContent=''; }, duration);
+}
+
+function showSocketUI(boltIdx){
+  const bd = boltData[boltIdx];
+  socketTitle.textContent = `Bolt: ${bd.displayLabel}`;
+  socketSubtitle.textContent = `Select socket size (units: 1/${bd.socketDenominator})`;
+  socketOptions.innerHTML='';
+  bd.options.forEach(opt=>{
+    const btn = document.createElement('button');
+    btn.className='socket-btn';
+    btn.textContent=`${opt}/${bd.socketDenominator} in`;
+    btn.addEventListener('click',()=>evaluate(boltIdx, opt));
+    socketOptions.appendChild(btn);
+  });
+  socketUI.style.display='flex';
+}
+
+function hideSocketUI(){
+  socketUI.style.display='none';
+}
+
+function evaluate(boltIdx, chosen){
+  const bd = boltData[boltIdx];
+  const correct = bd.correctNumerator;
+  totalAttempts++;
+
+  if(chosen === correct){
+    // SUCCESS
+    correctAttempts++;
+    currentState = State.EVALUATING;
+    hideSocketUI();
+    backBtn.style.display='none';
+    manualIcon.style.display='none';
+    showMessage('✓ CORRECT – Removing bolt...', 2000);
+    playSuccess();
+
+    // Unscrew animation
+    const group = boltMeshes[boltIdx];
+    const startY = group.position.y;
+    const startRot = group.rotation.y;
+    let unscrewT = 0;
+    const unscrewInterval = setInterval(()=>{
+      unscrewT += 0.02;
+      group.position.y = startY + unscrewT * 2;
+      group.rotation.y = startRot + unscrewT * Math.PI * 8;
+      if(unscrewT >= 1){
+        clearInterval(unscrewInterval);
+        group.visible = false;
+        bd.active = false;
+        totalRemoved++;
+        updateHUD();
+        if(totalRemoved >= BOLT_COUNT){
+          winGame();
+        } else {
+          returnToOverview();
+        }
+      }
+    }, 16);
+
+  } else if(chosen < correct){
+    // TOO SMALL – rattle
+    playSmallFail();
+    showMessage('⚠ RATCHET SLIP: Socket too small for head.', 4000);
+    bd.lockEnd = Date.now() + 5000;
+    rattleTarget = boltIdx;
+    rattleTimer = 0;
+    // Disable buttons temporarily
+    const btns = socketOptions.querySelectorAll('.socket-btn');
+    btns.forEach(b=>b.disabled=true);
+    setTimeout(()=>{
+      rattleTarget=-1;
+      if(selectedBolt===boltIdx && bd.active){
+        btns.forEach(b=>b.disabled=false);
+      }
+    }, 5000);
+
+  } else {
+    // TOO LARGE – stripped!
+    playLargeFail();
+    showMessage('✖ CRITICAL FAILURE: Bolt head stripped. Recalibrating tool...', 5000);
+    bd.stripped = true;
+    bd.cooldownEnd = Date.now() + 45000;
+    hideSocketUI();
+
+    // Change texture to stripped
+    const group = boltMeshes[boltIdx];
+    const head = group.userData.head;
+    const strippedTex = createBoltTexture(bd.displayLabel, true);
+    head.material.map = strippedTex;
+    head.material.color.set(0x886655);
+    head.material.roughness = 0.6;
+    head.material.needsUpdate = true;
+
+    // Spark effect
+    triggerSparks(group.position.clone().add(new THREE.Vector3(0,0.2,0)));
+
+    // Show manual icon
+    manualIcon.style.display='block';
+  }
+}
+
+function returnToOverview(){
+  currentState = State.ZOOMING;
+  hideSocketUI();
+  backBtn.style.display='none';
+  manualIcon.style.display='none';
+  tweenCamera(overviewPos, overviewLook, 0.6, ()=>{
+    currentState = State.OVERVIEW;
+    selectedBolt = -1;
+  });
+}
+
+function zoomToBolt(idx){
+  if(tweening) return;
+  const bd = boltData[idx];
+  if(!bd.active) return;
+
+  selectedBolt = idx;
+  currentState = State.ZOOMING;
+
+  const group = boltMeshes[idx];
+  const boltPos = group.position.clone();
+  const targetPos = new THREE.Vector3(boltPos.x, 3.5, boltPos.z + 0.3);
+  const targetLook = boltPos.clone();
+
+  tweenCamera(targetPos, targetLook, 0.5, ()=>{
+    currentState = State.INPUT;
+    // Check cooldown
+    const now = Date.now();
+    if(bd.cooldownEnd > now){
+      // Still in cooldown
+      manualIcon.style.display='block';
+    } else if(bd.lockEnd > now){
+      // Still locked from small fail
+      showMessage('⚠ Bolt temporarily locked – wait...', 2000);
+    }
+    if(!bd.stripped || bd.cooldownEnd <= now){
+      showSocketUI(idx);
+    }
+    backBtn.style.display='block';
+  });
+}
+
+/* ======== MANUAL (Pedagogical Overlay) ======== */
+function showManual(boltIdx){
+  const bd = boltData[boltIdx];
+  manualOverlay.style.display='block';
+  const ctx = manualCanvas.getContext('2d');
+  const w = manualCanvas.width, h = manualCanvas.height;
+  ctx.clearRect(0,0,w,h);
+
+  const targetN = bd.targetFraction.n;
+  const targetD = bd.targetFraction.d;
+  const sockD = bd.socketDenominator;
+  const correctN = bd.correctNumerator;
+
+  // Draw top bar: bolt fraction
+  ctx.fillStyle='#335';
+  ctx.fillRect(20,20,w-40,50);
+  const segW1 = (w-40)/targetD;
+  for(let i=0;i<targetN;i++){
+    ctx.fillStyle='#4a4';
+    ctx.fillRect(20+i*segW1+1, 22, segW1-2, 46);
+  }
+  for(let i=0;i<=targetD;i++){
+    ctx.strokeStyle='#fff'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(20+i*segW1,20); ctx.lineTo(20+i*segW1,70); ctx.stroke();
+  }
+  ctx.fillStyle='#fff'; ctx.font='14px Courier New'; ctx.textAlign='center';
+  ctx.fillText(`${targetN}/${targetD}`, w/2, 15);
+
+  // Draw bottom bar: socket denominator
+  ctx.fillStyle='#335';
+  ctx.fillRect(20, 100, w-40, 50);
+  const segW2 = (w-40)/sockD;
+  for(let i=0;i<correctN;i++){
+    ctx.fillStyle='#4a4';
+    ctx.fillRect(20+i*segW2+1, 102, segW2-2, 46);
+  }
+  for(let i=0;i<=sockD;i++){
+    ctx.strokeStyle='#888'; ctx.lineWidth=.5;
+    ctx.beginPath(); ctx.moveTo(20+i*segW2,100); ctx.lineTo(20+i*segW2,150); ctx.stroke();
+  }
+  // Mark major dividers
+  const mult = sockD/targetD;
+  for(let i=0;i<=targetD;i++){
+    ctx.strokeStyle='#fff'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(20+i*mult*segW2,100); ctx.lineTo(20+i*mult*segW2,150); ctx.stroke();
+  }
+  ctx.fillStyle='#fff';
+  ctx.fillText(`${correctN}/${sockD}`, w/2, 95);
+
+  // Equivalence arrow
+  ctx.fillStyle='#ff0'; ctx.font='bold 16px Courier New';
+  ctx.fillText('=', w/2, 82);
+
+  manualText.textContent = `${targetN}/${targetD} = ${correctN}/${sockD} because ${targetD}×${sockD/targetD} = ${sockD} and ${targetN}×${sockD/targetD} = ${correctN}`;
+}
+
+manualIcon.addEventListener('click',()=>{
+  if(selectedBolt>=0) showManual(selectedBolt);
+});
+manualClose.addEventListener('click',()=>{
+  manualOverlay.style.display='none';
+});
+
+/* ======== INPUT HANDLING ======== */
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+renderer.domElement.addEventListener('click', (e)=>{
+  if(currentState!==State.OVERVIEW || tweening) return;
+  mouse.x = (e.clientX/window.innerWidth)*2-1;
+  mouse.y = -(e.clientY/window.innerHeight)*2+1;
+  raycaster.setFromCamera(mouse, camera);
+
+  // Collect all bolt children for raycasting
+  const meshes = [];
+  boltMeshes.forEach(g => g.traverse(c => { if(c.isMesh) meshes.push(c); }));
+  const hits = raycaster.intersectObjects(meshes);
+
+  if(hits.length>0){
+    // Find parent group
+    let obj = hits[0].object;
+    while(obj.parent && !obj.userData.index && obj.userData.index !== 0) obj = obj.parent;
+    const idx = obj.userData.index;
+    if(idx !== undefined && boltData[idx].active){
+      zoomToBolt(idx);
+    }
+  }
+});
+
+backBtn.addEventListener('click', ()=>{
+  if(currentState === State.INPUT){
+    returnToOverview();
+    hideSocketUI();
+    manualOverlay.style.display='none';
+  }
+});
+
+/* ======== WIN CONDITION ======== */
+function winGame(){
+  currentState = State.WIN;
+  hideSocketUI();
+  backBtn.style.display='none';
+  manualIcon.style.display='none';
+  manualOverlay.style.display='none';
+
+  const elapsed = ((Date.now()-startTime)/1000).toFixed(1);
+  const accuracy = totalAttempts > 0 ? ((correctAttempts/totalAttempts)*100).toFixed(0) : 100;
+
+  // Animate vault away
+  let vaultT = 0;
+  const vaultAnim = setInterval(()=>{
+    vaultT += 0.02;
+    vault.position.y = -vaultT * 3;
+    vault.material.opacity = 1 - vaultT;
+    vault.material.transparent = true;
+    if(vaultT >= 1){
+      clearInterval(vaultAnim);
+      vault.visible = false;
+    }
+  }, 16);
+
+  // Return camera
+  tweenCamera(new THREE.Vector3(0,6,4), new THREE.Vector3(0,-0.5,0), 1, ()=>{
+    setTimeout(()=>{
+      winScreen.style.display='flex';
+      winTime.textContent=`Total Time: ${elapsed}s`;
+      winAccuracy.textContent=`Accuracy: ${accuracy}% (${correctAttempts}/${totalAttempts})`;
+    }, 500);
+  });
+}
+
+restartBtn.addEventListener('click', ()=>{
+  // Reset everything
+  winScreen.style.display='none';
+  vault.visible=true;
+  vault.position.y=0;
+  vault.material.opacity=1;
+  vault.material.transparent=false;
+  totalRemoved=0;
+  totalAttempts=0;
+  correctAttempts=0;
+  startTime=Date.now();
+  selectedBolt=-1;
+  currentState=State.OVERVIEW;
+  boltData = generateBoltData(BOLT_COUNT);
+  boltMeshes.forEach((g,i)=>{
+    g.visible=true;
+    g.position.set(boltPositions[i].x, 0.08, boltPositions[i].z);
+    g.rotation.y=0;
+    const bd=boltData[i];
+    const tex=createBoltTexture(bd.displayLabel, false);
+    g.userData.head.material.map=tex;
+    g.userData.head.material.color.set(0xaabbcc);
+    g.userData.head.material.roughness=0.25;
+    g.userData.head.material.needsUpdate=true;
+    g.userData.originalTex=tex;
+  });
+  updateHUD();
+  showMessage('');
+  camera.position.copy(overviewPos);
+  camera.lookAt(overviewLook);
+});
+
+/* ======== ANIMATION LOOP ======== */
+const clock = new THREE.Clock();
+
+function animate(){
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  const now = Date.now();
+
+  // Update tween
+  updateTween(dt);
+
+  // Update sparks
+  updateSparks(dt);
+
+  // Rattle animation
+  if(rattleTarget >= 0){
+    rattleTimer += dt;
+    const g = boltMeshes[rattleTarget];
+    if(g && rattleTimer < 5){
+      const intensity = Math.max(0, 1 - rattleTimer/5) * 0.03;
+      g.position.x = boltPositions[rattleTarget].x + (Math.random()-.5)*intensity*2;
+      g.position.z = boltPositions[rattleTarget].z + (Math.random()-.5)*intensity*2;
+    } else if(g){
+      g.position.x = boltPositions[rattleTarget].x;
+      g.position.z = boltPositions[rattleTarget].z;
+    }
+  }
+
+  // Update cooldown textures
+  boltData.forEach((bd, i)=>{
+    if(bd.cooldownEnd > now && bd.active){
+      const remaining = (bd.cooldownEnd - now)/1000;
+      const progress = 1 - remaining/45;
+      const tex = createCooldownTexture(progress, `${Math.ceil(remaining)}s`);
+      boltMeshes[i].userData.head.material.map = tex;
+      boltMeshes[i].userData.head.material.needsUpdate = true;
+
+      // If zoomed on this bolt and cooldown ends during zoom
+      if(selectedBolt === i && bd.cooldownEnd <= now + 100){
+        bd.stripped = false;
+        const normalTex = createBoltTexture(bd.displayLabel, false);
+        boltMeshes[i].userData.head.material.map = normalTex;
+        boltMeshes[i].userData.head.material.color.set(0xaabbcc);
+        boltMeshes[i].userData.head.material.roughness = 0.25;
+        boltMeshes[i].userData.head.material.needsUpdate = true;
+      }
+    } else if(bd.stripped && bd.cooldownEnd <= now && bd.active){
+      // Cooldown ended, restore bolt
+      bd.stripped = false;
+      const normalTex = createBoltTexture(bd.displayLabel, false);
+      boltMeshes[i].userData.head.material.map = normalTex;
+      boltMeshes[i].userData.head.material.color.set(0xaabbcc);
+      boltMeshes[i].userData.head.material.roughness = 0.25;
+      boltMeshes[i].userData.head.material.needsUpdate = true;
+      if(selectedBolt === i && currentState === State.INPUT){
+        showSocketUI(i);
+        manualIcon.style.display='none';
+      }
+    }
+  });
+
+  // Update timer display for selected bolt
+  if(selectedBolt >= 0){
+    const bd = boltData[selectedBolt];
+    if(bd.cooldownEnd > now){
+      timerDisplay.textContent = `⏱ Cooldown: ${Math.ceil((bd.cooldownEnd-now)/1000)}s`;
+    } else if(bd.lockEnd > now){
+      timerDisplay.textContent = `🔒 Locked: ${Math.ceil((bd.lockEnd-now)/1000)}s`;
+    } else {
+      timerDisplay.textContent = '';
+    }
+  } else {
+    timerDisplay.textContent = '';
+  }
+
+  // Show/hide manual icon
+  if(selectedBolt >= 0 && boltData[selectedBolt].cooldownEnd > now && boltData[selectedBolt].active){
+    manualIcon.style.display='block';
+  } else if(currentState !== State.INPUT || selectedBolt < 0){
+    manualIcon.style.display='none';
+  }
+
+  // Total time
+  if(currentState !== State.WIN){
+    const elapsed = ((now - startTime)/1000).toFixed(0);
+    totalTimeEl.textContent = `Total Time: ${elapsed}s`;
+  }
+
+  // Subtle bolt hover glow in overview
+  if(currentState === State.OVERVIEW){
+    boltMeshes.forEach((g,i)=>{
+      if(boltData[i].active && !boltData[i].stripped){
+        const pulse = Math.sin(now*0.003 + i)*0.02 + 0.08;
+        g.position.y = pulse;
+      }
+    });
+  }
+
+  renderer.render(scene, camera);
+}
+
+animate();
+
+/* ======== RESIZE ======== */
+window.addEventListener('resize', ()=>{
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+showMessage('Click a bolt to begin.', 5000);
+</script>
+</body>
+</html>
