@@ -229,7 +229,8 @@ if(!isStudentMode){
     const file = e.target.files[0];
     if(!file) return;
     const validExts = ['.png','.jpg','.jpeg','.gif','.webp','.svg','.bmp'];
-    const ext = file.name.toLowerCase().slice(file.name.lastIndexOf('.'));
+    const dotIndex = file.name.lastIndexOf('.');
+    const ext = dotIndex !== -1 ? file.name.toLowerCase().slice(dotIndex) : '';
     if(!file.type.startsWith('image/') || !validExts.includes(ext)){
       landingStatus.textContent = '✗ Please select a valid image file.';
       landingStatus.style.color = '#ff4444';
