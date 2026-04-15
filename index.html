@@ -90,7 +90,7 @@ canvas{display:block;}
 <div id="brand-mark">Math Things<span class="dot"></span></div>
 <div id="tool-title">Fraction Bolts</div>
 <div id="motto">Making math make sense</div>
-<button id="prize-upload-btn">🎁 Set Prize Image</button>
+<button id="prize-upload-btn" aria-label="Set prize image">🎁 Set Prize Image</button>
 <input type="file" id="prize-file-input" accept="image/*">
 <div id="prize-claim">
   <div class="claim-text">&#127942; Click to Claim Your Prize</div>
@@ -1259,8 +1259,10 @@ prizeUploadBtn.addEventListener('click', ()=>{
 prizeFileInput.addEventListener('change', (e)=>{
   const file = e.target.files[0];
   if(!file) return;
-  if(!file.type.startsWith('image/')){
-    showMessage('Please select an image file.', 3000);
+  const validExts = ['.png','.jpg','.jpeg','.gif','.webp','.svg','.bmp'];
+  const ext = file.name.toLowerCase().slice(file.name.lastIndexOf('.'));
+  if(!file.type.startsWith('image/') || !validExts.includes(ext)){
+    showMessage('Please select a valid image file.', 3000);
     return;
   }
   const reader = new FileReader();
