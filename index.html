@@ -1,1 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Precision Vault</title>
+    <style>
+        body { margin: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1a1a1a; }
+        canvas { display: block; }
+        
+        /* UI Overlays */
+        #hud {
+            position: absolute; top: 20px; left: 20px; color: #00ff00;
+            text-shadow: 2px 2px 4px #000; pointer-events: none;
+        }
+        
+        #socket-menu {
+            position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%);
+            display: none; background: rgba(0,0,0,0.85); padding: 20px;
+            border: 2px solid #555; border-radius: 10px; color: white; text-align: center;
+        }
+
+        .option-btn {
+            background: #444; color: white; border: 1px solid #777;
+            padding: 10px 20px; margin: 5px; cursor: pointer; font-size: 18px;
+        }
+        .option-btn:hover { background: #666; }
+
+        #manual-overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 80%; max-width: 500px; background: #222; border: 3px solid #f1c40f;
+            color: white; padding: 20px; display: none; z-index: 100;
+        }
+
+        .bar-container { width: 100%; height: 40px; background: #444; margin: 10px 0; display: flex; }
+        .bar-segment { border: 1px solid #000; height: 100%; }
+        .highlight { background: #f1c40f; }
+
+        #status-msg { font-weight: bold; font-size: 1.2em; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div id="hud">
+    <h1>PRECISION VAULT</h1>
+    <div id="stats">Bolts Remaining: <span id="bolt-count">7</span></div>
+    <div id="timer-display">Session Time: 0:00</div>
+</div>
+
+<div id="socket-menu">
+    <h3 id="menu-title">Select Socket Size (Units: 1/16)</h3>
+    <div id="options-container"></div>
+    <div id="status-msg"></div>
+</div>
+
+<div id="manual-overlay">
+    <h2>TECH MANUAL: Equivalence</h2>
+    <p id="manual-text"></p>
+    <div id="manual-visuals"></div>
+    <button onclick="closeManual()" style="margin-top:20px;">Return to Vault</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/21.0.0/tween.umd.js"></script>
+
+<script>
+/** * APP CONFIG & MATH ENGINE 
+ */
+const denominations = [8, 16, 32, 64];
+const boltSizes = [
+    { n: 1, d: 2 }, { n: 1, d: 4 }, { n: 3, d: 4 }, 
+    { n: 1, d: 8 }, { n: 3, d: 8 }, { n: 5, d: 8 }, { n: 7, d: 8 }
+];
+
+let scene, camera, renderer, raycaster, mouse;
+let vaultPlate, prize;
+let bolts = [];
+let selectedBolt = null;
+let startTime = Date.now();
+let boltsRemoved = 0;
+
+// Web Audio Context for synthesized SFX
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+/**
+ * INITIALIZATION
+ */
+function init() {
+    scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x1a1a1a, 5, 25);
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 10, 8);
+    camera.lookAt(0, 0, 0);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    document.body.appendChild(renderer.domElement);
+
+    raycaster = new THREE.Raycaster();
+    mouse = new THREE.Vector2();
+
+    const light = new THREE.DirectionalLight(0xffffff, 2);
+    light.position.set(5, 10, 5);
+    scene.add(light);
+    scene.add(new THREE.AmbientLight(0x404040));
+
+    createVault();
+    window.addEventListener('click', onMouseClick);
+    animate();
+}
+
+function createVault() {
+    // The Prize (Placeholder for image)
+    const prizeGeo = new THREE.PlaneGeometry(6, 6);
+    const prizeMat = new THREE.MeshStandardMaterial({ color: 0x333333 }); // Replace with texture
+    prize = new THREE.Mesh(prizeGeo, prizeMat);
+    prize.rotation.x = -Math.PI / 2;
+    prize.position.y = -0.1;
+    scene.add(prize);
+
+    // The Steel Plate
+    const plateGeo = new THREE.BoxGeometry(8, 0.2, 8);
+    const plateMat = new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.9, roughness: 0.3 });
+    vaultPlate = new THREE.Mesh(plateGeo, plateMat);
+    scene.add(vaultPlate);
+
+    // Create Bolts
+    for (let i = 0; i < 7; i++) {
+        const angle = (i / 7) * Math.PI * 2;
+        const x = Math.cos(angle) * 3.2;
+        const z = Math.sin(angle) * 3.2;
+        
+        const boltData = generateBoltData();
+        const bolt = createBoltMesh(x, z, boltData);
+        bolts.push(bolt);
+        scene.add(bolt);
+    }
+}
+
+function generateBoltData() {
+    const target = boltSizes[Math.floor(Math.random() * boltSizes.length)];
+    const validDenoms = denominations.filter(d => d > target.d && d % target.d === 0);
+    const socketDenom = validDenoms[Math.floor(Math.random() * validDenoms.length)];
+    const correctN = (target.n * (socketDenom / target.d));
+    
+    // Generate 4 options
+    let options = new Set([correctN]);
+    while(options.size < 4) {
+        let distractor = correctN + (Math.floor(Math.random() * 5) - 2);
+        if(distractor > 0 && distractor < socketDenom) options.add(distractor);
+    }
+
+    return {
+        target,
+        socketDenom,
+        correctN,
+        options: Array.from(options).sort((a,b) => a-b),
+        cooldown: 0,
+        isRemoved: false,
+        stripped: false
+    };
+}
+
+function createBoltMesh(x, z, data) {
+    const group = new THREE.Group();
+    
+    // Hex Head
+    const headGeo = new THREE.CylinderGeometry(0.3, 0.3, 0.4, 6);
+    const headMat = new THREE.MeshStandardMaterial({ color: 0xaaaaaa, metalness: 0.8 });
+    const head = new THREE.Mesh(headGeo, headMat);
+    
+    group.add(head);
+    group.position.set(x, 0.2, z);
+    group.userData = data;
+
+    // Label for the bolt head
+    createLabel(group, `${data.target.n}/${data.target.d}"`);
+
+    return group;
+}
+
+function createLabel(group, text) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 128; canvas.height = 128;
+    ctx.fillStyle = 'black';
+    ctx.font = 'bold 40px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText(text, 64, 75);
+    
+    const tex = new THREE.CanvasTexture(canvas);
+    const spriteMat = new THREE.SpriteMaterial({ map: tex });
+    const sprite = new THREE.Sprite(spriteMat);
+    sprite.position.y = 0.3;
+    sprite.scale.set(0.8, 0.8, 0.8);
+    group.add(sprite);
+}
+
+/**
+ * LOGIC & ANIMATION
+ */
+function onMouseClick(event) {
+    if (selectedBolt) return;
+
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(bolts, true);
+
+    if (intersects.length > 0) {
+        let clicked = intersects[0].object;
+        while (clicked.parent && !clicked.userData.target) { clicked = clicked.parent; }
+        
+        if (!clicked.userData.isRemoved && clicked.userData.cooldown <= 0) {
+            selectBolt(clicked);
+        }
+    }
+}
+
+function selectBolt(bolt) {
+    selectedBolt = bolt;
+    const data = bolt.userData;
+
+    // Camera Zoom
+    new TWEEN.Tween(camera.position)
+        .to({ x: bolt.position.x, y: 3, z: bolt.position.z + 2 }, 800)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .start();
+
+    // Show UI
+    const menu = document.getElementById('socket-menu');
+    menu.style.display = 'block';
+    document.getElementById('menu-title').innerText = `Select Socket Size (Units: 1/${data.socketDenom})`;
+    
+    const container = document.getElementById('options-container');
+    container.innerHTML = '';
+    data.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = `${opt}/${data.socketDenom}`;
+        btn.onclick = () => evaluateChoice(opt);
+        container.appendChild(btn);
+    });
+}
+
+function evaluateChoice(choice) {
+    const data = selectedBolt.userData;
+    const msg = document.getElementById('status-msg');
+
+    if (choice === data.correctN) {
+        playSFX('success');
+        msg.innerText = "SUCCESS: UNSCREWING...";
+        msg.style.color = "#00ff00";
+        
+        new TWEEN.Tween(selectedBolt.position).to({ y: 2 }, 1500).start();
+        new TWEEN.Tween(selectedBolt.rotation).to({ y: Math.PI * 4 }, 1500).onComplete(() => {
+            selectedBolt.visible = false;
+            selectedBolt.userData.isRemoved = true;
+            boltsRemoved++;
+            document.getElementById('bolt-count').innerText = 7 - boltsRemoved;
+            exitBoltView();
+            if (boltsRemoved === 7) win();
+        }).start();
+
+    } else if (choice < data.correctN) {
+        playSFX('smallFail');
+        msg.innerText = "RATCHET SLIP: Socket too small.";
+        msg.style.color = "yellow";
+        shakeBolt(selectedBolt);
+        applyPenalty(selectedBolt, 5);
+        setTimeout(exitBoltView, 1500);
+        
+    } else {
+        playSFX('largeFail');
+        msg.innerText = "CRITICAL FAILURE: Stripped head!";
+        msg.style.color = "red";
+        data.stripped = true;
+        applyPenalty(selectedBolt, 45);
+        showManualLink();
+        setTimeout(exitBoltView, 2000);
+    }
+}
+
+function shakeBolt(bolt) {
+    const startX = bolt.position.x;
+    new TWEEN.Tween(bolt.position)
+        .to({ x: startX + 0.05 }, 50).repeat(10).yoyo(true).start();
+}
+
+function applyPenalty(bolt, seconds) {
+    bolt.userData.cooldown = seconds;
+}
+
+function exitBoltView() {
+    selectedBolt = null;
+    document.getElementById('socket-menu').style.display = 'none';
+    new TWEEN.Tween(camera.position)
+        .to({ x: 0, y: 10, z: 8 }, 800)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .start();
+}
+
+/**
+ * MANUAL / TEACHING MOMENT
+ */
+function showManualLink() {
+    const btn = document.createElement('button');
+    btn.innerText = "Consult Manual?";
+    btn.style.marginTop = "10px";
+    btn.onclick = openManual;
+    document.getElementById('status-msg').appendChild(btn);
+}
+
+function openManual() {
+    const data = selectedBolt.userData;
+    const overlay = document.getElementById('manual-overlay');
+    overlay.style.display = 'block';
+    
+    const text = `A bolt that is ${data.target.n}/${data.target.d} is the same size as one that is ${data.correctN}/${data.socketDenom}. 
+    Think: ${data.target.d} goes into ${data.socketDenom} exactly ${data.socketDenom/data.target.d} times. 
+    So, multiply the top number (${data.target.n}) by ${data.socketDenom/data.target.d} to find your tool size.`;
+    
+    document.getElementById('manual-text').innerText = text;
+    
+    // Simple visual bar model
+    const visual = document.getElementById('manual-visuals');
+    visual.innerHTML = `<h4>Original Units (${data.target.d}ths):</h4>`;
+    const row1 = document.createElement('div'); row1.className = 'bar-container';
+    for(let i=0; i<data.target.d; i++){
+        const seg = document.createElement('div'); seg.className = 'bar-segment' + (i < data.target.n ? ' highlight' : '');
+        seg.style.width = `${100/data.target.d}%`; row1.appendChild(seg);
+    }
+    visual.appendChild(row1);
+    
+    visual.innerHTML += `<h4>Socket Units (${data.socketDenom}ths):</h4>`;
+    const row2 = document.createElement('div'); row2.className = 'bar-container';
+    for(let i=0; i<data.socketDenom; i++){
+        const seg = document.createElement('div'); seg.className = 'bar-segment' + (i < data.correctN ? ' highlight' : '');
+        seg.style.width = `${100/data.socketDenom}%`; row2.appendChild(seg);
+    }
+    visual.appendChild(row2);
+}
+
+function closeManual() { document.getElementById('manual-overlay').style.display = 'none'; }
+
+/**
+ * AUDIO SYNTHESIS
+ */
+function playSFX(type) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    if (type === 'success') {
+        osc.type = 'square'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.5);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+    } else if (type === 'smallFail') {
+        osc.type = 'sine'; osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+    } else if (type === 'largeFail') {
+        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(60, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
+        osc.start(); osc.stop(audioCtx.currentTime + 1);
+    }
+}
+
+/**
+ * RENDER LOOP
+ */
+function animate() {
+    requestAnimationFrame(animate);
+    TWEEN.update();
+    
+    const delta = 1/60;
+    bolts.forEach(b => {
+        if (b.userData.cooldown > 0) {
+            b.userData.cooldown -= delta;
+            // Visual feedback for cooldown could go here (e.g. rotating the bolt slowly)
+        }
+    });
+
+    const elapsed = Math.floor((Date.now() - startTime)/1000);
+    document.getElementById('timer-display').innerText = `Session Time: ${Math.floor(elapsed/60)}:${(elapsed%60).toString().padStart(2,'0')}`;
+
+    renderer.render(scene, camera);
+}
+
+function win() {
+    new TWEEN.Tween(vaultPlate.position).to({ x: 10 }, 2000).easing(TWEEN.Easing.Bounce.Out).start();
+    alert("VAULT OPENED! Total Time: " + document.getElementById('timer-display').innerText);
+}
+
+init();
+
+</script>
+</body>
+</html>
 
