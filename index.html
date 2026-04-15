@@ -6,7 +6,7 @@
 <title>Fraction Bolts · Math Things.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Lexend:wght@300;400;600;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{overflow:hidden;background:#1a1a20;font-family:'Lexend',sans-serif;color:#ccc;}
@@ -45,7 +45,7 @@ canvas{display:block;}
 #prize-preview{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.92);z-index:190;cursor:pointer;backdrop-filter:blur(4px);}
 #prize-preview .preview-box{max-width:360px;width:85%;text-align:center;}
 #prize-preview .preview-prize-img{max-width:100%;max-height:260px;border-radius:10px;border:3px solid rgba(255,215,0,.4);box-shadow:0 0 30px rgba(255,215,0,.15);margin-bottom:16px;}
-#prize-preview .preview-prize-text{font-size:28px;font-weight:900;color:#FFD700;text-shadow:0 0 20px rgba(255,215,0,.5);margin-bottom:16px;letter-spacing:-0.03em;line-height:1.3;}
+#prize-preview .preview-prize-text{font-size:30px;font-weight:900;font-family:'Cinzel','Times New Roman',serif;color:#FFD700;text-shadow:0 2px 8px rgba(0,0,0,.8),0 0 20px rgba(255,215,0,.45);margin-bottom:16px;letter-spacing:0.01em;line-height:1.35;}
 #prize-preview .preview-label{font-size:12px;font-weight:300;color:#aaa;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;}
 #prize-preview .preview-claim-btn{padding:14px 36px;font-size:17px;font-weight:800;font-family:'Lexend',sans-serif;background:rgba(40,30,8,.9);color:#FFD700;border:2px solid rgba(255,215,0,.5);border-radius:10px;cursor:pointer;transition:all .15s;animation:pulse-glow 2s ease-in-out infinite;letter-spacing:-0.02em;}
 #prize-preview .preview-claim-btn:hover{background:rgba(60,45,10,.95);border-color:#FFD700;box-shadow:0 0 16px rgba(255,215,0,.35);transform:translateY(-2px);}
@@ -1267,7 +1267,7 @@ function generatePrizeTextCanvas(text){
   const words = text.split(/\s+/);
 
   function layoutText(fontSize){
-    ctx.font = `900 ${fontSize}px Lexend, sans-serif`;
+    ctx.font = `900 ${fontSize}px Cinzel, Georgia, serif`;
     const lines = [];
     let line = '';
     for(const w of words){
@@ -1295,7 +1295,7 @@ function generatePrizeTextCanvas(text){
   // Draw text with neon glow + drop shadow
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = `900 ${layout.fontSize}px Lexend, sans-serif`;
+  ctx.font = `900 ${layout.fontSize}px Cinzel, Georgia, serif`;
 
   const startY = 256 - (layout.totalH / 2) + (layout.lineH / 2);
 
