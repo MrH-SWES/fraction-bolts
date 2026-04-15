@@ -12,10 +12,86 @@
 body{overflow:hidden;background:#1a1a20;font-family:'Lexend',sans-serif;color:#ccc;}
 canvas{display:block;}
 
+/* ═══════════ BRANDING CSS ═══════════ */
+.logo {
+  display: inline-flex;
+  align-items: baseline;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  color: #dde;
+  user-select: none;
+  cursor: default;
+  z-index: 10;
+}
+
+.logo-bead {
+  width: 0.22em;
+  height: 0.22em;
+  margin-left: 0.04em;
+  margin-bottom: 0.08em;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: inline-block;
+  background:
+    radial-gradient(circle at 33% 28%, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.3) 40%, transparent 65%),
+    radial-gradient(circle at 67% 72%, rgba(0,0,0,0.15) 0%, transparent 55%),
+    linear-gradient(135deg, #efefef 0%, #d0d0d0 25%, #a8a8a8 50%, #c0c0c0 75%, #e0e0e0 100%);
+  box-shadow:
+    inset 1px 1px 2px rgba(255,255,255,0.8),
+    inset -1px -1px 2px rgba(0,0,0,0.2),
+    0 2px 5px rgba(0,0,0,0.22);
+}
+
+.footer-bead {
+  display: inline-block;
+  width: 0.22em;
+  height: 0.22em;
+  border-radius: 50%;
+  margin-bottom: 0.08em;
+  background: linear-gradient(135deg, #d8d8d8, #a0a0a0, #d0d0d0);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  vertical-align: baseline;
+}
+
+#brand-mark {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  pointer-events: none;
+  font-size: 16px;
+  text-shadow: 0 0 12px rgba(76, 187, 23, 0.25);
+}
+
+#tool-title {
+  position:absolute;
+  top:12px;
+  left:50%;
+  transform:translateX(-50%);
+  pointer-events:none;
+  font-size:18px;
+  font-weight:800;
+  letter-spacing:-0.03em;
+  color:#dde;
+  text-shadow:0 0 12px rgba(76,187,23,.25);
+  z-index:10;
+}
+
+#motto {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(200, 200, 210, 0.6);
+  z-index: 10;
+}
+
 /* ═══════════ TEACHER LANDING PAGE ═══════════ */
 #teacher-landing{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#1a1a20;z-index:200;overflow-y:auto;}
-#teacher-landing .landing-brand{font-size:14px;font-weight:900;letter-spacing:-0.05em;color:#4CBB17;margin-bottom:4px;}
-#teacher-landing .landing-brand .dot{width:0.22em;height:0.22em;margin-left:0.04em;margin-bottom:0.08em;border-radius:50%;display:inline-block;background:linear-gradient(135deg,#efefef,#a8a8a8,#e0e0e0);box-shadow:inset 1px 1px 2px rgba(255,255,255,0.8),0 2px 5px rgba(0,0,0,0.22);}
 #teacher-landing .landing-title{font-size:36px;font-weight:900;letter-spacing:-0.04em;color:#dde;text-shadow:0 0 20px rgba(76,187,23,.3);margin-bottom:6px;}
 #teacher-landing .landing-subtitle{font-size:13px;font-weight:300;letter-spacing:0.12em;text-transform:uppercase;color:rgba(200,200,210,.5);margin-bottom:32px;}
 #teacher-landing .landing-card{background:rgba(10,10,18,.94);border:2px solid rgba(255,159,10,.35);border-radius:12px;padding:28px 32px;max-width:440px;width:90%;backdrop-filter:blur(6px);box-shadow:0 0 24px rgba(255,159,10,.08);}
@@ -39,7 +115,7 @@ canvas{display:block;}
 #link-output .link-url{font-size:12px;font-weight:400;color:#adf;word-break:break-all;background:#0e0e16;padding:8px;border-radius:4px;border:1px solid rgba(76,187,23,.15);margin-bottom:8px;user-select:all;cursor:text;}
 #copy-link-btn{width:100%;padding:8px;font-size:13px;font-weight:700;font-family:'Lexend',sans-serif;background:rgba(20,40,15,.9);color:#4CBB17;border:1px solid rgba(76,187,23,.4);border-radius:6px;cursor:pointer;transition:all .15s;}
 #copy-link-btn:hover{background:rgba(30,55,20,.95);border-color:#4CBB17;box-shadow:0 0 8px rgba(76,187,23,.25);}
-#teacher-landing .landing-motto{font-size:11px;font-weight:300;letter-spacing:0.15em;text-transform:uppercase;color:rgba(200,200,210,.35);margin-top:24px;}
+#teacher-landing .landing-motto{margin-top:24px;}
 
 /* ═══════════ STUDENT PRIZE PREVIEW ═══════════ */
 #prize-preview{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.92);z-index:190;cursor:pointer;backdrop-filter:blur(4px);}
@@ -60,7 +136,7 @@ canvas{display:block;}
 #message{font-size:15px;font-weight:600;color:#FFD700;text-align:center;min-height:24px;text-shadow:0 0 8px rgba(255,215,0,.4);}
 #timer-display{font-size:13px;font-weight:400;color:#FF9F0A;margin-top:4px;}
 
-/* ═══════════ UPDATED SOCKET UI CSS ═══════════ */
+/* ═══════════ SOCKET UI ═══════════ */
 #socket-ui {
   position: absolute;
   bottom: 60px;
@@ -125,13 +201,6 @@ canvas{display:block;}
 
 #total-time{position:absolute;top:44px;right:12px;font-size:12px;font-weight:300;color:rgba(255,159,10,.5);pointer-events:none;letter-spacing:1px;text-transform:uppercase;}
 
-#brand-mark{position:absolute;top:12px;left:12px;pointer-events:none;font-size:14px;font-weight:900;letter-spacing:-0.05em;color:#4CBB17;display:inline-flex;align-items:baseline;z-index:10;}
-#brand-mark .dot{width:0.22em;height:0.22em;margin-left:0.04em;margin-bottom:0.08em;border-radius:50%;display:inline-block;background:linear-gradient(135deg,#efefef,#a8a8a8,#e0e0e0);box-shadow:inset 1px 1px 2px rgba(255,255,255,0.8),0 2px 5px rgba(0,0,0,0.22);}
-
-#tool-title{position:absolute;top:12px;left:50%;transform:translateX(-50%);pointer-events:none;font-size:18px;font-weight:800;letter-spacing:-0.03em;color:#dde;text-shadow:0 0 12px rgba(76,187,23,.25);z-index:10;}
-
-#motto{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);pointer-events:none;font-size:11px;font-weight:300;letter-spacing:0.15em;text-transform:uppercase;color:rgba(200,200,210,.45);z-index:10;}
-
 /* Prize claim overlay */
 #prize-claim{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;pointer-events:auto;z-index:90;cursor:pointer;}
 #prize-claim .claim-text{font-size:22px;font-weight:800;color:#FFD700;text-shadow:0 0 20px rgba(255,215,0,.6);letter-spacing:-0.03em;}
@@ -155,8 +224,10 @@ canvas{display:block;}
 <body>
 
 <div id="teacher-landing">
-  <div class="landing-brand">Math Things<span class="dot"></span></div>
+  <div class="landing-brand logo" style="color: #4CBB17;">Math Things<span class="logo-bead"></span></div>
   <div class="landing-title">Fraction Bolts</div>
+  <div class="landing-subtitle">Making math make sense</div>
+  <div class="landing-card">
     <h2>🎁 Set Up a Prize</h2>
     <div class="card-sub">Enter a prize for your students. They'll need to solve fraction problems to unlock it!</div>
     <label for="landing-prize-input">Prize text or image URL</label>
@@ -174,7 +245,7 @@ canvas{display:block;}
       <button id="copy-link-btn">Copy Link</button>
     </div>
   </div>
-  <div class="landing-motto">MATH, IN YOUR HANDS</div>
+  <div class="landing-motto">Math Things<span class="footer-bead"></span> &nbsp;|&nbsp; Math, in your hands<span class="footer-bead"></span></div>
 </div>
 
 <div id="prize-preview">
@@ -197,7 +268,7 @@ canvas{display:block;}
     <h3 id="socket-title">Select Socket Size</h3>
     <div class="subtitle" id="socket-subtitle"></div>
     <div class="socket-layout">
-      <img src="sockets.jpg" id="socket-set-image" alt="Socket Set">
+      <img src="image_18a6e7.jpg" id="socket-set-image" alt="Socket Set">
       <div id="socket-options"></div>
     </div>
   </div>
@@ -211,8 +282,11 @@ canvas{display:block;}
     <button class="close-btn" id="manual-close">Close Manual</button>
   </div>
   <div id="total-time">Total Time: 0s</div>
-  <div id="brand-mark">Math Things<span class="dot"></span></div>
+  
+  <div id="brand-mark" class="logo" style="color: #4CBB17;">Math Things<span class="logo-bead"></span></div>
   <div id="tool-title">Fraction Bolts</div>
+  <div id="motto">Math Things<span class="footer-bead"></span> &nbsp;|&nbsp; Math, in your hands<span class="footer-bead"></span></div>
+  
   <div id="celebration-halo"></div>
   <div id="prize-claim">
     <div class="claim-text">&#127942; Your Prize!</div>
@@ -242,7 +316,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 /* ═══════════ URL ROUTING ═══════════ */
 const urlParams = new URLSearchParams(window.location.search);
 const prizeParam = urlParams.get('prize');
-const prizeTypeParam = urlParams.get('type') || 'text'; // 'text', 'url', or 'data'
+const prizeTypeParam = urlParams.get('type') || 'text'; 
 const isStudentMode = !!prizeParam;
 
 const teacherLanding = document.getElementById('teacher-landing');
@@ -350,7 +424,6 @@ function ensureAudio(){ if(!audioCtx) audioCtx = new AudioCtx(); }
 function playSuccess(){
   ensureAudio();
   const d=.35, ctx=audioCtx, now=ctx.currentTime;
-  // impact wrench burst
   for(let i=0;i<6;i++){
     const o=ctx.createOscillator(), g=ctx.createGain();
     o.type='square'; o.frequency.value=80+Math.random()*120;
@@ -369,14 +442,12 @@ function playSuccess(){
 function playSmallFail(){
   ensureAudio();
   const ctx=audioCtx, now=ctx.currentTime;
-  // metallic clank - sharp impact
   const o=ctx.createOscillator(),g=ctx.createGain();
   o.type='triangle'; o.frequency.value=2800;
   o.frequency.exponentialRampToValueAtTime(600,now+.08);
   g.gain.setValueAtTime(.25,now); g.gain.exponentialRampToValueAtTime(.001,now+.15);
   o.connect(g); g.connect(ctx.destination);
   o.start(now); o.stop(now+.2);
-  // secondary ring
   const o2=ctx.createOscillator(),g3=ctx.createGain();
   o2.type='sine'; o2.frequency.value=1200;
   g3.gain.setValueAtTime(.12,now+.02); g3.gain.exponentialRampToValueAtTime(.001,now+.25);
@@ -387,7 +458,6 @@ function playSmallFail(){
 function playLargeFail(){
   ensureAudio();
   const ctx=audioCtx, now=ctx.currentTime;
-  // grinding
   const buf=ctx.createBuffer(1,ctx.sampleRate*.6,ctx.sampleRate);
   const data=buf.getChannelData(0);
   for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*.3*Math.max(0,1-i/data.length);
@@ -395,7 +465,6 @@ function playLargeFail(){
   const flt=ctx.createBiquadFilter(); flt.type='bandpass'; flt.frequency.value=600; flt.Q.value=2;
   src.connect(flt); flt.connect(ctx.destination);
   src.start(now); src.stop(now+.6);
-  // power-down
   const o=ctx.createOscillator(),g=ctx.createGain();
   o.type='sawtooth'; o.frequency.setValueAtTime(200,now+.5);
   o.frequency.exponentialRampToValueAtTime(30,now+1.5);
@@ -417,14 +486,12 @@ function playEngageClick(){
 function playHeavyImpact(){
   ensureAudio();
   const ctx=audioCtx, now=ctx.currentTime;
-  // deep boom
   const o=ctx.createOscillator(),g=ctx.createGain();
   o.type='sine'; o.frequency.setValueAtTime(80,now);
   o.frequency.exponentialRampToValueAtTime(20,now+.8);
   g.gain.setValueAtTime(.5,now); g.gain.exponentialRampToValueAtTime(.001,now+1);
   o.connect(g); g.connect(ctx.destination);
   o.start(now); o.stop(now+1.1);
-  // noise burst
   const buf=ctx.createBuffer(1,ctx.sampleRate*.3,ctx.sampleRate);
   const data=buf.getChannelData(0);
   for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*.4*Math.max(0,1-i/data.length);
@@ -451,14 +518,12 @@ function playClaimFanfare(){
 function playSteelSlam(){
   ensureAudio();
   const ctx=audioCtx, now=ctx.currentTime;
-  // Deep boom impact
   const o=ctx.createOscillator(),g=ctx.createGain();
   o.type='sine'; o.frequency.setValueAtTime(60,now);
   o.frequency.exponentialRampToValueAtTime(15,now+1.2);
   g.gain.setValueAtTime(.6,now); g.gain.exponentialRampToValueAtTime(.001,now+1.5);
   o.connect(g); g.connect(ctx.destination);
   o.start(now); o.stop(now+1.6);
-  // Metallic crash
   const buf=ctx.createBuffer(1,ctx.sampleRate*.5,ctx.sampleRate);
   const data=buf.getChannelData(0);
   for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*.5*Math.max(0,1-i/data.length);
@@ -466,7 +531,6 @@ function playSteelSlam(){
   const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=800;
   src.connect(lp); lp.connect(ctx.destination);
   src.start(now); src.stop(now+.5);
-  // Ringing aftershock
   const o2=ctx.createOscillator(),g2=ctx.createGain();
   o2.type='triangle'; o2.frequency.value=180;
   g2.gain.setValueAtTime(.15,now+.05); g2.gain.exponentialRampToValueAtTime(.001,now+.8);
@@ -477,7 +541,6 @@ function playSteelSlam(){
 function playBoltIn(){
   ensureAudio();
   const ctx=audioCtx, now=ctx.currentTime;
-  // Quick ratcheting spin sound
   for(let i=0;i<4;i++){
     const o=ctx.createOscillator(), g=ctx.createGain();
     o.type='square'; o.frequency.value=100+Math.random()*80;
@@ -486,7 +549,6 @@ function playBoltIn(){
     o.connect(g); g.connect(ctx.destination);
     o.start(now+i*.06); o.stop(now+i*.06+.06);
   }
-  // Tightening click
   const o2=ctx.createOscillator(),g2=ctx.createGain();
   o2.type='sine'; o2.frequency.value=1400;
   g2.gain.setValueAtTime(.1,now+.28); g2.gain.exponentialRampToValueAtTime(.001,now+.35);
@@ -497,7 +559,6 @@ function playBoltIn(){
 function playCelebration(){
   ensureAudio();
   const ctx=audioCtx, now=ctx.currentTime;
-  // Rising triumphant notes
   const notes=[392,493.88,587.33,659.25,783.99,987.77,1174.66];
   notes.forEach((f,i)=>{
     const o=ctx.createOscillator(),g=ctx.createGain();
@@ -507,7 +568,6 @@ function playCelebration(){
     o.connect(g); g.connect(ctx.destination);
     o.start(now+i*.1); o.stop(now+i*.1+.6);
   });
-  // Shimmer
   const buf=ctx.createBuffer(1,ctx.sampleRate*.8,ctx.sampleRate);
   const data=buf.getChannelData(0);
   for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*.05;
@@ -518,17 +578,16 @@ function playCelebration(){
   src.connect(hp); hp.connect(g3); g3.connect(ctx.destination);
   src.start(now); src.stop(now+.8);
 }
+
 function createSteelTexture(w,h){
   const c=document.createElement('canvas'); c.width=w; c.height=h;
   const ctx=c.getContext('2d');
-  // Base: radial gradient for premium center glow
   const baseGrad=ctx.createRadialGradient(w/2,h/2,w*0.05,w/2,h/2,w*0.65);
   baseGrad.addColorStop(0,'#d8dce0');
   baseGrad.addColorStop(0.45,'#c4c8cc');
   baseGrad.addColorStop(1,'#9ea4aa');
   ctx.fillStyle=baseGrad;
   ctx.fillRect(0,0,w,h);
-  // Circular brushed-metal arcs (premium radial brush)
   for(let i=0;i<300;i++){
     const angle=Math.random()*Math.PI*2;
     const r=60+Math.random()*(w*0.45);
@@ -542,7 +601,6 @@ function createSteelTexture(w,h){
     ctx.arc(cx,cy,r,angle,angle+arcLen);
     ctx.stroke();
   }
-  // Fine directional hairlines for depth
   for(let i=0;i<180;i++){
     const bright=190+Math.random()*45;
     ctx.strokeStyle=`rgba(${bright},${bright+2},${bright+6},${0.05+Math.random()*0.08})`;
@@ -553,20 +611,17 @@ function createSteelTexture(w,h){
     ctx.lineTo(x+Math.random()*60-30, y+Math.random()*60-30);
     ctx.stroke();
   }
-  // Subtle vignette darkening at edges
   const vigGrad=ctx.createRadialGradient(w/2,h/2,w*0.2,w/2,h/2,w*0.72);
   vigGrad.addColorStop(0,'rgba(0,0,0,0)');
   vigGrad.addColorStop(1,'rgba(0,0,0,0.18)');
   ctx.fillStyle=vigGrad;
   ctx.fillRect(0,0,w,h);
-  // Highlight sheen (top-left light reflection)
   const sheenGrad=ctx.createLinearGradient(0,0,w*0.6,h*0.6);
   sheenGrad.addColorStop(0,'rgba(255,255,255,0.12)');
   sheenGrad.addColorStop(0.3,'rgba(255,255,255,0.04)');
   sheenGrad.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle=sheenGrad;
   ctx.fillRect(0,0,w,h);
-  // Fine grain noise
   const img=ctx.getImageData(0,0,w,h);
   for(let i=0;i<img.data.length;i+=4){
     const n=(Math.random()-.5)*10;
@@ -690,6 +745,7 @@ function generateBoltData(count){
       stripped: false,
       cooldownEnd: 0,
       lockEnd: 0,
+      wasLocked: false,
     });
   }
   return bolts;
@@ -756,7 +812,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.6;
 gameContainer.appendChild(renderer.domElement);
 
-// Environment map for metallic reflections (matches bead branding)
+// Environment map for metallic reflections
 const pmremGenerator = new THREE.PMREMGenerator(renderer);
 scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
 pmremGenerator.dispose();
@@ -786,10 +842,10 @@ const floor = new THREE.Mesh(floorGeo, floorMat);
 floor.rotation.x=-Math.PI/2; floor.position.y=-0.5; floor.receiveShadow=true;
 scene.add(floor);
 
-// Vault plate (premium beveled edges)
+// Vault plate
 const vaultShape = new THREE.Shape();
-const vR = 0.08; // bevel radius
-const vHalf = 2.5; // half-size
+const vR = 0.08; 
+const vHalf = 2.5; 
 vaultShape.moveTo(-vHalf + vR, -vHalf);
 vaultShape.lineTo(vHalf - vR, -vHalf);
 vaultShape.quadraticCurveTo(vHalf, -vHalf, vHalf, -vHalf + vR);
@@ -895,7 +951,7 @@ ratchetMesh.position.y = 0.06;
 ratchetMesh.castShadow = true;
 wrenchGroup.add(ratchetMesh);
 
-// Socket (hexagonal, will be scaled for different fits)
+// Socket
 function createSocketGeometry(scale){
   const shape = new THREE.Shape();
   const sides = 6, radius = 0.24 * scale;
@@ -1109,20 +1165,13 @@ function onWrenchAnimComplete(boltIdx, type){
     }
   } else if(type === 'tooSmall'){
     bd.lockEnd = Date.now() + 5000;
+    bd.wasLocked = true; // Add this flag to track the lock state
     rattleTarget = boltIdx;
     rattleTimer = 0;
     showMessage('\u26A0 Socket too small \u2014 doesn\u2019t fit the bolt head.', 4000);
-    const btns = socketOptions.querySelectorAll('.socket-btn');
-    btns.forEach(b=>b.disabled=true);
-    setTimeout(()=>{
-      rattleTarget=-1;
-      if(selectedBolt===boltIdx && bd.active){
-        btns.forEach(b=>b.disabled=false);
-      }
-    }, 5000);
-    socketUI.style.display='flex';
-    backBtn.style.display='block';
-    currentState = State.INPUT; // CRITICAL: Restores input state so the Back button works
+    
+    // Immediately zoom out so they can work on another bolt
+    returnToOverview(); 
   } else if(type === 'tooLarge'){
     showMessage('\u2716 Socket too large \u2014 bolt head stripped! Try another bolt.', 5000);
     manualIcon.style.display='block';
@@ -1492,7 +1541,7 @@ function zoomToBolt(idx){
     } else if(bd.lockEnd > now){
       showMessage('\u26A0 Bolt temporarily locked \u2014 wait...', 2000);
     }
-    if(!bd.stripped || bd.cooldownEnd <= now){
+    if(!bd.stripped && bd.cooldownEnd <= now && bd.lockEnd <= now){
       showSocketUI(idx);
     }
     backBtn.style.display='block';
@@ -1589,22 +1638,18 @@ function startGameWithSlamDown(){
   gameContainer.style.display = 'block';
   currentState = State.SLAM_DOWN;
 
-  // Ensure renderer matches window size after showing container
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 
-  // Hide vault and bolts initially — they will animate in
   vault.visible = false;
-  vault.position.y = 12; // start high above
+  vault.position.y = 12; 
   vault.rotation.set(-Math.PI/2, 0, 0);
   boltMeshes.forEach(g => { g.visible = false; });
 
-  // Set camera for dramatic view
   camera.position.set(0, 7, 5);
   camera.lookAt(0, -0.5, 0);
 
-  // Brief delay then slam plate down
   setTimeout(()=>{
     vault.visible = true;
     slamDownState = {
@@ -1619,14 +1664,12 @@ function updateSlamDown(){
   const elapsed = (performance.now() - slamDownState.startTime) / 1000;
 
   if(slamDownState.phase === 'falling'){
-    // Plate falls from above (0-0.6s)
     if(elapsed < 0.6){
       const t = elapsed / 0.6;
-      const ease = t * t * t; // cubic ease-in for accelerating fall
+      const ease = t * t * t; 
       vault.position.y = 12 - ease * 12;
       return;
     }
-    // Impact!
     vault.position.y = 0;
     vault.rotation.set(-Math.PI/2, 0, 0);
     slamDownState.phase = 'impact';
@@ -1636,7 +1679,6 @@ function updateSlamDown(){
   }
 
   if(slamDownState.phase === 'impact'){
-    // Wait for shake to subside (0.8s)
     const impactElapsed = (performance.now() - slamDownState.impactTime) / 1000;
     if(impactElapsed > 1.0){
       slamDownState = null;
@@ -1653,7 +1695,6 @@ function startBoltIn(){
     startTime: performance.now(),
     phase: 'waiting',
   };
-  // Position bolts above their slots, hidden
   boltMeshes.forEach((g, i) => {
     g.position.set(boltPositions[i].x, 2.5, boltPositions[i].z);
     g.rotation.y = 0;
@@ -1664,12 +1705,11 @@ function startBoltIn(){
 function updateBoltIn(){
   if(!boltInState) return;
   const now = performance.now();
-  if(now < boltInState.startTime) return; // delay between bolts
+  if(now < boltInState.startTime) return; 
   const elapsed = (now - boltInState.startTime) / 1000;
   const idx = boltInState.currentBolt;
 
   if(idx >= BOLT_COUNT){
-    // All bolts in — start the game
     boltInState = null;
     currentState = State.OVERVIEW;
     startTime = Date.now();
@@ -1679,7 +1719,7 @@ function updateBoltIn(){
   }
 
   const g = boltMeshes[idx];
-  const boltDuration = 0.4; // Time per bolt
+  const boltDuration = 0.4; 
   const delayBetween = 0.12;
 
   if(boltInState.phase === 'waiting'){
@@ -1694,12 +1734,11 @@ function updateBoltIn(){
   if(boltInState.phase === 'screwing'){
     if(elapsed < boltDuration){
       const t = elapsed / boltDuration;
-      const ease = t * t * (3 - 2 * t); // smoothstep
-      g.position.y = 2.5 - ease * 2.42; // land at 0.08
-      g.rotation.y = t * Math.PI * 6; // spinning
+      const ease = t * t * (3 - 2 * t); 
+      g.position.y = 2.5 - ease * 2.42; 
+      g.rotation.y = t * Math.PI * 6; 
       return;
     }
-    // Bolt is in place
     g.position.y = 0.08;
     g.position.x = boltPositions[idx].x;
     g.position.z = boltPositions[idx].z;
@@ -1717,9 +1756,7 @@ function startPlateDrop(){
   manualIcon.style.display='none';
   manualOverlay.style.display='none';
 
-  // Return camera first
   tweenCamera(new THREE.Vector3(0, 7, 5), new THREE.Vector3(0, -0.5, 0), 0.8, ()=>{
-    // Brief dramatic pause
     setTimeout(()=>{
       plateDropState = {
         startTime: performance.now(),
@@ -1737,13 +1774,11 @@ function updatePlateDrop(){
   const elapsed = (performance.now() - plateDropState.startTime) / 1000;
 
   if(plateDropState.phase === 'tilt'){
-    // Tilt phase: plate starts to lean (0-0.6s)
     if(elapsed < 0.6){
       const t = elapsed / 0.6;
-      const et = t * t; // accelerating
+      const et = t * t; 
       vault.rotation.x = -Math.PI/2 + et * 0.15;
       vault.rotation.z = et * 0.08;
-      // Small creaking movement
       vault.position.y = -t * 0.05;
       return;
     }
@@ -1753,22 +1788,18 @@ function updatePlateDrop(){
   }
 
   if(plateDropState.phase === 'fall'){
-    // Accelerating fall with rotation
     const gravity = 18;
     plateDropState.vy += gravity * (1/60);
     vault.position.y -= plateDropState.vy * (1/60);
-    // Increasing rotation as it falls
     vault.rotation.x += 0.04;
     vault.rotation.z += 0.02;
 
     if(vault.position.y < -8){
-      // Impact!
       plateDropState.phase = 'impact';
       playHeavyImpact();
       triggerCameraShake(0.15, 0.6);
       vault.visible = false;
 
-      // Show celebration with prize
       setTimeout(()=>{
         currentState = State.CELEBRATION;
         celebrationHalo.style.display = 'block';
@@ -1785,7 +1816,6 @@ function winGame(){
   startPlateDrop();
 }
 
-// Prize claim click — celebrate and then allow finish
 prizeClaim.addEventListener('click', ()=>{
   if(currentState !== State.CELEBRATION) return;
   currentState = State.WIN;
@@ -1796,7 +1826,6 @@ prizeClaim.addEventListener('click', ()=>{
   const elapsed = ((Date.now()-startTime)/1000).toFixed(1);
   const accuracy = totalAttempts > 0 ? ((correctAttempts/totalAttempts)*100).toFixed(0) : 100;
 
-  // Brief delay then show stats
   setTimeout(()=>{
     winScreen.style.display='flex';
     winTime.textContent=`${elapsed}s`;
@@ -1807,7 +1836,6 @@ prizeClaim.addEventListener('click', ()=>{
 
 finishBtn.addEventListener('click', ()=>{
   winScreen.style.display='none';
-  // Game is complete — could redirect or show a final message
   showMessage('🏆 Great job! You can close this tab.', 0);
 });
 
@@ -1827,12 +1855,10 @@ function animate(){
   updatePlateDrop();
   updateCameraShake(dt);
 
-  // Apply camera shake
   if(shakeTimer < shakeDuration){
     camera.position.add(shakeOffset);
   }
 
-  // Rattle animation
   if(rattleTarget >= 0){
     rattleTimer += dt;
     const g = boltMeshes[rattleTarget];
@@ -1863,6 +1889,13 @@ function animate(){
         boltMeshes[i].userData.head.material.roughness = 0.22;
         boltMeshes[i].userData.head.material.needsUpdate = true;
       }
+    } else if(bd.lockEnd > now && bd.active){
+      // "Too Small" Lock logic (5 seconds)
+      const remaining = (bd.lockEnd - now)/1000;
+      const progress = 1 - remaining/5;
+      const tex = createCooldownTexture(progress, `\u{1F512} ${Math.ceil(remaining)}s`); 
+      boltMeshes[i].userData.head.material.map = tex;
+      boltMeshes[i].userData.head.material.needsUpdate = true;
     } else if(bd.stripped && bd.cooldownEnd <= now && bd.active){
       bd.stripped = false;
       const normalTex = createBoltTexture(bd.displayLabel, false);
@@ -1874,6 +1907,14 @@ function animate(){
         showSocketUI(i);
         manualIcon.style.display='none';
       }
+    } else if(bd.wasLocked && bd.lockEnd <= now && bd.active){
+      // Restore bolt face when the 5-second lock expires
+      bd.wasLocked = false;
+      const normalTex = createBoltTexture(bd.displayLabel, false);
+      boltMeshes[i].userData.head.material.map = normalTex;
+      boltMeshes[i].userData.head.material.color.set(0xdce0e4);
+      boltMeshes[i].userData.head.material.roughness = 0.22;
+      boltMeshes[i].userData.head.material.needsUpdate = true;
     }
   });
 
@@ -1898,16 +1939,14 @@ function animate(){
     manualIcon.style.display='none';
   }
 
-  // Total time
   if(currentState !== State.WIN && currentState !== State.CELEBRATION && currentState !== State.SLAM_DOWN && currentState !== State.BOLT_IN){
     const elapsed = ((now - startTime)/1000).toFixed(0);
     totalTimeEl.textContent = `Total Time: ${elapsed}s`;
   }
 
-  // Bolt hover glow
   if(currentState === State.OVERVIEW){
     boltMeshes.forEach((g,i)=>{
-      if(boltData[i].active && !boltData[i].stripped){
+      if(boltData[i].active && !boltData[i].stripped && !boltData[i].wasLocked){
         const pulse = Math.sin(now*0.003 + i)*0.02 + 0.08;
         g.position.y = pulse;
       }
