@@ -258,7 +258,7 @@ function createBoltTexture(label, stripped){
     }
   }
   ctx.fillStyle=stripped?'#a66':'#dde';
-  ctx.font='bold 22px Lexend, sans-serif';
+  ctx.font='800 22px Lexend, sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='middle';
   ctx.fillText(label, s/2, s/2);
   return new THREE.CanvasTexture(c);
@@ -277,7 +277,7 @@ function createCooldownTexture(progress, label){
     ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+progress*Math.PI*2);
     ctx.strokeStyle='#FF9F0A'; ctx.lineWidth=8; ctx.stroke();
   }
-  ctx.fillStyle='#FF9F0A'; ctx.font='bold 18px Lexend, sans-serif';
+  ctx.fillStyle='#FF9F0A'; ctx.font='800 18px Lexend, sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='middle';
   ctx.fillText(label,cx,cy);
   return new THREE.CanvasTexture(c);
@@ -837,7 +837,7 @@ function updateCameraShake(dt){
 }
 
 /* ═══════════ STATE MACHINE ═══════════ */
-const State = {OVERVIEW:'overview', ZOOMING:'zooming', INPUT:'input', EVALUATING:'evaluating', COOLDOWN:'cooldown', WRENCH:'wrench', PLATE_DROP:'plateDrop', PRIZE_REVEAL:'prizeReveal', WIN:'win'};
+const State = {OVERVIEW:'overview', ZOOMING:'zooming', INPUT:'input', COOLDOWN:'cooldown', WRENCH:'wrench', PLATE_DROP:'plateDrop', PRIZE_REVEAL:'prizeReveal', WIN:'win'};
 let currentState = State.OVERVIEW;
 let selectedBolt = -1;
 let totalRemoved = 0;
