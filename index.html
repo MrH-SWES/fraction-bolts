@@ -136,6 +136,20 @@ canvas{display:block;}
 #message{font-size:15px;font-weight:600;color:#FFD700;text-align:center;min-height:24px;text-shadow:0 0 8px rgba(255,215,0,.4);}
 #timer-display{font-size:13px;font-weight:400;color:#FF9F0A;margin-top:4px;}
 
+/* Floating Cooldown Timers */
+.floating-timer {
+  position: absolute;
+  color: #DC143C; /* Brand Red (Ones place color) */
+  font-size: 16px;
+  font-weight: 800;
+  font-family: 'Lexend', sans-serif;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 12px rgba(220, 20, 60, 0.5);
+  pointer-events: none;
+  display: none;
+  z-index: 100;
+  transform: translate(25px, -50%); /* Appears slightly to the right of the bolt */
+}
+
 /* ═══════════ SOCKET UI ═══════════ */
 #socket-ui {
   position: absolute;
@@ -876,7 +890,7 @@ prize.rotation.x = -Math.PI/2;
 prize.position.y = -0.09;
 scene.add(prize);
 
-/* ═══════════ BOLT MESHES ═══════════ */
+/* ═══════════ BOLT MESHES & FLOATING TIMERS ═══════════ */
 const BOLT_COUNT = 7;
 let boltData = generateBoltData(BOLT_COUNT);
 
@@ -929,6 +943,15 @@ boltData.forEach((bd, i)=>{
   boltGroup.add(group);
 });
 scene.add(boltGroup);
+
+// Setup 2D Floating Timers for the 3D bolts
+const floatingTimers = [];
+for(let i = 0; i < BOLT_COUNT; i++) {
+  const el = document.createElement('div');
+  el.className = 'floating-timer';
+  document.getElementById('game-container').appendChild(el);
+  floatingTimers.push(el);
+}
 
 /* ═══════════ SOCKET WRENCH 3D MODEL ═══════════ */
 const wrenchGroup = new THREE.Group();
@@ -1026,29 +1049,24 @@ function updateWrenchAnimation(){
   const group = boltMeshes[boltIdx];
 
   if(type === 'correct'){
-    // Phase 1: Descend (0-0.5s)
     if(elapsed < 0.5){
       const t = elapsed / 0.5;
-      const et = t * t * (3 - 2 * t); // smoothstep
+      const et = t * t * (3 - 2 * t); 
       wrenchGroup.position.y = boltPos.y + 2.5 - et * 2.3;
       return true;
     }
-    // Phase 2: Engage click (0.5s)
     if(wrenchAnim.phase === 'descend'){
       wrenchAnim.phase = 'engage';
       playEngageClick();
     }
-    // Phase 3: Spin and unscrew (0.5-2.5s)
     if(elapsed < 2.5){
       const t = (elapsed - 0.5) / 2.0;
       wrenchGroup.rotation.y = t * Math.PI * 10;
       wrenchGroup.position.y = boltPos.y + 0.2 + t * 1.8;
-      // Move bolt with wrench
       group.position.y = boltStartY + t * 1.8;
       group.rotation.y = boltStartRot + t * Math.PI * 10;
       return true;
     }
-    // Phase 4: Done
     wrenchGroup.visible = false;
     group.visible = false;
     wrenchAnim = null;
@@ -1056,29 +1074,24 @@ function updateWrenchAnimation(){
     return false;
 
   } else if(type === 'tooSmall'){
-    // Phase 1: Descend (0-0.4s)
     if(elapsed < 0.4){
       const t = elapsed / 0.4;
       const et = t * t * (3 - 2 * t);
       wrenchGroup.position.y = boltPos.y + 2.5 - et * 2.25;
       return true;
     }
-    // Phase 2: Clank and bounce (0.4-0.6s)
     if(wrenchAnim.phase === 'descend'){
       wrenchAnim.phase = 'clank';
       playSmallFail();
     }
     if(elapsed < 1.0){
       const t = (elapsed - 0.4) / 0.6;
-      // Bounce back with wobble
       const bounce = Math.sin(t * Math.PI) * 0.3;
       wrenchGroup.position.y = boltPos.y + 0.25 + bounce + t * 0.8;
-      // Wobble rotation
       wrenchGroup.rotation.z = Math.sin(t * Math.PI * 6) * 0.15 * (1 - t);
       wrenchGroup.rotation.x = Math.sin(t * Math.PI * 4) * 0.1 * (1 - t);
       return true;
     }
-    // Phase 3: Retreat (1.0-1.5s)
     if(elapsed < 1.5){
       const t = (elapsed - 1.0) / 0.5;
       wrenchGroup.position.y = boltPos.y + 1.05 + t * 1.5;
@@ -1086,7 +1099,6 @@ function updateWrenchAnimation(){
       wrenchGroup.rotation.x *= (1 - t);
       return true;
     }
-    // Done
     wrenchGroup.visible = false;
     wrenchGroup.rotation.set(0,0,0);
     wrenchAnim = null;
@@ -1094,34 +1106,28 @@ function updateWrenchAnimation(){
     return false;
 
   } else if(type === 'tooLarge'){
-    // Phase 1: Descend (0-0.5s)
     if(elapsed < 0.5){
       const t = elapsed / 0.5;
       const et = t * t * (3 - 2 * t);
       wrenchGroup.position.y = boltPos.y + 2.5 - et * 2.35;
       return true;
     }
-    // Phase 2: Loose engagement, wobble (0.5-0.7s)
     if(wrenchAnim.phase === 'descend'){
       wrenchAnim.phase = 'engage';
       playEngageClick();
     }
     if(elapsed < 1.2){
       const t = (elapsed - 0.5) / 0.7;
-      // Try to turn but wobbles loosely
       wrenchGroup.rotation.y = t * Math.PI * 3;
-      // Visible wobble showing loose fit
       wrenchGroup.position.x = boltPos.x + Math.sin(t * Math.PI * 8) * 0.04;
       wrenchGroup.position.z = boltPos.z + Math.cos(t * Math.PI * 8) * 0.04;
       wrenchGroup.position.y = boltPos.y + 0.15 + Math.sin(t * Math.PI * 6) * 0.02;
       return true;
     }
-    // Phase 3: Strip! Sparks + grinding (1.2s)
     if(wrenchAnim.phase === 'engage'){
       wrenchAnim.phase = 'strip';
       playLargeFail();
       triggerSparks(group.position.clone().add(new THREE.Vector3(0,0.2,0)));
-      // Apply stripped texture
       const bd = boltData[boltIdx];
       bd.stripped = true;
       bd.cooldownEnd = Date.now() + 45000;
@@ -1131,17 +1137,14 @@ function updateWrenchAnimation(){
       group.userData.head.material.roughness = 0.6;
       group.userData.head.material.needsUpdate = true;
     }
-    // Phase 4: Wrench slips off with grind (1.2-2.2s)
     if(elapsed < 2.2){
       const t = (elapsed - 1.2) / 1.0;
       wrenchGroup.rotation.y = Math.PI * 3 + t * Math.PI * 2;
       wrenchGroup.position.y = boltPos.y + 0.15 + t * 2;
-      // Tumble slightly
       wrenchGroup.rotation.z = t * 0.3;
       wrenchGroup.position.x = boltPos.x + t * 0.2;
       return true;
     }
-    // Done
     wrenchGroup.visible = false;
     wrenchGroup.rotation.set(0,0,0);
     wrenchAnim = null;
@@ -1308,13 +1311,10 @@ let correctAttempts = 0;
 
 let rattleTarget = -1, rattleTimer = 0;
 
-// Plate drop state
 let plateDropState = null;
-// Slam down & bolt-in state
 let slamDownState = null;
 let boltInState = null;
 
-// DOM refs
 const progressBar = document.getElementById('progress-bar');
 const progressText = document.getElementById('progress-text');
 const messageEl = document.getElementById('message');
@@ -1346,7 +1346,6 @@ function generatePrizeTextCanvas(text){
   c.width = 512; c.height = 512;
   const ctx = c.getContext('2d');
 
-  // Background radial gradient (Gold → Orange → dark)
   const grad = ctx.createRadialGradient(256, 256, 40, 256, 256, 280);
   grad.addColorStop(0, '#FFD700');
   grad.addColorStop(0.45, '#FF9F0A');
@@ -1354,7 +1353,6 @@ function generatePrizeTextCanvas(text){
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 512, 512);
 
-  // Auto-fit text: split into lines, scale font to fit
   const padding = 40;
   const maxW = 512 - padding * 2;
   const maxH = 512 - padding * 2;
@@ -1386,14 +1384,12 @@ function generatePrizeTextCanvas(text){
     layout = layoutText(fontSize);
   }
 
-  // Draw text with neon glow + drop shadow
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.font = `900 ${layout.fontSize}px Cinzel, Georgia, serif`;
 
   const startY = 256 - (layout.totalH / 2) + (layout.lineH / 2);
 
-  // Drop shadow
   ctx.save();
   ctx.shadowColor = 'rgba(0,0,0,0.8)';
   ctx.shadowBlur = 16;
@@ -1405,7 +1401,6 @@ function generatePrizeTextCanvas(text){
   });
   ctx.restore();
 
-  // Neon outer glow
   ctx.save();
   ctx.shadowColor = '#FFD700';
   ctx.shadowBlur = 24;
@@ -1415,7 +1410,6 @@ function generatePrizeTextCanvas(text){
   });
   ctx.restore();
 
-  // Inner bright text
   ctx.save();
   ctx.shadowColor = '#fff';
   ctx.shadowBlur = 8;
@@ -1871,14 +1865,25 @@ function animate(){
     }
   }
 
-  // Update cooldown textures
+  // Temporary vector for projection calculations
+  const tempV = new THREE.Vector3();
+
+  // Update cooldown textures and 2D Floating Timers
   boltData.forEach((bd, i)=>{
+    const timerEl = floatingTimers[i];
+    let isLocked = false;
+    let timeRemaining = 0;
+
+    // Check Cooldown / Lock states
     if(bd.cooldownEnd > now && bd.active){
-      const remaining = (bd.cooldownEnd - now)/1000;
-      const progress = 1 - remaining/45;
-      const tex = createCooldownTexture(progress, `${Math.ceil(remaining)}s`);
+      isLocked = true;
+      timeRemaining = Math.ceil((bd.cooldownEnd - now)/1000);
+      
+      const progress = 1 - timeRemaining/45;
+      const tex = createCooldownTexture(progress, `${timeRemaining}s`);
       boltMeshes[i].userData.head.material.map = tex;
       boltMeshes[i].userData.head.material.needsUpdate = true;
+      
       const COOLDOWN_GRACE_MS = 100;
       if(selectedBolt === i && bd.cooldownEnd <= now + COOLDOWN_GRACE_MS){
         bd.stripped = false;
@@ -1889,10 +1894,11 @@ function animate(){
         boltMeshes[i].userData.head.material.needsUpdate = true;
       }
     } else if(bd.lockEnd > now && bd.active){
-      // "Too Small" Lock logic (5 seconds)
-      const remaining = (bd.lockEnd - now)/1000;
-      const progress = 1 - remaining/5;
-      const tex = createCooldownTexture(progress, `\u{1F512} ${Math.ceil(remaining)}s`); 
+      isLocked = true;
+      timeRemaining = Math.ceil((bd.lockEnd - now)/1000);
+
+      const progress = 1 - timeRemaining/5;
+      const tex = createCooldownTexture(progress, `\u{1F512} ${timeRemaining}s`); 
       boltMeshes[i].userData.head.material.map = tex;
       boltMeshes[i].userData.head.material.needsUpdate = true;
     } else if(bd.stripped && bd.cooldownEnd <= now && bd.active){
@@ -1907,7 +1913,6 @@ function animate(){
         manualIcon.style.display='none';
       }
     } else if(bd.wasLocked && bd.lockEnd <= now && bd.active){
-      // Restore bolt face when the 5-second lock expires
       bd.wasLocked = false;
       const normalTex = createBoltTexture(bd.displayLabel, false);
       boltMeshes[i].userData.head.material.map = normalTex;
@@ -1915,9 +1920,31 @@ function animate(){
       boltMeshes[i].userData.head.material.roughness = 0.22;
       boltMeshes[i].userData.head.material.needsUpdate = true;
     }
+
+    // 2D Projection for the Red Floating Timers
+    if(isLocked) {
+      tempV.copy(boltMeshes[i].position);
+      tempV.y += 0.2; // Hover slightly above the bolt
+      tempV.project(camera);
+
+      // Only show if the bolt is in front of the camera
+      if(tempV.z > 1) {
+        timerEl.style.display = 'none';
+      } else {
+        const x = (tempV.x * 0.5 + 0.5) * window.innerWidth;
+        const y = (-(tempV.y * 0.5) + 0.5) * window.innerHeight;
+        
+        timerEl.textContent = `${timeRemaining}s`;
+        timerEl.style.left = `${x}px`;
+        timerEl.style.top = `${y}px`;
+        timerEl.style.display = 'block';
+      }
+    } else {
+      timerEl.style.display = 'none';
+    }
   });
 
-  // Timer display
+  // Timer display (legacy text fallback at the top)
   if(selectedBolt >= 0){
     const bd = boltData[selectedBolt];
     if(bd.cooldownEnd > now){
