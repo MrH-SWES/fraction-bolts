@@ -12,6 +12,47 @@
 body{overflow:hidden;background:#1a1a20;font-family:'Lexend',sans-serif;color:#ccc;}
 canvas{display:block;}
 
+/* ═══════════ TEACHER LANDING PAGE ═══════════ */
+#teacher-landing{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#1a1a20;z-index:200;overflow-y:auto;}
+#teacher-landing .landing-brand{font-size:14px;font-weight:900;letter-spacing:-0.05em;color:#4CBB17;margin-bottom:4px;}
+#teacher-landing .landing-brand .dot{width:0.22em;height:0.22em;margin-left:0.04em;margin-bottom:0.08em;border-radius:50%;display:inline-block;background:linear-gradient(135deg,#efefef,#a8a8a8,#e0e0e0);box-shadow:inset 1px 1px 2px rgba(255,255,255,0.8),0 2px 5px rgba(0,0,0,0.22);}
+#teacher-landing .landing-title{font-size:36px;font-weight:900;letter-spacing:-0.04em;color:#dde;text-shadow:0 0 20px rgba(76,187,23,.3);margin-bottom:6px;}
+#teacher-landing .landing-subtitle{font-size:13px;font-weight:300;letter-spacing:0.12em;text-transform:uppercase;color:rgba(200,200,210,.5);margin-bottom:32px;}
+#teacher-landing .landing-card{background:rgba(10,10,18,.94);border:2px solid rgba(255,159,10,.35);border-radius:12px;padding:28px 32px;max-width:440px;width:90%;backdrop-filter:blur(6px);box-shadow:0 0 24px rgba(255,159,10,.08);}
+#teacher-landing .landing-card h2{font-size:16px;font-weight:800;color:#FF9F0A;margin-bottom:4px;letter-spacing:-0.02em;}
+#teacher-landing .landing-card .card-sub{font-size:12px;font-weight:400;color:#888;margin-bottom:16px;}
+#teacher-landing .landing-card label{display:block;font-size:11px;font-weight:600;color:#aaa;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:6px;}
+#landing-prize-input{width:100%;padding:10px 12px;font-size:14px;font-weight:400;font-family:'Lexend',sans-serif;background:#1a1a22;color:#eee;border:1px solid rgba(255,159,10,.3);border-radius:6px;outline:none;transition:border-color .15s;margin-bottom:12px;}
+#landing-prize-input:focus{border-color:rgba(255,159,10,.7);}
+#landing-prize-input::placeholder{color:#555;}
+#landing-file-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+#landing-file-btn{padding:8px 16px;font-size:12px;font-weight:700;font-family:'Lexend',sans-serif;background:rgba(30,22,10,.9);color:#FF9F0A;border:1px solid rgba(255,159,10,.4);border-radius:6px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+#landing-file-btn:hover{background:rgba(50,38,15,.95);border-color:rgba(255,159,10,.7);box-shadow:0 0 8px rgba(255,159,10,.2);}
+#landing-file-name{font-size:11px;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px;}
+#landing-file-input{display:none;}
+#generate-link-btn{width:100%;padding:12px;font-size:15px;font-weight:800;font-family:'Lexend',sans-serif;background:rgba(40,30,8,.9);color:#FFD700;border:2px solid rgba(255,215,0,.4);border-radius:8px;cursor:pointer;transition:all .15s;letter-spacing:-0.01em;}
+#generate-link-btn:hover{background:rgba(60,45,10,.95);border-color:rgba(255,215,0,.7);box-shadow:0 0 12px rgba(255,215,0,.2);}
+#generate-link-btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;}
+#landing-status{font-size:11px;font-weight:400;min-height:16px;margin-top:8px;text-align:center;}
+#link-output{display:none;margin-top:16px;background:#12121a;border:1px solid rgba(76,187,23,.3);border-radius:8px;padding:12px;}
+#link-output .link-label{font-size:11px;font-weight:600;color:#4CBB17;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:6px;}
+#link-output .link-url{font-size:12px;font-weight:400;color:#adf;word-break:break-all;background:#0e0e16;padding:8px;border-radius:4px;border:1px solid rgba(76,187,23,.15);margin-bottom:8px;user-select:all;cursor:text;}
+#copy-link-btn{width:100%;padding:8px;font-size:13px;font-weight:700;font-family:'Lexend',sans-serif;background:rgba(20,40,15,.9);color:#4CBB17;border:1px solid rgba(76,187,23,.4);border-radius:6px;cursor:pointer;transition:all .15s;}
+#copy-link-btn:hover{background:rgba(30,55,20,.95);border-color:#4CBB17;box-shadow:0 0 8px rgba(76,187,23,.25);}
+#teacher-landing .landing-motto{font-size:11px;font-weight:300;letter-spacing:0.15em;text-transform:uppercase;color:rgba(200,200,210,.35);margin-top:24px;}
+
+/* ═══════════ STUDENT PRIZE PREVIEW ═══════════ */
+#prize-preview{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.92);z-index:190;cursor:pointer;backdrop-filter:blur(4px);}
+#prize-preview .preview-box{max-width:360px;width:85%;text-align:center;}
+#prize-preview .preview-prize-img{max-width:100%;max-height:260px;border-radius:10px;border:3px solid rgba(255,215,0,.4);box-shadow:0 0 30px rgba(255,215,0,.15);margin-bottom:16px;}
+#prize-preview .preview-prize-text{font-size:28px;font-weight:900;color:#FFD700;text-shadow:0 0 20px rgba(255,215,0,.5);margin-bottom:16px;letter-spacing:-0.03em;line-height:1.3;}
+#prize-preview .preview-label{font-size:12px;font-weight:300;color:#aaa;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;}
+#prize-preview .preview-claim-btn{padding:14px 36px;font-size:17px;font-weight:800;font-family:'Lexend',sans-serif;background:rgba(40,30,8,.9);color:#FFD700;border:2px solid rgba(255,215,0,.5);border-radius:10px;cursor:pointer;transition:all .15s;animation:pulse-glow 2s ease-in-out infinite;letter-spacing:-0.02em;}
+#prize-preview .preview-claim-btn:hover{background:rgba(60,45,10,.95);border-color:#FFD700;box-shadow:0 0 16px rgba(255,215,0,.35);transform:translateY(-2px);}
+
+/* ═══════════ GAME HUD ═══════════ */
+#game-container{display:none;}
+
 #hud{position:absolute;top:36px;left:0;width:100%;pointer-events:none;display:flex;flex-direction:column;align-items:center;padding:12px;}
 #progress-bar-container{width:300px;height:24px;border:2px solid #2a6a0e;border-radius:6px;background:#1a1a1e;overflow:hidden;margin-bottom:8px;}
 #progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#4CBB17,#2a8a0e);transition:width .4s;}
@@ -40,21 +81,6 @@ canvas{display:block;}
 
 #total-time{position:absolute;top:44px;right:12px;font-size:12px;font-weight:300;color:rgba(255,159,10,.5);pointer-events:none;letter-spacing:1px;text-transform:uppercase;}
 
-/* Teacher Panel */
-#teacher-panel{position:absolute;top:10px;right:10px;z-index:80;pointer-events:auto;}
-#teacher-toggle{padding:6px 14px;font-size:12px;font-weight:700;font-family:'Lexend',sans-serif;background:rgba(30,22,10,.92);color:#FF9F0A;border:1px solid rgba(255,159,10,.4);border-radius:6px;cursor:pointer;transition:all .15s;letter-spacing:0.02em;}
-#teacher-toggle:hover{background:rgba(50,38,15,.95);border-color:rgba(255,159,10,.7);box-shadow:0 0 8px rgba(255,159,10,.2);}
-#teacher-toggle.open{border-color:rgba(255,159,10,.7);background:rgba(50,38,15,.95);}
-#teacher-form{display:none;margin-top:8px;background:rgba(10,10,18,.94);border:1px solid rgba(255,159,10,.35);border-radius:8px;padding:12px;backdrop-filter:blur(6px);box-shadow:0 0 12px rgba(255,159,10,.08);min-width:240px;}
-#teacher-form.open{display:flex;flex-direction:column;gap:8px;}
-#teacher-form label{font-size:11px;font-weight:600;color:#aaa;letter-spacing:0.04em;text-transform:uppercase;}
-#prize-input{padding:8px 10px;font-size:13px;font-weight:400;font-family:'Lexend',sans-serif;background:#1a1a22;color:#eee;border:1px solid rgba(255,159,10,.3);border-radius:5px;outline:none;transition:border-color .15s;}
-#prize-input:focus{border-color:rgba(255,159,10,.7);}
-#prize-input::placeholder{color:#666;}
-#set-prize-btn{padding:8px 16px;font-size:13px;font-weight:700;font-family:'Lexend',sans-serif;background:rgba(40,30,8,.9);color:#FFD700;border:1px solid rgba(255,215,0,.4);border-radius:5px;cursor:pointer;transition:all .15s;}
-#set-prize-btn:hover{background:rgba(60,45,10,.95);border-color:rgba(255,215,0,.7);box-shadow:0 0 8px rgba(255,215,0,.15);}
-#prize-status{font-size:11px;font-weight:400;color:#4CBB17;min-height:16px;}
-
 #brand-mark{position:absolute;top:12px;left:12px;pointer-events:none;font-size:14px;font-weight:900;letter-spacing:-0.05em;color:#4CBB17;display:inline-flex;align-items:baseline;z-index:10;}
 #brand-mark .dot{width:0.22em;height:0.22em;margin-left:0.04em;margin-bottom:0.08em;border-radius:50%;display:inline-block;background:linear-gradient(135deg,#efefef,#a8a8a8,#e0e0e0);box-shadow:inset 1px 1px 2px rgba(255,255,255,0.8),0 2px 5px rgba(0,0,0,0.22);}
 
@@ -62,70 +88,100 @@ canvas{display:block;}
 
 #motto{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);pointer-events:none;font-size:11px;font-weight:300;letter-spacing:0.15em;text-transform:uppercase;color:rgba(200,200,210,.45);z-index:10;}
 
-#prize-upload-btn{position:absolute;top:12px;right:80px;padding:6px 14px;font-size:11px;font-weight:600;font-family:'Lexend',sans-serif;background:rgba(30,22,10,.9);color:#FF9F0A;border:1px solid rgba(255,159,10,.35);border-radius:6px;cursor:pointer;pointer-events:auto;transition:all .15s;z-index:10;letter-spacing:0.02em;}
-#prize-upload-btn:hover{background:rgba(45,32,12,.95);border-color:rgba(255,159,10,.6);box-shadow:0 0 8px rgba(255,159,10,.2);}
-#prize-file-input{display:none;}
-
 /* Prize claim overlay */
 #prize-claim{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;pointer-events:auto;z-index:90;cursor:pointer;}
-#prize-claim .claim-text{font-size:22px;font-weight:800;color:#FFD700;text-shadow:0 0 20px rgba(255,215,0,.6);animation:pulse-glow 1.5s ease-in-out infinite;letter-spacing:-0.03em;}
+#prize-claim .claim-text{font-size:22px;font-weight:800;color:#FFD700;text-shadow:0 0 20px rgba(255,215,0,.6);letter-spacing:-0.03em;}
 #prize-claim .claim-sub{font-size:13px;font-weight:300;color:#aaa;margin-top:8px;letter-spacing:1px;text-transform:uppercase;}
+
+/* Celebration halo */
+#celebration-halo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:320px;height:320px;border-radius:50%;pointer-events:none;display:none;z-index:85;background:radial-gradient(circle,rgba(255,215,0,.25) 0%,rgba(255,215,0,.08) 40%,transparent 70%);animation:halo-pulse 1.8s ease-in-out infinite;}
+@keyframes halo-pulse{0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1);}50%{opacity:1;transform:translate(-50%,-50%) scale(1.15);}}
 @keyframes pulse-glow{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.7;transform:scale(1.04);}}
+@keyframes prize-bounce{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
 
 /* Win/stats screen */
 #win-screen{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.85);pointer-events:auto;z-index:100;backdrop-filter:blur(4px);}
 #win-screen h1{font-weight:900;font-size:32px;letter-spacing:-0.05em;color:#4CBB17;text-shadow:0 0 30px rgba(76,187,23,.4);margin-bottom:20px;}
 #win-screen .stat-row{font-size:16px;font-weight:400;color:#ccc;margin-bottom:8px;}
 #win-screen .stat-value{font-weight:800;color:#FFD700;}
-#win-screen .restart-btn{margin-top:24px;padding:12px 32px;font-size:16px;font-weight:800;font-family:'Lexend',sans-serif;background:#1a1a1e;color:#4CBB17;border:2px solid #4CBB17;border-radius:8px;cursor:pointer;letter-spacing:-0.02em;transition:all .15s;}
-#win-screen .restart-btn:hover{background:#1a2a18;transform:translateY(-1px);box-shadow:0 0 16px rgba(76,187,23,.35);}
+#win-screen .finish-btn{margin-top:24px;padding:12px 32px;font-size:16px;font-weight:800;font-family:'Lexend',sans-serif;background:#1a1a1e;color:#4CBB17;border:2px solid #4CBB17;border-radius:8px;cursor:pointer;letter-spacing:-0.02em;transition:all .15s;}
+#win-screen .finish-btn:hover{background:#1a2a18;transform:translateY(-1px);box-shadow:0 0 16px rgba(76,187,23,.35);}
 </style>
 </head>
 <body>
-<div id="hud">
-  <div id="progress-text">Bolts Removed: 0 / 0</div>
-  <div id="progress-bar-container"><div id="progress-bar"></div></div>
-  <div id="message"></div>
-  <div id="timer-display"></div>
+
+<!-- ═══════════ TEACHER LANDING PAGE ═══════════ -->
+<div id="teacher-landing">
+  <div class="landing-brand">Math Things<span class="dot"></span></div>
+  <div class="landing-title">Fraction Bolts</div>
+  <div class="landing-subtitle">Making math make sense</div>
+  <div class="landing-card">
+    <h2>🎁 Set Up a Prize</h2>
+    <div class="card-sub">Enter a prize for your students. They'll need to solve fraction problems to unlock it!</div>
+    <label for="landing-prize-input">Prize text or image URL</label>
+    <input type="text" id="landing-prize-input" placeholder="e.g. &quot;10 minutes extra recess&quot; or paste an image URL…" />
+    <div id="landing-file-row">
+      <button id="landing-file-btn">📎 Upload Image</button>
+      <span id="landing-file-name"></span>
+      <input type="file" id="landing-file-input" accept="image/*">
+    </div>
+    <button id="generate-link-btn">Generate Student Link</button>
+    <div id="landing-status"></div>
+    <div id="link-output">
+      <div class="link-label">📋 Share this link with your students</div>
+      <div class="link-url" id="link-url"></div>
+      <button id="copy-link-btn">Copy Link</button>
+    </div>
+  </div>
+  <div class="landing-motto">Making math make sense</div>
 </div>
-<div id="socket-ui">
-  <h3 id="socket-title">Select Socket Size</h3>
-  <div class="subtitle" id="socket-subtitle"></div>
-  <div id="socket-options"></div>
-</div>
-<button id="back-btn">&#8592; Back</button>
-<div id="manual-icon">&#128214; Consult Manual</div>
-<div id="manual-overlay">
-  <h3>Fraction Equivalence Manual</h3>
-  <canvas id="manual-canvas" width="360" height="180"></canvas>
-  <p id="manual-text" style="font-size:12px;font-weight:400;color:#bbb;margin-top:6px;"></p>
-  <button class="close-btn" id="manual-close">Close Manual</button>
-</div>
-<div id="teacher-panel">
-  <button id="teacher-toggle" aria-label="Open teacher panel to customize prize">&#9881; Teacher Panel</button>
-  <div id="teacher-form">
-    <label for="prize-input">Image URL or Prize Text</label>
-    <input type="text" id="prize-input" placeholder="Paste URL or type prize text…" />
-    <button id="set-prize-btn">Set Prize</button>
-    <div id="prize-status"></div>
+
+<!-- ═══════════ STUDENT PRIZE PREVIEW ═══════════ -->
+<div id="prize-preview">
+  <div class="preview-box">
+    <div class="preview-label">Your teacher left you a prize!</div>
+    <div id="preview-prize-content"></div>
+    <button class="preview-claim-btn" id="preview-claim-btn">🏆 Click to Claim</button>
   </div>
 </div>
-<div id="total-time">Total Time: 0s</div>
-<div id="brand-mark">Math Things<span class="dot"></span></div>
-<div id="tool-title">Fraction Bolts</div>
-<div id="motto">Making math make sense</div>
-<button id="prize-upload-btn" aria-label="Set prize image">🎁 Set Prize Image</button>
-<input type="file" id="prize-file-input" accept="image/*">
-<div id="prize-claim">
-  <div class="claim-text">&#127942; Click to Claim Your Prize</div>
-  <div class="claim-sub">Tap anywhere</div>
-</div>
-<div id="win-screen">
-  <h1>Vault Cracked</h1>
-  <p class="stat-row">Time: <span class="stat-value" id="win-time"></span></p>
-  <p class="stat-row">Accuracy: <span class="stat-value" id="win-accuracy"></span></p>
-  <p class="stat-row">Bolts: <span class="stat-value" id="win-bolts"></span></p>
-  <button class="restart-btn" id="restart-btn">New Vault</button>
+
+<!-- ═══════════ GAME CONTAINER ═══════════ -->
+<div id="game-container">
+  <div id="hud">
+    <div id="progress-text">Bolts Removed: 0 / 0</div>
+    <div id="progress-bar-container"><div id="progress-bar"></div></div>
+    <div id="message"></div>
+    <div id="timer-display"></div>
+  </div>
+  <div id="socket-ui">
+    <h3 id="socket-title">Select Socket Size</h3>
+    <div class="subtitle" id="socket-subtitle"></div>
+    <div id="socket-options"></div>
+  </div>
+  <button id="back-btn">&#8592; Back</button>
+  <div id="manual-icon">&#128214; Consult Manual</div>
+  <div id="manual-overlay">
+    <h3>Fraction Equivalence Manual</h3>
+    <canvas id="manual-canvas" width="360" height="180"></canvas>
+    <p id="manual-text" style="font-size:12px;font-weight:400;color:#bbb;margin-top:6px;"></p>
+    <button class="close-btn" id="manual-close">Close Manual</button>
+  </div>
+  <div id="total-time">Total Time: 0s</div>
+  <div id="brand-mark">Math Things<span class="dot"></span></div>
+  <div id="tool-title">Fraction Bolts</div>
+  <div id="motto">Making math make sense</div>
+  <div id="celebration-halo"></div>
+  <div id="prize-claim">
+    <div class="claim-text">&#127942; Your Prize!</div>
+    <div class="claim-sub">Tap anywhere to claim</div>
+  </div>
+  <div id="win-screen">
+    <h1>Vault Cracked!</h1>
+    <p class="stat-row">Time: <span class="stat-value" id="win-time"></span></p>
+    <p class="stat-row">Accuracy: <span class="stat-value" id="win-accuracy"></span></p>
+    <p class="stat-row">Bolts: <span class="stat-value" id="win-bolts"></span></p>
+    <button class="finish-btn" id="finish-btn">Finish</button>
+  </div>
 </div>
 
 <script type="importmap">
@@ -139,6 +195,108 @@ canvas{display:block;}
 <script type="module">
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+/* ═══════════ URL ROUTING ═══════════ */
+const urlParams = new URLSearchParams(window.location.search);
+const prizeParam = urlParams.get('prize');
+const prizeTypeParam = urlParams.get('type') || 'text'; // 'text', 'url', or 'data'
+const isStudentMode = !!prizeParam;
+
+const teacherLanding = document.getElementById('teacher-landing');
+const prizePreview = document.getElementById('prize-preview');
+const gameContainer = document.getElementById('game-container');
+
+/* ═══════════ TEACHER LANDING PAGE LOGIC ═══════════ */
+if(!isStudentMode){
+  teacherLanding.style.display = 'flex';
+  gameContainer.style.display = 'none';
+
+  const landingInput = document.getElementById('landing-prize-input');
+  const landingFileBtn = document.getElementById('landing-file-btn');
+  const landingFileName = document.getElementById('landing-file-name');
+  const landingFileInput = document.getElementById('landing-file-input');
+  const generateBtn = document.getElementById('generate-link-btn');
+  const landingStatus = document.getElementById('landing-status');
+  const linkOutput = document.getElementById('link-output');
+  const linkUrl = document.getElementById('link-url');
+  const copyBtn = document.getElementById('copy-link-btn');
+
+  let uploadedDataUrl = null;
+
+  landingFileBtn.addEventListener('click', ()=>{ landingFileInput.click(); });
+
+  landingFileInput.addEventListener('change', (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const validExts = ['.png','.jpg','.jpeg','.gif','.webp','.svg','.bmp'];
+    const ext = file.name.toLowerCase().slice(file.name.lastIndexOf('.'));
+    if(!file.type.startsWith('image/') || !validExts.includes(ext)){
+      landingStatus.textContent = '✗ Please select a valid image file.';
+      landingStatus.style.color = '#ff4444';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (evt)=>{
+      uploadedDataUrl = evt.target.result;
+      landingFileName.textContent = file.name;
+      landingInput.value = '';
+      landingInput.placeholder = 'Image selected — or type text instead';
+      landingStatus.textContent = '✓ Image loaded!';
+      landingStatus.style.color = '#4CBB17';
+    };
+    reader.readAsDataURL(file);
+    landingFileInput.value = '';
+  });
+
+  landingInput.addEventListener('input', ()=>{
+    if(landingInput.value.trim()){
+      uploadedDataUrl = null;
+      landingFileName.textContent = '';
+    }
+  });
+
+  generateBtn.addEventListener('click', ()=>{
+    const text = landingInput.value.trim();
+    if(!text && !uploadedDataUrl){
+      landingStatus.textContent = '✗ Enter prize text, paste an image URL, or upload an image.';
+      landingStatus.style.color = '#ff4444';
+      return;
+    }
+    const base = window.location.origin + window.location.pathname;
+    let link;
+    if(uploadedDataUrl){
+      link = base + '?type=data&prize=' + encodeURIComponent(uploadedDataUrl);
+    } else if(/^https?:\/\//i.test(text)){
+      link = base + '?type=url&prize=' + encodeURIComponent(text);
+    } else {
+      link = base + '?type=text&prize=' + encodeURIComponent(text);
+    }
+    linkUrl.textContent = link;
+    linkOutput.style.display = 'block';
+    landingStatus.textContent = '✓ Link generated!';
+    landingStatus.style.color = '#4CBB17';
+
+    if(link.length > 8000){
+      landingStatus.textContent = '⚠ Link is very long — consider using text or an image URL instead of an uploaded image.';
+      landingStatus.style.color = '#FF9F0A';
+    }
+  });
+
+  copyBtn.addEventListener('click', ()=>{
+    const text = linkUrl.textContent;
+    navigator.clipboard.writeText(text).then(()=>{
+      copyBtn.textContent = '✓ Copied!';
+      setTimeout(()=>{ copyBtn.textContent = 'Copy Link'; }, 2000);
+    }).catch(()=>{
+      // Fallback: select text
+      const range = document.createRange();
+      range.selectNodeContents(linkUrl);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    });
+  });
+}
 
 /* ═══════════ AUDIO SYNTHESIS ═══════════ */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -246,7 +404,76 @@ function playClaimFanfare(){
   });
 }
 
-/* ═══════════ TEXTURE GENERATORS ═══════════ */
+function playSteelSlam(){
+  ensureAudio();
+  const ctx=audioCtx, now=ctx.currentTime;
+  // Deep boom impact
+  const o=ctx.createOscillator(),g=ctx.createGain();
+  o.type='sine'; o.frequency.setValueAtTime(60,now);
+  o.frequency.exponentialRampToValueAtTime(15,now+1.2);
+  g.gain.setValueAtTime(.6,now); g.gain.exponentialRampToValueAtTime(.001,now+1.5);
+  o.connect(g); g.connect(ctx.destination);
+  o.start(now); o.stop(now+1.6);
+  // Metallic crash
+  const buf=ctx.createBuffer(1,ctx.sampleRate*.5,ctx.sampleRate);
+  const data=buf.getChannelData(0);
+  for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*.5*Math.max(0,1-i/data.length);
+  const src=ctx.createBufferSource(); src.buffer=buf;
+  const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=800;
+  src.connect(lp); lp.connect(ctx.destination);
+  src.start(now); src.stop(now+.5);
+  // Ringing aftershock
+  const o2=ctx.createOscillator(),g2=ctx.createGain();
+  o2.type='triangle'; o2.frequency.value=180;
+  g2.gain.setValueAtTime(.15,now+.05); g2.gain.exponentialRampToValueAtTime(.001,now+.8);
+  o2.connect(g2); g2.connect(ctx.destination);
+  o2.start(now+.05); o2.stop(now+.9);
+}
+
+function playBoltIn(){
+  ensureAudio();
+  const ctx=audioCtx, now=ctx.currentTime;
+  // Quick ratcheting spin sound
+  for(let i=0;i<4;i++){
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.type='square'; o.frequency.value=100+Math.random()*80;
+    g.gain.setValueAtTime(.12,now+i*.06);
+    g.gain.exponentialRampToValueAtTime(.001,now+i*.06+.05);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(now+i*.06); o.stop(now+i*.06+.06);
+  }
+  // Tightening click
+  const o2=ctx.createOscillator(),g2=ctx.createGain();
+  o2.type='sine'; o2.frequency.value=1400;
+  g2.gain.setValueAtTime(.1,now+.28); g2.gain.exponentialRampToValueAtTime(.001,now+.35);
+  o2.connect(g2); g2.connect(ctx.destination);
+  o2.start(now+.28); o2.stop(now+.4);
+}
+
+function playCelebration(){
+  ensureAudio();
+  const ctx=audioCtx, now=ctx.currentTime;
+  // Rising triumphant notes
+  const notes=[392,493.88,587.33,659.25,783.99,987.77,1174.66];
+  notes.forEach((f,i)=>{
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type='sine'; o.frequency.value=f;
+    g.gain.setValueAtTime(.08,now+i*.1);
+    g.gain.exponentialRampToValueAtTime(.001,now+i*.1+.5);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(now+i*.1); o.stop(now+i*.1+.6);
+  });
+  // Shimmer
+  const buf=ctx.createBuffer(1,ctx.sampleRate*.8,ctx.sampleRate);
+  const data=buf.getChannelData(0);
+  for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*.05;
+  const src=ctx.createBufferSource(); src.buffer=buf;
+  const hp=ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=6000;
+  const g3=ctx.createGain();
+  g3.gain.setValueAtTime(.08,now); g3.gain.exponentialRampToValueAtTime(.001,now+.8);
+  src.connect(hp); hp.connect(g3); g3.connect(ctx.destination);
+  src.start(now); src.stop(now+.8);
+}
 function createSteelTexture(w,h){
   const c=document.createElement('canvas'); c.width=w; c.height=h;
   const ctx=c.getContext('2d');
@@ -424,6 +651,46 @@ function generateBoltData(count){
   return bolts;
 }
 
+/* ═══════════ STUDENT MODE: 3D GAME ═══════════ */
+if(!isStudentMode){
+  // Teacher mode — don't init the 3D scene
+} else {
+
+/* ═══════════ PRIZE PREVIEW SCREEN ═══════════ */
+function showPrizePreview(){
+  prizePreview.style.display = 'flex';
+  const content = document.getElementById('preview-prize-content');
+  content.innerHTML = '';
+
+  if(prizeTypeParam === 'url'){
+    const img = document.createElement('img');
+    img.className = 'preview-prize-img';
+    img.alt = 'Your prize';
+    img.src = prizeParam;
+    content.appendChild(img);
+  } else if(prizeTypeParam === 'data'){
+    const img = document.createElement('img');
+    img.className = 'preview-prize-img';
+    img.alt = 'Your prize';
+    img.src = prizeParam;
+    content.appendChild(img);
+  } else {
+    const txt = document.createElement('div');
+    txt.className = 'preview-prize-text';
+    txt.textContent = prizeParam;
+    content.appendChild(txt);
+  }
+}
+
+showPrizePreview();
+
+document.getElementById('preview-claim-btn').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  ensureAudio();
+  prizePreview.style.display = 'none';
+  startGameWithSlamDown();
+});
+
 /* ═══════════ THREE.JS SCENE ═══════════ */
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x1a1a20);
@@ -440,7 +707,7 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.6;
-document.body.appendChild(renderer.domElement);
+gameContainer.appendChild(renderer.domElement);
 
 // Environment map for metallic reflections (matches bead branding)
 const pmremGenerator = new THREE.PMREMGenerator(renderer);
@@ -933,8 +1200,8 @@ function updateCameraShake(dt){
 }
 
 /* ═══════════ STATE MACHINE ═══════════ */
-const State = {OVERVIEW:'overview', ZOOMING:'zooming', INPUT:'input', COOLDOWN:'cooldown', WRENCH:'wrench', PLATE_DROP:'plateDrop', PRIZE_REVEAL:'prizeReveal', WIN:'win'};
-let currentState = State.OVERVIEW;
+const State = {SLAM_DOWN:'slamDown', BOLT_IN:'boltIn', OVERVIEW:'overview', ZOOMING:'zooming', INPUT:'input', COOLDOWN:'cooldown', WRENCH:'wrench', PLATE_DROP:'plateDrop', PRIZE_REVEAL:'prizeReveal', CELEBRATION:'celebration', WIN:'win'};
+let currentState = State.SLAM_DOWN;
 let selectedBolt = -1;
 let totalRemoved = 0;
 let startTime = Date.now();
@@ -945,6 +1212,9 @@ let rattleTarget = -1, rattleTimer = 0;
 
 // Plate drop state
 let plateDropState = null;
+// Slam down & bolt-in state
+let slamDownState = null;
+let boltInState = null;
 
 // DOM refs
 const progressBar = document.getElementById('progress-bar');
@@ -963,23 +1233,14 @@ const manualText = document.getElementById('manual-text');
 const manualClose = document.getElementById('manual-close');
 const totalTimeEl = document.getElementById('total-time');
 const prizeClaim = document.getElementById('prize-claim');
+const celebrationHalo = document.getElementById('celebration-halo');
 const winScreen = document.getElementById('win-screen');
 const winTime = document.getElementById('win-time');
 const winAccuracy = document.getElementById('win-accuracy');
 const winBolts = document.getElementById('win-bolts');
-const restartBtn = document.getElementById('restart-btn');
-const teacherToggle = document.getElementById('teacher-toggle');
-const teacherForm = document.getElementById('teacher-form');
-const prizeInput = document.getElementById('prize-input');
-const setPrizeBtn = document.getElementById('set-prize-btn');
-const prizeStatus = document.getElementById('prize-status');
+const finishBtn = document.getElementById('finish-btn');
 
-/* ═══════════ TEACHER PANEL ═══════════ */
-teacherToggle.addEventListener('click', ()=>{
-  const open = teacherForm.classList.toggle('open');
-  teacherToggle.classList.toggle('open', open);
-});
-
+/* ═══════════ PRIZE FROM URL PARAMETER ═══════════ */
 function isURL(str){ return /^https?:\/\//i.test(str.trim()); }
 
 function generatePrizeTextCanvas(text){
@@ -1073,44 +1334,31 @@ function generatePrizeTextCanvas(text){
   return c;
 }
 
-function setPrize(value){
-  if(!value || !value.trim()){
-    prizeStatus.textContent = '';
-    return;
-  }
-  value = value.trim();
+function setPrizeFromParam(){
+  if(!prizeParam) return;
 
-  if(isURL(value)){
-    prizeStatus.textContent = 'Loading image…';
-    prizeStatus.style.color = '#FF9F0A';
+  if(prizeTypeParam === 'url'){
     const loader = new THREE.TextureLoader();
     loader.setCrossOrigin('anonymous');
-    loader.load(
-      value,
-      (tex) => {
-        prizeMat.map = tex;
-        prizeMat.needsUpdate = true;
-        prizeStatus.textContent = '✓ Image loaded!';
-        prizeStatus.style.color = '#4CBB17';
-      },
-      undefined,
-      () => {
-        prizeStatus.textContent = '✗ Failed to load image.';
-        prizeStatus.style.color = '#ff4444';
-      }
-    );
+    loader.load(prizeParam, (tex) => {
+      prizeMat.map = tex;
+      prizeMat.needsUpdate = true;
+    });
+  } else if(prizeTypeParam === 'data'){
+    const loader = new THREE.TextureLoader();
+    loader.load(prizeParam, (tex) => {
+      prizeMat.map = tex;
+      prizeMat.needsUpdate = true;
+    });
   } else {
-    const canvas = generatePrizeTextCanvas(value);
+    const canvas = generatePrizeTextCanvas(prizeParam);
     const tex = new THREE.CanvasTexture(canvas);
     prizeMat.map = tex;
     prizeMat.needsUpdate = true;
-    prizeStatus.textContent = '✓ Prize text set!';
-    prizeStatus.style.color = '#4CBB17';
   }
 }
 
-setPrizeBtn.addEventListener('click', ()=>{ setPrize(prizeInput.value); });
-prizeInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') setPrize(prizeInput.value); });
+setPrizeFromParam();
 
 function updateHUD(){
   progressText.textContent = `Bolts Removed: ${totalRemoved} / ${BOLT_COUNT}`;
@@ -1285,7 +1533,126 @@ backBtn.addEventListener('click', ()=>{
   }
 });
 
-/* ═══════════ DRAMATIC PLATE DROP ═══════════ */
+/* ═══════════ STEEL PLATE SLAM DOWN (Opening) ═══════════ */
+function startGameWithSlamDown(){
+  teacherLanding.style.display = 'none';
+  gameContainer.style.display = 'block';
+  currentState = State.SLAM_DOWN;
+
+  // Hide vault and bolts initially — they will animate in
+  vault.visible = false;
+  vault.position.y = 12; // start high above
+  vault.rotation.set(-Math.PI/2, 0, 0);
+  boltMeshes.forEach(g => { g.visible = false; });
+
+  // Set camera for dramatic view
+  camera.position.set(0, 7, 5);
+  camera.lookAt(0, -0.5, 0);
+
+  // Brief delay then slam plate down
+  setTimeout(()=>{
+    vault.visible = true;
+    slamDownState = {
+      startTime: performance.now(),
+      phase: 'falling',
+    };
+  }, 300);
+}
+
+function updateSlamDown(){
+  if(!slamDownState) return;
+  const elapsed = (performance.now() - slamDownState.startTime) / 1000;
+
+  if(slamDownState.phase === 'falling'){
+    // Plate falls from above (0-0.6s)
+    if(elapsed < 0.6){
+      const t = elapsed / 0.6;
+      const ease = t * t * t; // cubic ease-in for accelerating fall
+      vault.position.y = 12 - ease * 12;
+      return;
+    }
+    // Impact!
+    vault.position.y = 0;
+    vault.rotation.set(-Math.PI/2, 0, 0);
+    slamDownState.phase = 'impact';
+    playSteelSlam();
+    triggerCameraShake(0.2, 0.8);
+    slamDownState.impactTime = performance.now();
+  }
+
+  if(slamDownState.phase === 'impact'){
+    // Wait for shake to subside (0.8s)
+    const impactElapsed = (performance.now() - slamDownState.impactTime) / 1000;
+    if(impactElapsed > 1.0){
+      slamDownState = null;
+      startBoltIn();
+    }
+  }
+}
+
+/* ═══════════ BOLT-IN ANIMATION ═══════════ */
+function startBoltIn(){
+  currentState = State.BOLT_IN;
+  boltInState = {
+    currentBolt: 0,
+    startTime: performance.now(),
+    phase: 'waiting',
+  };
+  // Position bolts above their slots, hidden
+  boltMeshes.forEach((g, i) => {
+    g.position.set(boltPositions[i].x, 2.5, boltPositions[i].z);
+    g.rotation.y = 0;
+    g.visible = false;
+  });
+}
+
+function updateBoltIn(){
+  if(!boltInState) return;
+  const elapsed = (performance.now() - boltInState.startTime) / 1000;
+  const idx = boltInState.currentBolt;
+
+  if(idx >= BOLT_COUNT){
+    // All bolts in — start the game
+    boltInState = null;
+    currentState = State.OVERVIEW;
+    startTime = Date.now();
+    showMessage('Click a bolt to begin unbolting!', 4000);
+    tweenCamera(overviewPos, overviewLook, 0.8);
+    return;
+  }
+
+  const g = boltMeshes[idx];
+  const boltDuration = 0.4; // Time per bolt
+  const delayBetween = 0.1;
+
+  if(boltInState.phase === 'waiting'){
+    g.visible = true;
+    g.position.y = 2.5;
+    boltInState.phase = 'screwing';
+    boltInState.startTime = performance.now();
+    playBoltIn();
+    return;
+  }
+
+  if(boltInState.phase === 'screwing'){
+    if(elapsed < boltDuration){
+      const t = elapsed / boltDuration;
+      const ease = t * t * (3 - 2 * t); // smoothstep
+      g.position.y = 2.5 - ease * 2.42; // land at 0.08
+      g.rotation.y = t * Math.PI * 6; // spinning
+      return;
+    }
+    // Bolt is in place
+    g.position.y = 0.08;
+    g.position.x = boltPositions[idx].x;
+    g.position.z = boltPositions[idx].z;
+    boltInState.currentBolt++;
+    boltInState.phase = 'waiting';
+    boltInState.startTime = performance.now() + delayBetween * 1000;
+  }
+}
+
+/* ═══════════ DRAMATIC PLATE DROP (Win) ═══════════ */
 function startPlateDrop(){
   currentState = State.PLATE_DROP;
   hideSocketUI();
@@ -1329,7 +1696,6 @@ function updatePlateDrop(){
   }
 
   if(plateDropState.phase === 'fall'){
-    const fallElapsed = (performance.now() - plateDropState.fallStart) / 1000;
     // Accelerating fall with rotation
     const gravity = 18;
     plateDropState.vy += gravity * (1/60);
@@ -1345,26 +1711,29 @@ function updatePlateDrop(){
       triggerCameraShake(0.15, 0.6);
       vault.visible = false;
 
-      // Show prize reveal
+      // Show celebration with prize
       setTimeout(()=>{
-        currentState = State.PRIZE_REVEAL;
-        prizeClaim.style.display='flex';
+        currentState = State.CELEBRATION;
+        celebrationHalo.style.display = 'block';
+        prizeClaim.style.display = 'flex';
+        playCelebration();
         plateDropState = null;
       }, 300);
     }
   }
 }
 
-/* ═══════════ WIN / PRIZE CLAIM ═══════════ */
+/* ═══════════ WIN / CELEBRATION / PRIZE CLAIM ═══════════ */
 function winGame(){
   startPlateDrop();
 }
 
-// Prize claim click handler
+// Prize claim click — celebrate and then allow finish
 prizeClaim.addEventListener('click', ()=>{
-  if(currentState !== State.PRIZE_REVEAL) return;
+  if(currentState !== State.CELEBRATION) return;
   currentState = State.WIN;
   prizeClaim.style.display='none';
+  celebrationHalo.style.display='none';
   playClaimFanfare();
 
   const elapsed = ((Date.now()-startTime)/1000).toFixed(1);
@@ -1379,90 +1748,10 @@ prizeClaim.addEventListener('click', ()=>{
   }, 400);
 });
 
-restartBtn.addEventListener('click', ()=>{
+finishBtn.addEventListener('click', ()=>{
   winScreen.style.display='none';
-  prizeClaim.style.display='none';
-  vault.visible=true;
-  vault.position.y=0;
-  vault.rotation.set(-Math.PI/2,0,0);
-  vault.material.opacity=1;
-  vault.material.transparent=false;
-  totalRemoved=0;
-  totalAttempts=0;
-  correctAttempts=0;
-  startTime=Date.now();
-  selectedBolt=-1;
-  currentState=State.OVERVIEW;
-  plateDropState=null;
-  wrenchAnim=null;
-  wrenchGroup.visible=false;
-  boltData = generateBoltData(BOLT_COUNT);
-  boltMeshes.forEach((g,i)=>{
-    g.visible=true;
-    g.position.set(boltPositions[i].x, 0.08, boltPositions[i].z);
-    g.rotation.y=0;
-    const bd=boltData[i];
-    const tex=createBoltTexture(bd.displayLabel, false);
-    g.userData.head.material.map=tex;
-    g.userData.head.material.color.set(0xdce0e4);
-    g.userData.head.material.roughness=0.22;
-    g.userData.head.material.needsUpdate=true;
-    g.userData.originalTex=tex;
-  });
-  updateHUD();
-  showMessage('');
-  camera.position.copy(overviewPos);
-  camera.lookAt(overviewLook);
-});
-
-/* ═══════════ CUSTOM PRIZE IMAGE ═══════════ */
-const prizeUploadBtn = document.getElementById('prize-upload-btn');
-const prizeFileInput = document.getElementById('prize-file-input');
-
-prizeUploadBtn.addEventListener('click', ()=>{
-  prizeFileInput.click();
-});
-
-prizeFileInput.addEventListener('change', (e)=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  const validExts = ['.png','.jpg','.jpeg','.gif','.webp','.svg','.bmp'];
-  const ext = file.name.toLowerCase().slice(file.name.lastIndexOf('.'));
-  if(!file.type.startsWith('image/') || !validExts.includes(ext)){
-    showMessage('Please select a valid image file.', 3000);
-    return;
-  }
-  const reader = new FileReader();
-  reader.onload = (evt)=>{
-    const img = new Image();
-    img.onload = ()=>{
-      const c = document.createElement('canvas');
-      c.width = 512; c.height = 512;
-      const ctx = c.getContext('2d');
-      // Draw a gold border frame
-      const grad = ctx.createRadialGradient(256,256,200,256,256,362);
-      grad.addColorStop(0,'#FFD700');
-      grad.addColorStop(1,'#4a2800');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0,0,512,512);
-      // Draw the custom image centered & fitted
-      const pad = 24;
-      const drawW = 512 - pad*2, drawH = 512 - pad*2;
-      const scale = Math.min(drawW/img.width, drawH/img.height);
-      const sw = img.width * scale, sh = img.height * scale;
-      const sx = (512 - sw)/2, sy = (512 - sh)/2;
-      ctx.drawImage(img, sx, sy, sw, sh);
-      // Update the 3D prize texture
-      const newTex = new THREE.CanvasTexture(c);
-      prizeMat.map = newTex;
-      prizeMat.needsUpdate = true;
-      showMessage('🎁 Custom prize image loaded!', 3000);
-    };
-    img.src = evt.target.result;
-  };
-  reader.readAsDataURL(file);
-  // Reset input so the same file can be re-selected
-  prizeFileInput.value = '';
+  // Game is complete — could redirect or show a final message
+  showMessage('🏆 Great job! You can close this tab.', 0);
 });
 
 /* ═══════════ ANIMATION LOOP ═══════════ */
@@ -1476,6 +1765,8 @@ function animate(){
   updateTween(dt);
   updateSparks(dt);
   updateWrenchAnimation();
+  updateSlamDown();
+  updateBoltIn();
   updatePlateDrop();
   updateCameraShake(dt);
 
@@ -1551,7 +1842,7 @@ function animate(){
   }
 
   // Total time
-  if(currentState !== State.WIN && currentState !== State.PRIZE_REVEAL){
+  if(currentState !== State.WIN && currentState !== State.CELEBRATION && currentState !== State.SLAM_DOWN && currentState !== State.BOLT_IN){
     const elapsed = ((now - startTime)/1000).toFixed(0);
     totalTimeEl.textContent = `Total Time: ${elapsed}s`;
   }
@@ -1578,7 +1869,7 @@ window.addEventListener('resize', ()=>{
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-showMessage('Click a bolt to begin.', 5000);
+} // end isStudentMode
 </script>
 </body>
 </html>
